@@ -5,12 +5,14 @@ Event planning and vendor marketplace. Next.js 15 (App Router), Supabase (Postgr
 ## Setup (local, everything runs on your machine)
 Needs Node 18.18+ and Docker Desktop running.
 1. `npm install`
-2. `npm run db:start`. This starts Supabase locally (Postgres, Auth, REST, and an email inbox at http://127.0.0.1:54324) and applies `supabase/migrations/`. It prints an API URL and an anon key.
-3. `cp .env.example .env.local`. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` from step 2, and set `NEXT_PUBLIC_SITE_URL=http://localhost:3000`.
+2. `npm run db:start`. This starts Supabase locally (Postgres, Auth, REST, and an email inbox at http://127.0.0.1:55324) and applies `supabase/migrations/`. It prints an API URL and an anon key.
+3. `cp .env.example .env.local`. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` from step 2, and set `NEXT_PUBLIC_SITE_URL=http://localhost:3100`.
 4. Add `OPENAI_API_KEY` and `OPENAI_MODEL` to `.env.local` yourself, in your editor. They are read only on the server.
-5. `npm run dev`, open http://localhost:3000, and sign in with any email. The sign-in link arrives in the local inbox at http://127.0.0.1:54324.
+5. `npm run dev -- --port 3100`, open http://localhost:3100, and sign in with any email. The sign-in link arrives in the local inbox at http://127.0.0.1:55324.
 6. To make yourself an admin (to verify vendors), run this in `docker exec -it supabase_db_vendora psql -U postgres`:
    `update public.profiles set roles = '{customer,admin}' where id = (select id from auth.users where email = 'you@example.com');`
+
+Vendora uses API port `55321`, database port `55322`, and inbox port `55324` so it can run alongside other local Supabase projects. Start the app on port `3100` because another Vendora preview uses port `3000`.
 
 Without Supabase settings the app still runs in **sample mode**: labeled sample data, with sign-in and the planner switched off.
 
