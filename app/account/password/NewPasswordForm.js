@@ -1,5 +1,6 @@
 'use client';
 
+import { isFirebaseConfigured } from '@/lib/firebase/config';
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -9,6 +10,17 @@ export default function NewPasswordForm() {
   async function onSubmit(e) {
     e.preventDefault();
     if (pw.length < 8) { setState({ status: 'error', message: 'Use at least 8 characters.' }); return; }
+    if (isFirebaseConfigured) {
+      setState({ status: 'loading', message: '' });
+      try {
+        const response = await fetch('/api/auth/firebase/password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pw }) });
+        const data = await response.json();
+        if (!response.ok) { setState({ status: 'error', message: data.error }); return; }
+        setPw(''); setState({ status: 'ok', message: 'Password updated. Please sign in again.' });
+        window.location.assign('/sign-in');
+      } catch { setState({ status: 'error', message: 'Could not change your password. Try again.' }); }
+      return;
+    }
     const supabase = createClient();
     if (!supabase) return;
     setState({ status: 'loading', message: '' });

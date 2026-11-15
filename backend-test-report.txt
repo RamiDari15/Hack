@@ -1,0 +1,47 @@
+Vendora backend verification — November 15, 2026 (America/Detroit)
+
+RESULT: Issues found; not an all-clear.
+
+Verified:
+- Latest source migration/RLS suite: 183 passed, 0 failed (commit 3b509c3).
+- Core local HTTP/Auth/PostgREST integration run: 68 passed, 1 failed (built app at 3badca4; the shared quota code is unchanged in 3b509c3).
+- Local email/PKCE callback: 6 checks passed; hosted email delivery was not verified.
+- Anonymous RPC authorization checks: 6 passed.
+- Production public-route/Auth smoke checks: 5 passed.
+- Pricing calculation suite passed.
+- All 18 production application/archive tables had RLS enabled; anonymous archive access denied.
+- Production directory: 830 businesses; 100 within 25 miles of Ann Arbor.
+- No production error logs returned for the prior hour at the time checked.
+
+Findings:
+1. HIGH: AI/search quota is not atomic. Four concurrent requests succeeded when only one daily allowance remained. lib/api.js counts rows, then the routes log usage only after calling the provider. Reserve usage atomically before provider calls.
+2. MEDIUM: Cohost quotas count shared plans from another organizer. A cohost with 0 personal requests had 20 visible requests counted by the current gate. Add an explicit user_id filter and enforce per-user reservations.
+3. HIGH: Hosted schema has 9 applied migrations; current source has 14. Missing versions: 20261115050000, 20261115051000, 20261115060000, 20261115070000, 20261115080000. Guest, timeline, shortlist, website, seating and related features cannot be fully verified against production until those migrations are applied.
+4. Local schema had only 8 applied migrations. The in-memory migration suite tests the complete current schema but does not repair the running local database.
+5. Hosted signup is hitting the email sending limit. Confirm-email is enabled; SMTP was not configured. Resend was provisioned on the free plan at user request but setup was then paused when the user requested Firebase Authentication instead.
+6. Supabase security advisor: 38 SECURITY DEFINER execution warnings plus 1 disabled leaked-password-protection warning. The sampled anonymous RPCs rejected unauthorized operations; these warnings were not treated as 39 proven exploits.
+
+Test limits:
+- AI/search successful responses used a local provider stand-in. No live model/search quality or paid provider calls were tested.
+- Full browser UI tests were not run as part of the backend API suite.
+- No payment processing was tested; invoices are payment records, not a payment gateway.
+- Application schema and authorization changed in newer GitHub commits during this run; the report distinguishes source/migration checks from the earlier core API run.
+
+Cleanup:
+- All temporary local test users, events and vendors were removed.
+- Temporary servers on 3101 and 4011 were stopped. The regular app on 3100 was preserved.
+- Existing customer records and production schema were not altered by these tests.
+
+Failed integration assertion:
+daily quota is atomic under concurrent requests: 4 requests succeeded with only 1 allowance left
+
+Firebase migration follow-up (2026-11-15)
+- Firebase Authentication now replaces hosted signup/login only; Supabase retains all data.
+- All 16 source migrations are applied to hosted Vendora, including the five feature migrations the user explicitly approved.
+- 830 public businesses preserved; all public tables have RLS enabled.
+- 196 database checks pass, including verified-Firebase identity enforcement and service-only helper permissions.
+- 35 live Firebase integration checks pass against an isolated application and the hosted database. Signup and reset email API calls used reserved .test addresses; real inbox delivery was not tested.
+- All disposable identities and test events were removed.
+- Firebase-enabled production build and focused lint pass.
+- The two previously identified AI quota defects remain: concurrent requests can exceed the daily limit; cohost-visible usage can count against the wrong user.
+- Current security advisor output has 63 warnings (31 anon/31 authenticated SECURITY DEFINER execute advisories plus legacy Supabase leaked-password protection). This is not a claim that all warnings are exploitable; verification is restricted to the tested flows.

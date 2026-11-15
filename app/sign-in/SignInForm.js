@@ -1,5 +1,6 @@
 'use client';
 
+import { isFirebaseConfigured } from '@/lib/firebase/config';
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -10,8 +11,8 @@ function redirectTo(next) {
 
 const MIN_PASSWORD = 8;
 
-// Email and password. "Create account" signs up; when the Supabase project requires email
-// confirmation, the user is asked to confirm first. "Forgot password" emails a reset link.
+// Email/password sign-in, verified signup and password reset. Firebase is used when configured;
+// local development can continue using Supabase Auth.
 export default function SignInForm({ next, nextAfterSignUp = next, providers, enabled, initialMode = 'sign-in', audience = 'planner', titles = { in: 'Sign in', up: 'Create your account' }, lede = '' }) {
   const [mode, setMode] = useState(initialMode);
   const [email, setEmail] = useState('');
@@ -30,11 +31,23 @@ export default function SignInForm({ next, nextAfterSignUp = next, providers, en
 
   async function onSubmit(e) {
     e.preventDefault();
-    const supabase = createClient();
-    if (!supabase) return;
     const address = email.trim();
     if (!/^\S+@\S+\.\S+$/.test(address)) return fail('Enter a valid email address.');
 
+    if (isFirebaseConfigured) {
+      if (mode !== 'reset' && password.length < MIN_PASSWORD) return fail(`Use at least ${MIN_PASSWORD} characters for the password.`);
+      setState({ status: 'loading', message: '' });
+      try {
+        const response = await fetch('/api/auth/firebase', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: mode, email: address, password, audience, next: mode === 'sign-up' ? nextAfterSignUp : next }) });
+        const data = await response.json();
+        if (!response.ok) return fail(data.error);
+        if (data.next) return window.location.assign(data.next);
+        return setState({ status: 'sent', message: data.message });
+      } catch { return fail('Could not reach sign-in. Please try again.'); }
+    }
+    const supabase = createClient();
+    if (!supabase) return;
     if (mode === 'reset') {
       setState({ status: 'loading', message: '' });
       const { error } = await supabase.auth.resetPasswordForEmail(address, { redirectTo: redirectTo('/account/password') });
@@ -57,6 +70,18 @@ export default function SignInForm({ next, nextAfterSignUp = next, providers, en
     const { error } = await supabase.auth.signInWithPassword({ email: address, password });
     if (error) return fail(/invalid login credentials/i.test(error.message) ? 'Email or password is wrong.' : /not confirmed/i.test(error.message) ? 'Confirm your email first. Check your inbox for the link.' : (error.message || 'Could not sign in.'));
     go(supabase);
+  }
+
+  async function resend() {
+    if (!email.trim() || password.length < MIN_PASSWORD) return fail('Enter your email and password, then resend confirmation.');
+    setState({ status: 'loading', message: '' });
+    try {
+      const response = await fetch('/api/auth/firebase', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'resend', email, password, next }) });
+      const data = await response.json();
+      if (!response.ok) return fail(data.error);
+      setState({ status: 'sent', message: data.message });
+    } catch { fail('Could not send confirmation. Please try again.'); }
   }
 
   async function onOAuth(provider) {
@@ -100,14 +125,15 @@ export default function SignInForm({ next, nextAfterSignUp = next, providers, en
           </div>
         )}
         <button className="btn btn-block" type="submit" disabled={!enabled || busy}>{busy ? 'One moment…' : label}</button>
+        {isFirebaseConfigured && mode === 'sign-in' && <button type="button" className="as-link small" onClick={resend} disabled={busy}>Resend confirmation</button>}
         {mode === 'reset' && <button type="button" className="as-link small" onClick={() => switchTo('sign-in')}>Back to sign in</button>}
       </form>
 
-      {mode !== 'reset' && (providers.google || providers.ssojet) && <div className="or-rule">or</div>}
-      {mode !== 'reset' && providers.google && (
+      {mode !== 'reset' && (!isFirebaseConfigured && (providers.google || providers.ssojet)) && <div className="or-rule">or</div>}
+      {!isFirebaseConfigured && mode !== 'reset' && providers.google && (
         <button className="btn btn-outline btn-block" type="button" onClick={() => onOAuth('google')} disabled={!enabled || busy}>Continue with Google</button>
       )}
-      {mode !== 'reset' && providers.ssojet && (
+      {!isFirebaseConfigured && mode !== 'reset' && providers.ssojet && (
         <button className="btn btn-outline btn-block" type="button" onClick={() => onOAuth('custom:ssojet')} disabled={!enabled || busy}>Continue with your company (SSO)</button>
       )}
 

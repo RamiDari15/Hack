@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "engines": {
-    "node": ">=18.18"
+    "node": ">=22"
   },
   "scripts": {
     "dev": "next dev",
@@ -14,12 +14,15 @@
     "test:pricing": "node e2e/vendor-pricing.mjs",
     "db:start": "supabase start",
     "test:e2e": "node e2e/flow.mjs && node e2e/auth-flow.mjs && node e2e/marketplace.mjs && node e2e/walkthrough.mjs && node e2e/event-tools.mjs && node e2e/planning-tools.mjs && node e2e/links.mjs",
-    "mock:providers": "node e2e/mock-providers.mjs"
+    "mock:providers": "node e2e/mock-providers.mjs",
+    "test:firebase": "node e2e/firebase-auth.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
+    "firebase-admin": "14.5.1",
     "gsap": "^3.15.1",
+    "jose": "6.2.17",
     "next": "^15.5.29",
     "react": "^19.1.10",
     "react-dom": "^19.1.10",

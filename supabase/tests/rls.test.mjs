@@ -260,5 +260,29 @@ r = await as(C, `insert into public.event_tables(event_id,name) values ('${cEven
 r = await as(B, `update public.event_guests set table_id='${ctb}' where rsvp_token='${gtok}'`); check('cannot seat a guest at another event’s table', !!r.error, r);
 r = await as(C, `select name from public.event_tables`); check('cohost sees the tables', r.rows?.length === 2, r);
 r = await as(ADM, `select id from public.event_tables`); check('strangers cannot see tables', r.rows?.length === 0, r);
+// Firebase provisioning helpers must never become an email-enumeration API.
+r = await as(null, `select public.firebase_identity_id('a@x.test')`); check('anonymous cannot look up identity by email', !!r.error, r);
+r = await as(A, `select public.firebase_identity_id('b@x.test')`); check('users cannot look up another identity by email', !!r.error, r);
+r = await as(A, `select public.firebase_auth_attempt(repeat('a',64),600,2)`); check('users cannot bypass or reset auth throttle', !!r.error, r);
+r = await as(null, `select * from vendora_auth_private.rate_limits`); check('auth throttles are not publicly readable', !!r.error, r);
+await db.exec('reset role; set role service_role');
+r = await db.query(`select public.firebase_identity_id(' A@X.TEST ') id`); check('identity server preserves existing UUID case-insensitively', r.rows[0]?.id === A, r);
+for (let attempt = 1; attempt <= 3; attempt++) {
+  r = await db.query(`select public.firebase_auth_attempt(repeat('b',64),600,2) allowed`);
+  check(`auth throttle attempt ${attempt} enforces shared limit`, r.rows[0]?.allowed === (attempt <= 2), r);
+}
+await db.exec('reset role');
+// Direct provider tokens must not impersonate an existing UUID before verification.
+await db.exec(`reset role; select set_config('request.jwt.claim.sub','${A}',false); select set_config('request.jwt.claims','${JSON.stringify({sub:A, email:EMAIL[A], iss:'https://securetoken.google.com/vendora-auth-ramidari15', email_verified:false})}',false); set role authenticated;`);
+r=await db.query(`select id from public.profiles where id='${A}'`); check('unverified Firebase UUID cannot read existing profile', r.rows.length===0, r);
+try { await db.query(`select public.add_my_role('vendor')`); r={}; } catch(error) { r={error}; }
+check('unverified Firebase UUID cannot call privileged role RPC', !!r.error, r);
+await db.exec(`reset role; select set_config('request.jwt.claims','${JSON.stringify({sub:A, email:EMAIL[A], iss:'https://securetoken.google.com/vendora-auth-ramidari15', email_verified:true})}',false); set role authenticated;`);
+r=await db.query(`select id from public.profiles where id='${A}'`); check('verified Firebase token still needs server access claim', r.rows.length===0, r);
+await db.exec(`reset role; select set_config('request.jwt.claims','${JSON.stringify({sub:A, email:EMAIL[A], iss:'https://securetoken.google.com/vendora-auth-ramidari15', email_verified:true,role:'authenticated'})}',false); set role authenticated;`);
+r=await db.query(`select id from public.profiles where id='${A}'`); check('verified server-provisioned Firebase identity reads its own profile', r.rows[0]?.id===A, r);
+await db.exec(`reset role; select set_config('request.jwt.claims','${JSON.stringify({sub:A, email:EMAIL[A], iss:'https://securetoken.google.com/unrelated-project', email_verified:true,role:'authenticated'})}',false); set role authenticated;`);
+r=await db.query(`select id from public.profiles where id='${A}'`); check('other Firebase project cannot use same UUID', r.rows.length===0, r);
+await db.exec('reset role');
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail) process.exit(1);

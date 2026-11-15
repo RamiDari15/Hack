@@ -2,6 +2,7 @@
 const nextConfig = {
   outputFileTracingRoot: import.meta.dirname,
   reactStrictMode: true,
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   poweredByHeader: false,
   // Secret keys (Supabase service role, OpenAI, Exa, weather) are read only in server code.
   // Only NEXT_PUBLIC_ values reach the browser.
