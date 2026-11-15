@@ -542,3 +542,5 @@ a:hover .ph-shapes, .vendor-card:hover .ph-shapes { transform: scale(1.06) rotat
 .seg-pills { width: 100%; }
 .seg-pills label { flex: 1; text-align: center; }
 .seg-pills span { padding: .5rem .6rem; }
+.table .source { font-size: var(--t-sm); color: var(--ink-2); }
+.table .source.is-quote { font-weight: 700; color: var(--ink); }

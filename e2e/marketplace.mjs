@@ -142,7 +142,7 @@ try {
   await po.locator('.booking-list a', { hasText: 'Open' }).first().click();
   await po.waitForURL(/\/bookings\//);
   ok('organizer sees the vendor message', await po.locator('.bubble', { hasText: 'The hall is free' }).isVisible());
-  ok('organizer sees the quote labeled Vendor quote', await po.locator('.badge', { hasText: 'Vendor quote' }).first().isVisible() && await po.getByText('$2,950').first().isVisible());
+  ok('organizer sees the quote labeled Vendor quote', await po.locator('.source, .badge', { hasText: 'Vendor quote' }).first().isVisible() && await po.getByText('$2,950').first().isVisible());
   await shot(po, 'booking-organizer'); await shot(po, 'booking-organizer-phone', true);
   ok('confirm is not offered before accepting', (await po.locator('button:has-text("Confirm booking")').count()) === 0);
   await po.click('button:has-text("Accept quote")');

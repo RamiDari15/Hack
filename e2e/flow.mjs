@@ -55,7 +55,7 @@ try {
   await pa.getByRole('link', { name: 'Open the event' }).waitFor({ timeout: 90000 }).catch(() => {});
   const plannerError = await pa.locator('.notice-error').textContent().catch(() => null);
   ok('planner returns an estimate', await pa.getByRole('link', { name: 'Open the event' }).isVisible(), plannerError);
-  ok('planner output is labeled AI estimate', await pa.locator('.badge', { hasText: 'AI ballpark' }).first().isVisible());
+  ok('planner output shows a plan', await pa.locator('article.plan').first().isVisible());
 
   // 4. Web search, then save a result to the event
   await pa.goto(`${APP}/discover`);
@@ -96,7 +96,7 @@ try {
   await signIn(pa, A, '/dashboard');
   ok('event persisted after signing back in', await pa.getByText('E2E Garden Wedding').isVisible());
   await pa.goto(eventUrl);
-  ok('AI estimate persisted on event', await pa.locator('.table .badge', { hasText: 'AI ballpark' }).first().isVisible());
+  ok('AI estimate persisted on event', await pa.locator('.table .source', { hasText: 'Ballpark' }).first().isVisible());
   ok('saved web result persisted, still marked external', await pa.locator('#saved-h').isVisible()
     && await pa.getByText(firstTitle).isVisible()
     && await pa.locator('section:has(#saved-h) .badge', { hasText: 'External, confirm' }).first().isVisible());
@@ -129,7 +129,7 @@ try {
     await pa.goto(eventUrl);
     const quoteRow = pa.locator('.table tr', { hasText: 'Vendor quote' });
     ok('vendor quote row labeled Vendor quote', await quoteRow.first().isVisible());
-    ok('remaining rows still labeled AI estimate', (await pa.locator('.table .badge', { hasText: 'AI ballpark' }).count()) > 0);
+    ok('remaining rows still labeled AI estimate', (await pa.locator('.table .source', { hasText: 'Ballpark' }).count()) > 0);
     ok('quote amount shown', await quoteRow.first().getByText('$5,800').isVisible());
     ok('booking status moved to Quote received', await pa.locator('.booking-list .badge', { hasText: 'Quote received' }).first().isVisible());
   } else {

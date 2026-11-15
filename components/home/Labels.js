@@ -1,7 +1,7 @@
 const LABELS = [
   ['badge-ok', 'Verified', 'We checked the business: its details, documents and service area.'],
   ['badge-plain', 'Listed', 'A public business listing. Check the price and the date with them.'],
-  ['badge-warn', 'AI ballpark', 'A range the planner worked out from your details. A starting point, not a price.'],
+  ['badge-warn', 'Ballpark', 'A range the planner worked out from your details. A starting point, not a price.'],
   ['badge-accent', 'Vendor quote', 'What a vendor actually sent you for your date. It replaces the ballpark.'],
 ];
 
@@ -16,7 +16,7 @@ export default function Labels() {
         <dl className="labels-list">
           {LABELS.map(([tone, name, text], i) => (
             <div className="labels-row" key={name} data-reveal style={{ '--reveal-delay': `${i * 80}ms` }}>
-              <dt><span className={`badge badge-lg ${tone}`}>{name}</span></dt>
+              <dt className={`labels-name labels-${tone}`}>{name}</dt>
               <dd>{text}</dd>
             </div>
           ))}

@@ -22,12 +22,12 @@ export default function BudgetTable({ categories, quotes = [] }) {
           {rows.map((r) => (
             <tr key={r.name}>
               <td>{r.name}{r.notes ? <div className="fine">{r.notes}</div> : null}</td>
-              <td>{r.quote ? <span className="badge badge-accent">Vendor quote</span> : <span className="badge badge-warn">AI ballpark</span>}</td>
+              <td><span className={`source${r.quote ? ' is-quote' : ''}`}>{r.quote ? 'Vendor quote' : 'Ballpark'}</span></td>
               <td className="num">{r.quote ? moneyCents(r.quote.amount_cents) : `${money(r.low)} – ${money(r.high)}`}</td>
             </tr>
           ))}
           {extra.map((q) => (
-            <tr key={q.id}><td>{q.vendor?.name}</td><td><span className="badge badge-accent">Vendor quote</span></td><td className="num">{moneyCents(q.amount_cents)}</td></tr>
+            <tr key={q.id}><td>{q.vendor?.name}</td><td><span className="source is-quote">Vendor quote</span></td><td className="num">{moneyCents(q.amount_cents)}</td></tr>
           ))}
         </tbody>
         <tfoot><tr><td colSpan={2}>Total</td><td className="num">{low === high ? money(low) : `${money(low)} – ${money(high)}`}</td></tr></tfoot>

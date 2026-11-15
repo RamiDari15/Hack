@@ -167,7 +167,6 @@ function PlannerEmpty() {
         <li>Listed vendors near you that fit each category</li>
         <li>A timeline you can edit and add to your to-dos</li>
       </ul>
-      <p className="fine">Every number is an AI ballpark until a vendor sends a real quote.</p>
     </div>
   );
 }

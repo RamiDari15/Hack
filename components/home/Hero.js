@@ -11,7 +11,7 @@ const WORDS = [['Throw', 'the', 'party.'], ['Skip', 'the', 'spreadsheet.']];
 // Each card shows a status the app really uses, not a made-up figure.
 const CARDS = [
   { cat: 'Venues', tone: 'sun', tilt: -7, rows: [['Shortlist', 'voting'], ['Visit', 'to book']] },
-  { cat: 'Catering', tone: 'pink', tilt: 5, rows: [['AI ballpark', 'set'], ['Quote', 'pending']] },
+  { cat: 'Catering', tone: 'pink', tilt: 5, rows: [['Budget', 'set'], ['Quote', 'pending']] },
   { cat: 'Florists', tone: 'paper', tilt: -3, rows: [['Message', 'unread'], ['Deposit', 'to-do']] },
   { cat: 'Music & DJ', tone: 'ink', tilt: 8, rows: [['Badge', 'verified'], ['Timeline', 'added']] },
 ];

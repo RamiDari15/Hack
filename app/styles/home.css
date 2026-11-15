@@ -366,3 +366,4 @@
     @keyframes open-out { from { clip-path: inset(5% 4% round 36px); } to { clip-path: inset(0 round 36px); } }
   }
 }
+.labels-name { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.3rem, 1.1rem + .6vw, 1.6rem); letter-spacing: -.03em; line-height: 1.1; }

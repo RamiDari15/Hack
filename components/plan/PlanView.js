@@ -54,7 +54,7 @@ export default function PlanView({ plan, planId = null, eventId = null, events =
     <article className="plan stack-lg" aria-labelledby="plan-h">
       <header className="plan-head">
         <div className="between">
-          <span className="badge badge-warn">AI ballpark</span>
+          <span />
           <span className="small">
             {planId && <Link href={`/plans/${planId}`}>Saved to your account</Link>}
             {eventId && <> · <Link href={`/events/${eventId}`}>Open the event</Link></>}
