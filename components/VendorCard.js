@@ -5,6 +5,7 @@ import VendorPhoto from '@/components/ui/VendorPhoto';
 import { moneyCents } from '@/lib/format';
 
 export function VerificationBadge({ vendor }) {
+  if (vendor.calendarIsDemo && !vendor.directoryListed) return <span className="badge">Private sample business</span>;
   if (vendor.directoryListed) return <span className="badge">Public listing</span>;
   if (vendor.verification === 'verified') return <span className="badge badge-ok">Verified</span>;
   return <span className="badge badge-warn">Verification pending</span>;

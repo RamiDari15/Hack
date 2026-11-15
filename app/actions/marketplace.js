@@ -134,7 +134,9 @@ export async function reviewVendor(_prev, fd) {
 // ---------------------------------------------------------------------------
 function bookingPaths(bid) {
   revalidatePath(`/bookings/${bid}`);
-  revalidatePath(`/vendor/bookings/${bid}`);
+  revalidatePath('/vendor');
+  revalidatePath('/inbox');
+  revalidatePath('/events', 'layout');
 }
 
 export async function sendMessage(_prev, fd) {
@@ -162,7 +164,7 @@ export async function sendQuote(_prev, fd) {
   const { error } = await s.supabase.from('quotes').insert({ event_vendor_id: bid, amount_cents: cents, description: description || null, valid_until: validUntil || null });
   if (error) return { error: 'Could not send the quote. The booking may be closed.' };
   bookingPaths(bid);
-  return { ok: true, message: 'Quote sent. They’ll see it next to their AI ballpark.' };
+  return { ok: true, message: 'Quote sent. The customer can review and accept it in the conversation.' };
 }
 
 async function setBookingStatus(fd, status, extra = {}) {

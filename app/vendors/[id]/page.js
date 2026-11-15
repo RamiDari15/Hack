@@ -67,7 +67,7 @@ export default async function VendorProfile({ params, searchParams }) {
             <VendorEventActions vendorId={v.id} events={events} signedIn={Boolean(user)} eventId={events.find(e=>e.id===sp?.event)?.id} />
           </div>
 
-          <div className="panel panel-pop stack">
+          <div className="panel panel-pop stack" id="request-quote">
             <h2 className="title">{v.directoryListed ? 'Contact the business' : 'Request a quote'}</h2>
             <p className="fine">{v.calendarIsDemo ? 'This sample calendar is for a fictional business. Confirm availability with the vendor.' : 'Check prices and dates with them directly.'}</p>
             {v.directoryListed ? (

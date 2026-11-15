@@ -101,13 +101,14 @@ export async function requestQuote(_prev, formData) {
   if (formData.get('confirm') !== 'yes') return { error: 'Confirm that you want to send this inquiry.' };
   if (!UUID_RE.test(eventId) || !UUID_RE.test(vendorId)) return { error: 'Choose one of your events.' };
 
-  const { error } = await supabase.from('event_vendors').insert({ event_id: eventId, vendor_id: vendorId, status: 'inquiry' });
-  if (error?.code === '23505') return { ok: true, message: 'You already sent this vendor an inquiry for that event.' };
-  if (error) return { error: 'Could not send the inquiry. The vendor may not be verified yet.' };
+  const { data: bookingId, error } = await supabase.rpc('request_vendor_quote', { p_event: eventId, p_vendor: vendorId, p_message: str(formData.get('message'), 4000) });
+  if (error || !bookingId) return { error: 'Could not send the inquiry. Choose a connected vendor and an event you own.' };
   revalidatePath(`/events/${eventId}`);
   revalidatePath(`/events/${eventId}/choose`);
+  revalidatePath('/vendor');
+  revalidatePath('/inbox');
   after(() => drainEmailOutbox().catch(() => {}));
-  return { ok: true, message: 'Inquiry sent. The vendor’s reply will appear on your event page.' };
+  return { ok: true, message: 'Your conversation is ready. The vendor can respond with a quote.', href: `/bookings/${bookingId}` };
 }
 
 // Saves one external web result to the user's event. External results stay labeled as
