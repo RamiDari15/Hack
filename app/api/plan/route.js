@@ -16,14 +16,15 @@ Produce a budget ESTIMATE split by category for the event described. Rules:
 - The "Event details" are the organizer's structured answers and are authoritative: type, date, location, guests, budget, setting, styles, hours and priorities. Use every one of them. If the free-text request conflicts with them, follow the details and mention the conflict in assumptions.
 - Budget: when "Plan targets" gives a budget, size the plan to it. Pick the service level that matches the budget per guest, and make the sum of the category midpoints ((low+high)/2) land between 85% and 100% of the budget, with the sum of the high values at or below the budget. Spend extra room on the organizer's priorities and on quality, not on invented extras. If the budget cannot cover a basic event of this size, say so plainly in the summary and assumptions instead of shrinking the event.
 - When no budget is given, estimate a typical range for this event and say what service level you assumed.
-- Mention the guest count, budget and setting in the summary.
+- Summary: one or two plain sentences, under 35 words, written to the organizer ("you"). Do not repeat the type, date, place, guest count or budget; the page already shows them. Say what the plan puts first and the one thing to watch. No filler words like "signature-level", "amenities" or "realistically".
+- Keep lists short and concrete: assumptions at most 3 items under 14 words each (internal, not shown as a list); missing_items at most 6 short noun phrases (under 7 words, no parentheses), only things a planner of this event would genuinely forget, never items already covered by a category row; cost_saving_ideas at most 3 actions under 14 words, each starting with a verb, specific to this event.
 - Recommendations: always fill "recommendations" with businesses for the main categories of this event (aim for 1 to 2 per category, up to 12). Pick them only from "Verified vendors on Vendora" and "Businesses listed on Vendora"; prefer verified ones, then ones whose published prices fit the budget. Copy each business name exactly. Give a concrete reason tied to this event (capacity, style, location, published price). Never name any other business, and never claim availability, ratings or verification you were not given. If a category has no listed business, leave it out of recommendations and give practical advice for it in the category notes instead.
 - Never say you cannot recommend vendors. Give confident, practical guidance from general event-planning knowledge in notes, missing items and savings ideas.
 - If the event details include "rsvps", treat coming as the firm headcount and coming plus maybe plus no_reply_yet as the upper bound; size per-person costs and catering from those numbers and mention meal counts in the catering notes.
 - Calibrate every range with "Price references". Published prices are what local businesses list publicly and may be out of date; budget-guide ranges are Vendora's typical planning ranges. Scale per-person and per-hour figures by the guest count and event length.
 - When a published price shaped a row, you may name that business in the row's notes as "published rate from <name>". Never call a reference a quote, and never say a business is available or verified.
 - State every assumption you make (season, region, service style).
-- Keep the checklist practical, ordered by when it should happen before the event.`;
+- Checklist: 6 to 12 steps ordered by when they should happen. Each task is a short imperative under 8 words ("Book the venue"). weeks_before is how many weeks before the event the step should be done (0 for the day itself); when is the same in words ("10 months before").`;
 
 const SCHEMA = {
   type: 'object',
@@ -50,7 +51,7 @@ const SCHEMA = {
     cost_saving_ideas: { type: 'array', items: { type: 'string' } },
     checklist: {
       type: 'array',
-      items: { type: 'object', additionalProperties: false, required: ['task', 'when'], properties: { task: { type: 'string' }, when: { type: 'string' } } },
+      items: { type: 'object', additionalProperties: false, required: ['task', 'when', 'weeks_before'], properties: { task: { type: 'string' }, when: { type: 'string' }, weeks_before: { type: 'integer' } } },
     },
   },
 };
@@ -75,7 +76,7 @@ function sanitizePlan(p, known = new Map()) {
     }).filter(Boolean).filter((r, i, a) => a.findIndex((x) => x.vendor_id === r.vendor_id) === i).slice(0, 12),
     missing_items: list(p.missing_items),
     cost_saving_ideas: list(p.cost_saving_ideas),
-    checklist: (Array.isArray(p.checklist) ? p.checklist : []).slice(0, 20).map((c) => ({ task: clean(c.task, 160), when: clean(c.when, 80) })),
+    checklist: (Array.isArray(p.checklist) ? p.checklist : []).slice(0, 20).map((c) => ({ task: clean(c.task, 160), when: clean(c.when, 80), weeks_before: Number.isInteger(c.weeks_before) && c.weeks_before >= 0 && c.weeks_before <= 156 ? c.weeks_before : null })),
     estimate: true,
   };
 }
@@ -236,6 +237,13 @@ export async function POST(request) {
     const low = plan.categories.reduce((n, c) => n + c.low, 0), high = plan.categories.reduce((n, c) => n + c.high, 0);
     plan.budget_fit = { budget, low, high, mid_share: Math.round(((low + high) / 2 / budget) * 100) };
   }
-  await supabase.from('ai_requests').insert({ user_id: user.id, kind: 'plan', event_id: eventId, input: { prompt: request_, event }, output: plan });
-  return NextResponse.json({ plan, eventId });
+  // The details the plan was built for, shown as chips above the result.
+  plan.facts = {
+    type: event.type || null, date: event.date || null, location: event.location || null,
+    guests: guests > 0 ? guests : null, budget: hasBudget ? budget : null,
+    per_guest: hasBudget && guests > 0 ? Math.round(budget / guests) : null,
+    setting: event.setting || null, hours: Number(event.hours) || null,
+  };
+  const { data: saved } = await supabase.from('ai_requests').insert({ user_id: user.id, kind: 'plan', event_id: eventId, input: { prompt: request_, event }, output: plan }).select('id').single();
+  return NextResponse.json({ plan, eventId, planId: saved?.id ?? null });
 }

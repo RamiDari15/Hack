@@ -440,3 +440,72 @@ a:hover .ph-shapes, .vendor-card:hover .ph-shapes { transform: scale(1.06) rotat
 .pricing-amount { display:flex; flex-wrap:wrap; column-gap:.15em; overflow-wrap:normal; font-size:clamp(1.45rem,1.8vw,2rem); }
 .pricing-amount>span { white-space:nowrap; }
 .event-utilities { margin:0 0 24px; align-items:start; }
+/* ---------- AI plan as a working tool ---------- */
+.plan { display: grid; gap: var(--s-5); }
+.plan-head { display: grid; gap: var(--s-3); }
+.plan-title { font-family: var(--f-display); font-weight: 800; font-size: var(--d-3); letter-spacing: -.035em; line-height: 1; }
+.plan-title em { font-family: var(--f-accent); font-style: italic; font-weight: 400; color: var(--pink-deep); }
+.fact-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.fact-chips li { padding: 4px 12px; border-radius: var(--r-pill); background: var(--paper); border: 1.5px solid var(--ink); font-size: var(--t-xs); font-weight: 700; }
+.fact-chips li:nth-child(4) { background: var(--sun); }
+.plan-summary { font-size: var(--t-base); line-height: 1.5; color: var(--ink-2); max-width: 60ch; }
+.plan-card { background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-panel); padding: var(--s-5); display: grid; gap: var(--s-4); box-shadow: var(--shadow-1); }
+.plan-card-sun { background: var(--sun-soft); border-color: color-mix(in srgb, var(--sun) 60%, var(--line)); }
+.plan-h3 { font-family: var(--f-display); font-weight: 800; font-size: var(--t-lg); letter-spacing: -.025em; line-height: 1.1; }
+.plan-total { font-family: var(--f-display); font-size: var(--t-lg); letter-spacing: -.02em; }
+.plan-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s-4); align-items: start; }
+.plan-dest {
+  position: sticky; top: calc(var(--header-h) + 8px); z-index: 5;
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3);
+  padding: var(--s-3) var(--s-4); border-radius: var(--r-pill); border: 2px solid var(--ink); background: var(--sun); box-shadow: 3px 3px 0 var(--ink);
+}
+.plan-dest select { max-width: 280px; background-color: var(--paper); }
+.plan-flash { font-weight: 700; }
+
+.rec-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: var(--s-3); }
+.rec-card { display: grid; gap: var(--s-2); align-content: start; padding: var(--s-4); border-radius: 18px; background: var(--paper); border: 1.5px solid var(--line); transition: border-color var(--d-fast) var(--ease), transform var(--d-fast) var(--ease); }
+.rec-card:hover { border-color: var(--ink); transform: translateY(-2px); }
+.rec-name { font-family: var(--f-display); font-weight: 800; font-size: 1.15rem; letter-spacing: -.02em; line-height: 1.15; text-decoration: none; }
+.rec-name:hover { text-decoration: underline; text-decoration-color: var(--pink); }
+.rec-card .small.muted { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.rec-actions { gap: var(--s-2); margin-top: auto; }
+
+.step-edit { list-style: none; display: grid; gap: 6px; counter-reset: st; }
+.step-edit li {
+  counter-increment: st; display: grid; grid-template-columns: 22px minmax(0, 1fr) 160px 32px; gap: var(--s-2); align-items: center;
+  padding: 6px 8px; border-radius: 14px; background: var(--cream); border: 1.5px solid transparent; transition: border-color var(--d-fast) var(--ease), background var(--d-fast) var(--ease);
+}
+.step-edit li:focus-within { border-color: var(--ink); background: #fff; }
+.step-edit input[type='checkbox'] { width: 20px; height: 20px; }
+.step-edit .step-title, .step-edit .step-due { min-height: 40px !important; padding: 6px 10px !important; border-radius: 10px !important; border-color: transparent !important; background: transparent !important; font-weight: 600; }
+.step-edit .step-title:focus-visible, .step-edit .step-due:focus-visible { background: #fff !important; border-color: var(--ink) !important; }
+.step-edit .step-due { font-weight: 500; color: var(--ink-2); font-size: var(--t-sm); }
+.step-edit .step-when { grid-column: 2 / -1; padding-left: 10px; margin-top: -6px; }
+.step-x { width: 32px; height: 32px; border-radius: 50%; border: 0; background: transparent; font-size: 1.3rem; line-height: 1; cursor: pointer; color: var(--muted); }
+.step-x:hover { background: var(--pink-soft); color: var(--ink); }
+.step-ok { font-size: var(--t-xs); font-weight: 800; color: var(--ok); white-space: nowrap; }
+.step-edit li.is-added { background: var(--ok-soft); }
+.step-edit li.is-added .step-title { text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--ok) 50%, transparent); }
+
+.act-list { list-style: none; display: grid; gap: 4px; }
+.act-list li { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); padding: 8px 0; border-bottom: 1px solid var(--line); font-size: var(--t-sm); }
+.act-list li:last-child { border-bottom: 0; }
+.act-add {
+  flex: none; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--ink); background: var(--paper); font-size: 1.15rem; font-weight: 800; line-height: 1; cursor: pointer;
+  transition: background var(--d-fast) var(--ease), transform var(--d-fast) var(--ease-spring);
+}
+.act-add:hover { background: var(--sun); transform: rotate(90deg); }
+.act-try { flex: none; }
+
+.plan-list { list-style: none; display: grid; gap: var(--s-2); }
+.plan-row { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4); border-radius: 14px; background: var(--cream); text-decoration: none; transition: background var(--d-fast) var(--ease); }
+.plan-row:hover { background: var(--sun-soft); }
+.plan-row-main { display: grid; gap: 2px; min-width: 0; }
+
+@media (max-width: 640px) {
+  .step-edit li { grid-template-columns: 22px minmax(0, 1fr) 32px; }
+  .step-edit .step-due { grid-column: 2; grid-row: 2; }
+  .step-edit .step-x, .step-edit .step-ok { grid-column: 3; grid-row: 1; }
+  .plan-dest { border-radius: 18px; }
+  .plan-dest select { max-width: 100%; flex: 1; }
+}

@@ -73,7 +73,7 @@ export default async function EventPage({ params, searchParams }) {
             </div>
             {plan ? (
               <>
-                <p className="muted small measure">{plan.summary}</p>
+                <p className="muted small measure">{plan.summary} <Link href={`/plans/${plans[0].id}`}>Open the full plan</Link></p>
                 <BudgetTable categories={plan.categories ?? []} quotes={quotes} />
                 
               </>

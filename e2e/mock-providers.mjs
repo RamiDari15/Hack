@@ -125,7 +125,7 @@ const server = http.createServer((req, res) => {
         ],
         missing_items: ['Rain plan'],
         cost_saving_ideas: ['Friday date'],
-        checklist: [{ task: 'Book venue', when: '10 months before' }],
+        checklist: [{ task: 'Book venue', when: '10 months before', weeks_before: 43 }, { task: 'Send invitations', when: '8 weeks before', weeks_before: 8 }, { task: 'Confirm final headcount', when: '2 weeks before', weeks_before: 2 }],
       };
       return reply(res, 200, {
         id: 'resp_mock', object: 'response', status: 'completed', model: body.model,

@@ -19,7 +19,13 @@ const seen = (loc, t = 10000) => loc.waitFor({ timeout: t }).then(() => true, ()
 const browser = await chromium.launch();
 try {
   const p = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
-  await signInWith(p, APP, U, '/planner');
+  await signInWith(p, APP, U, '/events/new');
+  // An event to send plan steps to.
+  await p.fill('#title', `Plan target ${stamp}`);
+  await p.fill('#event_date', '2027-06-12');
+  await p.getByRole('button', { name: /Create event|Save/ }).first().click();
+  await p.waitForURL(/\/events\/[0-9a-f-]{36}/, { timeout: 20000 });
+  await p.goto(`${APP}/planner`);
 
   // Planner form
   await p.selectOption('#type', 'Wedding');
@@ -43,6 +49,29 @@ try {
   const recs = await p.locator('.rec-list li').allInnerTexts();
   ok('recommends a real listed business and drops invented ones', recs.some((t) => t.includes('Sample Lantern Hall') && t.includes('Verified')) && !recs.some((t) => t.includes('Made Up Hall')), recs);
   ok('planner gets the public directory listings to recommend from', input.includes('Businesses listed on Vendora (public listings, not verified)'));
+  // The plan is a tool: edit the timeline, then send it to your to-dos and an event.
+  ok('plan shows the details as chips', /300 guests/.test(await p.locator('.fact-chips').innerText()));
+  ok('no assumptions list on the plan', (await p.getByText('Assumptions', { exact: true }).count()) === 0);
+  const firstStep = p.locator('.step-edit li').first().locator('.step-title');
+  await firstStep.fill(`Book the venue ${stamp}`);
+  await p.getByRole('button', { name: '+ Add a step' }).click();
+  await p.locator('.step-edit li').last().locator('.step-title').fill(`Taste the cake ${stamp}`);
+  const destVal = await p.locator('#plan-dest').evaluate((s) => [...s.options].find((o) => o.textContent.startsWith('My to-dos +'))?.value || '');
+  const destEvent = destVal.split(':')[1];
+  await p.selectOption('#plan-dest', destVal);
+  await p.getByRole('button', { name: /^Add 4 to your to-dos and / }).click();
+  ok('timeline steps are added', await seen(p.locator('.plan-flash', { hasText: /Added 4 to your to-dos and \d+ to the event/ }), 15000), await p.locator('.plan-flash').innerText());
+  ok('added steps are marked', (await p.locator('.step-edit li.is-added').count()) === 4);
+  await p.locator('.act-add').first().click();
+  ok('a forgotten item can be added with one click', await seen(p.locator('.act-list .step-ok').first()));
+  await p.goto(`${APP}/events/${destEvent}/tasks`);
+  ok('edited step lands on the event tasks', await seen(p.getByText(`Book the venue ${stamp}`).first()));
+  await p.goto(`${APP}/account`);
+  ok('edited steps land in my to-dos', await seen(p.locator('.task-list li', { hasText: `Taste the cake ${stamp}` }).first()));
+  ok('account lists the saved plan', await seen(p.locator('.plan-list a').first()));
+  await p.locator('.plan-list a').first().click();
+  ok('saved plan reopens with its tools', await seen(p.locator('.step-edit li').first()));
+  await p.goto(`${APP}/planner`);
   await p.selectOption('#type', 'Quinceañera');
   ok('planner offers many event types', (await p.locator('#type option').count()) >= 30);
   ok('planner is told to size the plan to the budget', /Plan targets:\nBudget \$222,000, about \$740 per guest for 300 guests/.test(input));
@@ -56,7 +85,7 @@ try {
   const row = p.locator('.task-list li', { hasText: `Book a tasting ${stamp}` });
   ok('to-do added', await seen(row));
   ok('past due date is flagged late', await row.getByText(/Late, was due/).isVisible());
-  ok('stat counts open to-dos', /1/.test(await p.locator('.stat-strip div', { hasText: 'Open to-dos' }).locator('dd').innerText()));
+  { const v = (await p.locator('.stat-strip div', { hasText: 'Open to-dos' }).locator('dd').innerText()).trim(); ok('stat counts open to-dos', v.startsWith('6'), v); }
   await p.fill('#todo-title', `Second ${stamp}`);
   await p.getByRole('button', { name: 'Add to-do' }).click();
   await seen(p.locator('.task-list li', { hasText: `Second ${stamp}` }));
@@ -69,7 +98,7 @@ try {
   await p.getByRole('button', { name: `Delete Second ${stamp}` }).click();
   ok('to-do deleted', await p.locator('.task-list li', { hasText: `Second ${stamp}` }).waitFor({ state: 'detached', timeout: 10000 }).then(() => true, () => false));
   const n = sql(`select count(*) from public.user_todos t join auth.users u on u.id = t.user_id where u.email = '${U}';`);
-  ok('to-dos are saved in the database', n === '1', n);
+  ok('to-dos are saved in the database (5 from the plan + 1 typed)', n === '6', n);
   await p.reload();
   ok('to-dos persist after reload', await seen(p.locator('.task-list li', { hasText: `Book a tasting ${stamp}` })));
   ok('account links to password and sign out', await p.getByRole('link', { name: 'Change password' }).isVisible() && await p.locator('aside form[action="/auth/sign-out"] button').isVisible());

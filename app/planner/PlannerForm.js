@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import PlanView from '@/components/plan/PlanView';
 import { EVENT_TYPE_GROUPS } from '@/lib/categories';
 import { money } from '@/lib/format';
 
@@ -80,7 +81,7 @@ export default function PlannerForm({ events, initialEventId, signedIn, configur
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || 'The planner is unavailable right now.');
-      setState({ status: 'done', plan: body.plan, error: '', savedTo: body.eventId });
+      setState({ status: 'done', plan: body.plan, error: '', savedTo: body.eventId, planId: body.planId });
     } catch (err) {
       setState({ status: 'error', plan: null, error: err.message });
     }
@@ -149,7 +150,7 @@ export default function PlannerForm({ events, initialEventId, signedIn, configur
         {state.status === 'idle' && <PlannerEmpty />}
         {state.status === 'loading' && <div className="skeleton" aria-busy="true"><span className="sr-only">Building your plan</span><i /><i /><i /><i /></div>}
         {state.status === 'error' && <p className="notice notice-error" role="alert">{state.error}</p>}
-        {state.status === 'done' && state.plan && <PlanResult plan={state.plan} savedTo={state.savedTo} />}
+        {state.status === 'done' && state.plan && <PlanView plan={state.plan} planId={state.planId} eventId={state.savedTo} events={events} signedIn={signedIn} />}
       </div>
     </div>
   );
@@ -169,69 +170,3 @@ function PlannerEmpty() {
   );
 }
 
-function PlanResult({ plan, savedTo }) {
-  const totals = useMemo(() => plan.categories.reduce((t, c) => ({ low: t.low + c.low, high: t.high + c.high }), { low: 0, high: 0 }), [plan]);
-  const max = Math.max(1, ...plan.categories.map((c) => c.high));
-  return (
-    <article className="panel stack-lg">
-      <div className="between"><span className="badge badge-warn">AI ballpark</span>{savedTo && <Link href={`/events/${savedTo}`}>Saved to your event</Link>}</div>
-      <p className="title">{plan.summary}</p>
-      <div className="bars" role="table" aria-label="Budget ballpark by category">
-        {plan.categories.map((c) => (
-          <div className="bar-row" role="row" key={c.name}>
-            <span role="cell">{c.name}</span>
-            <span role="cell" className="bar-track" aria-hidden="true">
-              <i className="bar-fill" style={{ width: `${(c.low / max) * 100}%` }} />
-              <i className="bar-fill range" style={{ left: `${(c.low / max) * 100}%`, width: `${((c.high - c.low) / max) * 100}%` }} />
-            </span>
-            <span role="cell" className="num">{money(c.low)} – {money(c.high)}</span>
-          </div>
-        ))}
-      </div>
-      <div className="kv"><span>Ballpark total</span><b className="num">{money(totals.low)} – {money(totals.high)}</b></div>
-      {plan.budget_fit && <BudgetFit fit={plan.budget_fit} />}
-      {plan.recommendations?.length > 0 && (
-        <section className="stack-sm" aria-labelledby="recs-h">
-          <h3 id="recs-h" className="title">Recommended for this event</h3>
-          <ul role="list" className="rec-list">
-            {plan.recommendations.map((r) => (
-              <li key={r.vendor_id}>
-                <div className="between"><span className="fine">{r.category}</span><span className={`badge ${r.verified ? 'badge-ok' : 'badge-plain'}`}>{r.verified ? 'Verified' : 'Public listing'}</span></div>
-                <Link className="title" href={`/vendors/${r.vendor_id}`}>{r.vendor_name}</Link>
-                <p className="small">{r.why}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-      <div className="grid-2" style={{ gap: 'var(--s-6)' }}>
-        <ListBlock title="Assumptions" items={plan.assumptions} />
-        <ListBlock title="You might be missing" items={plan.missing_items} />
-        <ListBlock title="Ways to save" items={plan.cost_saving_ideas} />
-        <div className="stack-sm">
-          <p className="label">Checklist</p>
-          <ol className="dot-list">{plan.checklist.map((c, i) => <li key={i}><b>{c.task}</b> <span className="fine">{c.when}</span></li>)}</ol>
-        </div>
-      </div>
-      
-    </article>
-  );
-}
-
-function ListBlock({ title, items }) {
-  if (!items?.length) return null;
-  return <div className="stack-sm"><p className="label">{title}</p><ul className="dot-list">{items.map((x, i) => <li key={i}>{x}</li>)}</ul></div>;
-}
-
-function BudgetFit({ fit }) {
-  const mid = Math.round((fit.low + fit.high) / 2);
-  const left = fit.budget - mid;
-  const tone = fit.high > fit.budget ? 'notice-warn' : fit.mid_share < 80 ? 'notice-info' : 'notice-ok';
-  return (
-    <div className={`notice ${tone} budget-fit`}>
-      <p className="small"><b>Against your {money(fit.budget)} budget:</b> the middle of this plan is {money(mid)}, about {fit.mid_share}% of it{left >= 0 ? `, leaving ${money(left)}` : `, ${money(-left)} over`}.</p>
-      {fit.mid_share < 80 && <p className="fine">That’s well under your budget. Tell the planner where you’d like to splurge.</p>}
-      {fit.high > fit.budget && <p className="fine">The high end goes over budget. See “Ways to save” below.</p>}
-    </div>
-  );
-}

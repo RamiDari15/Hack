@@ -19,12 +19,13 @@ export default async function AccountPage() {
   if (!supabase) redirect('/dashboard');
   if (!user) redirect('/sign-in?next=/account');
 
-  const [{ data: profile }, { data: events }, { data: todos }, { data: assigned }, { data: vendors }] = await Promise.all([
+  const [{ data: profile }, { data: events }, { data: todos }, { data: assigned }, { data: vendors }, { data: plans }] = await Promise.all([
     supabase.from('profiles').select('display_name, email_alerts, roles, created_at').eq('id', user.id).maybeSingle(),
     supabase.from('events').select('id, title, event_date, owner_id').order('event_date', { ascending: true, nullsFirst: false }).limit(50),
     supabase.from('user_todos').select('id, title, due_date, done, done_at, event_id, created_at').order('done').order('due_date', { ascending: true, nullsFirst: false }).order('created_at').limit(200),
     supabase.from('event_tasks').select('id, title, due_note, event_id, events(title)').eq('assignee_id', user.id).eq('done', false).order('created_at').limit(30),
     supabase.from('vendors').select('id').eq('owner_id', user.id).limit(1),
+    supabase.from('ai_requests').select('id, created_at, event_id, output->summary, output->facts, output->categories').eq('user_id', user.id).eq('kind', 'plan').order('created_at', { ascending: false }).limit(6),
   ]);
   const roles = profile?.roles ?? ['customer'];
   const isVendor = roles.includes('vendor') || (vendors ?? []).length > 0;
@@ -54,7 +55,7 @@ export default async function AccountPage() {
       <div className="event-layout">
         <div className="stack-lg">
           <section className="panel stack" aria-labelledby="todo-h">
-            <div className="panel-head"><h2 id="todo-h">Your to-do list</h2><span className="fine">Private to you</span></div>
+            <div className="panel-head"><h2 id="todo-h">Your to-do list</h2></div>
             <ActionForm action={addTodo} resetOnOk className="todo-add">
               <div className="field todo-title"><label htmlFor="todo-title">To-do</label><input id="todo-title" name="title" maxLength={200} required placeholder="Call the florist about centerpieces" /></div>
               <div className="field"><label htmlFor="todo-due">Due (optional)</label><input id="todo-due" name="due_date" type="date" /></div>
@@ -104,6 +105,29 @@ export default async function AccountPage() {
             )}
           </section>
 
+          <section className="panel stack" aria-labelledby="plans-h">
+            <div className="panel-head"><h2 id="plans-h">Your plans</h2><Link className="small" href="/planner">New plan</Link></div>
+            {plans?.length ? (
+              <ul role="list" className="plan-list">
+                {plans.map((p) => {
+                  const cats = Array.isArray(p.categories) ? p.categories : [];
+                  const low = cats.reduce((n, c) => n + (c.low || 0), 0), high = cats.reduce((n, c) => n + (c.high || 0), 0);
+                  const f = p.facts || {};
+                  return (
+                    <li key={p.id}>
+                      <Link href={`/plans/${p.id}`} className="plan-row">
+                        <span className="plan-row-main">
+                          <b>{f.type || 'Event'}{f.guests ? ` for ${f.guests}` : ''}{f.location ? `, ${f.location}` : ''}</b>
+                          <span className="small muted">{new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}{p.event_id ? ' · saved to an event' : ''}</span>
+                        </span>
+                        {high > 0 && <span className="num small">${low.toLocaleString('en-US')} – ${high.toLocaleString('en-US')}</span>}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : <p className="muted small">Plans you build show up here, so you can come back and add their steps to your to-dos.</p>}
+          </section>
           <section className="panel stack" aria-labelledby="asg-h">
             <h2 id="asg-h">Assigned to you on events</h2>
             {(assigned ?? []).length ? (

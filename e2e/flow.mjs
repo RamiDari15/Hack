@@ -52,9 +52,9 @@ try {
   await pa.goto(`${APP}/planner?event=${eventId}`);
   await pa.fill('#prompt', 'Help me plan a 150-person outdoor wedding within a $25,000 budget.');
   await pa.click('button:has-text("Build my plan")');
-  await pa.getByText('Saved to your event').waitFor({ timeout: 90000 }).catch(() => {});
+  await pa.getByRole('link', { name: 'Open the event' }).waitFor({ timeout: 90000 }).catch(() => {});
   const plannerError = await pa.locator('.notice-error').textContent().catch(() => null);
-  ok('planner returns an estimate', await pa.getByText('Saved to your event').isVisible(), plannerError);
+  ok('planner returns an estimate', await pa.getByRole('link', { name: 'Open the event' }).isVisible(), plannerError);
   ok('planner output is labeled AI estimate', await pa.locator('.badge', { hasText: 'AI ballpark' }).first().isVisible());
 
   // 4. Web search, then save a result to the event
