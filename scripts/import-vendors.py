@@ -1,4 +1,7 @@
-"""Idempotently import the researched directory and clearly marked demo calendars.
+"""Idempotently import the researched directory of public business listings.
+
+Real businesses get no simulated reviews and no generated calendars: their schedule and reviews
+are unknown to us, so the app says to contact them instead.
 
 Only the local supabase_db_vendora Docker container is supported. No vendor accounts,
 reviews, verified badges, customer bookings or outbound messages are created.
@@ -98,10 +101,8 @@ def main():
         vendor_id = identity(r['source_url'])
         if vendor_id in existing:
             continue
-        demo_reviews = make_demo_reviews(r, vendor_id)
         if args.reviews_only:
-            sql.append(f'update public.vendors set demo_reviews={literal(json.dumps(demo_reviews))} where id={literal(vendor_id)} and directory_listed;')
-            continue
+            raise SystemExit('Simulated reviews on real businesses were removed; nothing to refresh.')
         values = {
             'id': vendor_id, 'owner_id': None, 'name': r['name'][:120], 'category': r['category'],
             'city': r['city'], 'description': r['description'], 'website': r['website'],
@@ -109,9 +110,9 @@ def main():
             'directory_listed': True, 'source_url': r['source_url'], 'sourced_at': r['collected_at'],
             'portfolio_photos': json.dumps(r['photos']),
             'published_hours': json.dumps(r['published_hours']) if r['published_hours'] else None,
-            'calendar_is_demo': True,
+            'calendar_is_demo': False,
             'latitude': r.get('latitude'), 'longitude': r.get('longitude'),
-            'demo_reviews': json.dumps(demo_reviews),
+            'demo_reviews': '[]',
             'setup_requirements': 'Confirm load-in, power, access, staffing and cleanup requirements directly with the business.',
             'booking_policy': 'Request the business’s current contract, deposit, cancellation and rescheduling terms before booking.',
         }
@@ -125,19 +126,11 @@ def main():
             note = f'{price} {unit} Source: {r["source_url"]} Prices and inclusions may change.'
             package_id = identity(r['source_url'] + ':package:' + str(number))
             sql.append(f"insert into public.vendor_packages (id,vendor_id,title,price_cents,description) values ({literal(package_id)},{literal(vendor_id)},{literal(offer['title'])},null,{literal(note)}) on conflict (id) do update set title=excluded.title,description=excluded.description;")
-        # Replace only this import's demo entries; never alter an actual calendar or booking.
+        # Remove any calendar entries an older version of this importer generated.
         sql.append(f'delete from public.vendor_calendar_entries where vendor_id={literal(vendor_id)} and is_demo;')
-        for number in range(36):
-            day = today + timedelta(days=1 + (index * 7 + number * 5) % 180)
-            status = ['booked', 'booked', 'tentative', 'booked', 'blocked', 'booked'][number % 6]
-            title = {'booked': ['Private celebration', 'Wedding', 'Corporate event', 'Community gathering'][number % 4],
-                     'tentative': 'Provisional event hold', 'blocked': 'Team unavailable'}[status]
-            entry_id = identity(r['source_url'] + ':calendar:' + str(day))
-            sql.append(f"insert into public.vendor_calendar_entries (id,vendor_id,starts_at,ends_at,status,title,is_demo) values ({literal(entry_id)},{literal(vendor_id)},{literal(str(day)+'T00:00:00Z')},{literal(str(day+timedelta(days=1))+'T00:00:00Z')},{literal(status)},{literal(title)},true);")
     sql.append("notify pgrst, 'reload schema'; commit;")
     print(json.dumps({'vendors': len(records), 'photos': sum(len(r['photos']) for r in records),
                       'published_packages': sum(len(r['offers']) for r in records),
-                      'demo_calendar_entries': len(records) * 36,
                       'categories': dict(Counter(r['category'] for r in records))}, indent=2))
     if not args.apply:
         print('Dry run only. Use --apply to import into the local Vendora container.')
@@ -148,7 +141,7 @@ def main():
     if proc.returncode:
         print(proc.stderr)
         raise SystemExit('Import failed; the transaction was rolled back.')
-    print('Imported successfully into local Vendora. Public listings remain unverified; all calendar entries are demo data.')
+    print('Imported successfully into local Vendora. Public listings remain unverified, with no simulated reviews or schedules.')
 
 
 if __name__ == '__main__':

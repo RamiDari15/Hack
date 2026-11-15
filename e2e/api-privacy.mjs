@@ -3,7 +3,7 @@
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 
-const URL_ = process.env.SUPABASE_URL || 'http://127.0.0.1:54321';
+const URL_ = process.env.SUPABASE_URL || 'http://127.0.0.1:55321';
 const ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const SECRET = process.env.LOCAL_JWT_SECRET || 'super-secret-jwt-token-with-at-least-32-characters-long';
 const psql = (q) => execFileSync('docker', ['exec', '-i', 'supabase_db_vendora', 'psql', '-U', 'postgres', '-At'], { input: q, encoding: 'utf8' }).trim();

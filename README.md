@@ -16,13 +16,13 @@ Vendora uses API port `55321`, database port `55322`, and inbox port `55324` so 
 
 The vendor directory reads from Supabase. If database settings are missing, it displays a connection notice instead of fictional vendor cards.
 
-### Populated US directory and demo calendars
+### Populated US directory
 
 The local database contains 750 public business listings researched from Eventective profile pages, including at least 100 within 25 miles of Ann Arbor's center (42.2808, -83.7430). Each listing has a source URL. The saved source dataset is `data/vendors/public-businesses.json`. Businesses are unclaimed and **not Vendora-verified**. Published website/social links, contact information, portfolio image URLs and package information are retained where available; missing facts are not invented. Images are displayed from the public source with attribution, rather than copied into the repository.
 
 Each business has 36 clearly labeled demonstration calendar entries over the next 180 days, plus a deterministic random count of 3–20 demonstration reviews. These entries are separate from real bookings and customer reviews and do not describe the business's actual availability or reputation.
 
-After starting a fresh local stack with migrations applied, populate it with `python3 scripts/import-vendors.py --apply`. Without `--apply`, the importer validates the dataset and reports its intended counts. Add `--new-only` to preserve all existing listings' calendars and reviews while importing additions. A full re-run updates the same listings and replaces their demo calendar entries. It never contacts vendors or alters real bookings. `python3 scripts/expand-vendors.py` maintains the 750-business target and local coverage, checking source coordinates and cover photos. Searching for Ann Arbor in the app uses a 25-mile radius instead of matching only the city name.
+After starting a fresh local stack with migrations applied, populate it with `python3 scripts/import-vendors.py --apply`. Without `--apply`, the importer validates the dataset and reports its intended counts. Add `--new-only` to import only new listings. Real businesses get no simulated reviews or generated calendars (the database rejects them); sample calendars exist only on the fictional "Sample" vendors in `supabase/seed.sql`. It never contacts vendors or alters real bookings. `python3 scripts/expand-vendors.py` maintains the 750-business target and local coverage, checking source coordinates and cover photos. Searching for Ann Arbor in the app uses a 25-mile radius instead of matching only the city name.
 
 ### Hosted Supabase (later)
 Create a project, then run `npx supabase link` and `npx supabase db push` to apply the migrations. In Auth → URL configuration, set the Site URL and add `<site>/**` to the Redirect URLs. Google: enable the provider and set `NEXT_PUBLIC_AUTH_GOOGLE=true`. SSOJet: Auth → Providers → New Provider → Auto-discovery (OIDC), identifier `custom:ssojet`, using SSOJet's issuer URL, client ID and secret. Register the callback URL Supabase shows in SSOJet, then set `NEXT_PUBLIC_AUTH_SSOJET=true`.

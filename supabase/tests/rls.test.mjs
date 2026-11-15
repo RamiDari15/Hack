@@ -118,15 +118,22 @@ r = await as(A, `update public.vendors set business_id='MI-123' where id='${v2}'
 
 // Research directory: no made-up verification and no ownership for imported businesses.
 await db.exec(`select set_config('request.jwt.claim.sub', '', false); select set_config('request.jwt.claims', '{"role":"service_role"}', false);`);
-const directoryVendor = (await db.query(`insert into public.vendors(name,category,directory_listed,source_url,calendar_is_demo)
-  values ('Public research business','Venues',true,'https://example.com/source',true) returning id`)).rows[0].id;
+const directoryVendor = (await db.query(`insert into public.vendors(name,category,directory_listed,source_url)
+  values ('Public research business','Venues',true,'https://example.com/source') returning id`)).rows[0].id;
+// Real listings never carry invented reviews or generated schedules.
+r = await db.query(`update public.vendors set demo_reviews='[{"rating":5}]' where id='${directoryVendor}'`).then(() => ({}), (e) => ({ error: e.message }));
+check('real listing rejects simulated reviews', !!r.error, r);
+r = await db.query(`update public.vendors set calendar_is_demo=true where id='${directoryVendor}'`).then(() => ({}), (e) => ({ error: e.message }));
+check('real listing rejects a demo calendar flag', !!r.error, r);
+r = await db.query(`insert into public.vendor_calendar_entries(vendor_id,starts_at,ends_at,status,title,is_demo) values ('${directoryVendor}','2027-02-01T00:00Z','2027-02-02T00:00Z','booked','Invented',true)`).then(() => ({}), (e) => ({ error: e.message }));
+check('real listing rejects generated calendar entries', !!r.error, r);
 const calendarId = (await db.query(`insert into public.vendor_calendar_entries(vendor_id,starts_at,ends_at,status,title,is_demo)
-  values ('${directoryVendor}','2027-01-01T00:00Z','2027-01-02T00:00Z','booked','Demo event',true) returning id`)).rows[0].id;
+  values ('${directoryVendor}','2027-01-01T00:00Z','2027-01-02T00:00Z','booked','Published event',false) returning id`)).rows[0].id;
 await db.exec(`insert into public.vendor_packages(vendor_id,title) values ('${directoryVendor}','Published package');`);
 r = await as(null, `select owner_id,verification_status from public.vendors where id='${directoryVendor}'`);
 check('public directory is visible without claiming vendor verification', r.rows?.[0]?.owner_id === null && r.rows[0].verification_status === 'pending', r);
 r = await as(null, `select id from public.vendor_packages where vendor_id='${directoryVendor}'`); check('published directory packages are readable', r.rows?.length === 1, r);
-r = await as(null, `select is_demo from public.vendor_calendar_entries where id='${calendarId}'`); check('anon reads clearly marked directory demo calendar', r.rows?.[0]?.is_demo === true, r);
+r = await as(null, `select is_demo from public.vendor_calendar_entries where id='${calendarId}'`); check('anon reads a directory calendar entry', r.rows?.[0]?.is_demo === false, r);
 r = await as(null, `insert into public.vendor_calendar_entries(vendor_id,starts_at,ends_at,status,title) values ('${directoryVendor}',now(),now()+interval '1 day','booked','Forged')`); check('anon cannot write a calendar entry', !!r.error, r);
 r = await as(A, `update public.vendor_calendar_entries set title='Hijacked' where id='${calendarId}' returning id`); check('non-owner cannot change directory calendar', !r.rows?.length, r);
 r = await as(A, `update public.vendors set owner_id='${A}' where id='${directoryVendor}' returning id`); check('user cannot claim an imported business by updating owner', !r.rows?.length, r);

@@ -49,7 +49,7 @@ export default async function VendorProfile({ params }) {
               <dl>{v.packages.map((p) => (
                 <div className="kv" key={`${p.title}-${p.note}`}><dt>{p.title}{p.note && <><br /><span className="fine">{p.note}</span></>}</dt><dd>{p.priceCents != null ? moneyCents(p.priceCents) : v.directoryListed ? 'Published details' : 'Quote'}</dd></div>
               ))}</dl>
-            ) : <p className="muted">No packages listed. Request a quote.</p>}
+            ) : <p className="muted">{v.directoryListed ? 'No packages published. Contact the business for pricing.' : 'No packages listed. Request a quote.'}</p>}
           </section>
           <VendorCalendar entries={v.calendar} />
           <section className="stack"><h2 className="display-3">Setup requirements</h2><p className="muted">{v.setupRequirements || 'Not provided yet.'}</p></section>

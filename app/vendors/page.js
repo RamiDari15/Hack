@@ -37,8 +37,8 @@ export default async function VendorsPage({ searchParams }) {
       </nav>
 
       <div className="stack notices">
-        <p className="notice">Public business listings link to their sources. Ratings, reviews and schedules are simulated for preview.</p>
-        {date && <p className="notice">Your event date is {date}. Schedules are simulated; contact the business to confirm actual availability. This date does not filter actual availability.</p>}
+        <p className="notice">Verified vendors can take inquiries here. Public listings are real businesses we found online: they are not verified by Vendora, so contact them directly to check prices and availability.</p>
+        {date && <p className="notice">Your event date is {date}. Availability is confirmed by each vendor, so this date does not filter the list.</p>}
         {error && <p className="notice notice-error" role="alert">{error}</p>}
       </div>
 

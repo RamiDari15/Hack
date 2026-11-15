@@ -9,7 +9,7 @@ const { chromium } = createRequire(import.meta.url)('playwright');
 import { execFileSync } from 'node:child_process';
 
 const APP = process.env.APP_URL || 'http://localhost:3100';
-const MAIL = process.env.MAILPIT_URL || 'http://127.0.0.1:54324';
+const MAIL = process.env.MAILPIT_URL || 'http://127.0.0.1:55324';
 const SEED = process.env.E2E_SEED !== 'off';
 const stamp = Date.now();
 const V = `vendor-${stamp}@example.test`;

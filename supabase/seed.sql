@@ -142,3 +142,13 @@ insert into public.messages (event_vendor_id, sender_id, body, created_at) value
 ('b0000000-0000-4000-8000-000000000002', 'd0000000-0000-4000-8000-000000000004', 'Yes, no extra charge. I put it in the quote. Want to set up a tasting?', now() - interval '1 day'),
 ('b0000000-0000-4000-8000-000000000001', 'd0000000-0000-4000-8000-000000000003', 'Confirmed for June 12. We will send the floor plan a month before.', now() - interval '5 days'),
 ('b0000000-0000-4000-8000-000000000003', 'd0000000-0000-4000-8000-000000000005', 'Holding your date for a week while you decide.', now() - interval '3 days');
+
+-- ---------------------------------------------------------------- sample calendars (fictional vendors only)
+update public.vendors set calendar_is_demo = true where id in ('a0000000-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-000000000006');
+insert into public.vendor_calendar_entries (vendor_id, starts_at, ends_at, status, title, is_demo) values
+('a0000000-0000-4000-8000-000000000001', '2027-06-12T16:00:00Z', '2027-06-13T04:00:00Z', 'booked', 'Sample wedding (confirmed booking)', true),
+('a0000000-0000-4000-8000-000000000001', '2027-06-05T16:00:00Z', '2027-06-06T04:00:00Z', 'booked', 'Sample private event', true),
+('a0000000-0000-4000-8000-000000000001', '2027-06-19T16:00:00Z', '2027-06-20T04:00:00Z', 'tentative', 'Sample hold', true),
+('a0000000-0000-4000-8000-000000000001', '2027-06-26T16:00:00Z', '2027-06-27T04:00:00Z', 'blocked', 'Sample maintenance day', true),
+('a0000000-0000-4000-8000-000000000006', '2027-06-12T14:00:00Z', '2027-06-12T23:00:00Z', 'tentative', 'Sample hold for a wedding', true),
+('a0000000-0000-4000-8000-000000000006', '2027-06-20T14:00:00Z', '2027-06-20T23:00:00Z', 'booked', 'Sample graduation shoot', true);

@@ -10,3 +10,4 @@ supabase/.branches/
 # Local only
 _backup*/
 Claude outputs/
+__pycache__/
