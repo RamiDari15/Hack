@@ -13,7 +13,7 @@
     "test:db": "node supabase/tests/rls.test.mjs",
     "test:pricing": "node e2e/vendor-pricing.mjs",
     "db:start": "supabase start",
-    "test:e2e": "node e2e/flow.mjs && node e2e/marketplace.mjs && node e2e/walkthrough.mjs && node e2e/event-tools.mjs && node e2e/planning-tools.mjs && node e2e/links.mjs",
+    "test:e2e": "node e2e/flow.mjs && node e2e/auth-flow.mjs && node e2e/marketplace.mjs && node e2e/walkthrough.mjs && node e2e/event-tools.mjs && node e2e/planning-tools.mjs && node e2e/links.mjs",
     "mock:providers": "node e2e/mock-providers.mjs"
   },
   "dependencies": {

@@ -12,16 +12,18 @@ const MIN_PASSWORD = 8;
 
 // Email and password. "Create account" signs up; when the Supabase project requires email
 // confirmation, the user is asked to confirm first. "Forgot password" emails a reset link.
-export default function SignInForm({ next, providers, enabled, initialMode = 'sign-in' }) {
+export default function SignInForm({ next, nextAfterSignUp = next, providers, enabled, initialMode = 'sign-in', audience = 'planner', titles = { in: 'Sign in', up: 'Create your account' }, lede = '' }) {
   const [mode, setMode] = useState(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [state, setState] = useState({ status: 'idle', message: '' });
   const fail = (message) => setState({ status: 'error', message });
 
-  function go() {
+  async function go(supabase, to = next) {
+    // Vendor door: make sure the account has the vendor role (customers keep theirs).
+    if (audience === 'vendor') await supabase.rpc('add_my_role', { r: 'vendor' });
     // Full navigation so server components read the new session cookie.
-    window.location.assign(next);
+    window.location.assign(to);
   }
 
   async function onSubmit(e) {
@@ -42,9 +44,9 @@ export default function SignInForm({ next, providers, enabled, initialMode = 'si
     setState({ status: 'loading', message: '' });
 
     if (mode === 'sign-up') {
-      const { data, error } = await supabase.auth.signUp({ email: address, password, options: { emailRedirectTo: redirectTo(next) } });
+      const { data, error } = await supabase.auth.signUp({ email: address, password, options: { emailRedirectTo: redirectTo(nextAfterSignUp) } });
       if (error) return fail(/already registered|already exists/i.test(error.message) ? 'That email already has an account. Sign in instead.' : (error.message || 'Could not create the account.'));
-      if (data.session) return go();
+      if (data.session) return go(supabase, nextAfterSignUp);
       // Supabase returns no identities for an address that already exists (when confirmations are on).
       if (data.user && !data.user.identities?.length) return fail('That email already has an account. Sign in instead.');
       return setState({ status: 'sent', message: `Check ${address} to confirm your account, then sign in.` });
@@ -52,7 +54,7 @@ export default function SignInForm({ next, providers, enabled, initialMode = 'si
 
     const { error } = await supabase.auth.signInWithPassword({ email: address, password });
     if (error) return fail(/invalid login credentials/i.test(error.message) ? 'Email or password is wrong.' : /not confirmed/i.test(error.message) ? 'Confirm your email first. Check your inbox for the link.' : (error.message || 'Could not sign in.'));
-    go();
+    go(supabase);
   }
 
   async function onOAuth(provider) {
@@ -68,11 +70,17 @@ export default function SignInForm({ next, providers, enabled, initialMode = 'si
   const label = mode === 'sign-up' ? 'Create account' : mode === 'reset' ? 'Email me a reset link' : 'Sign in';
 
   return (
+    <div className="stack-lg">
+      <div className="stack">
+        {audience === 'vendor' && <span className="badge badge-accent auth-kind">Vendor account</span>}
+        <h1 className="display-2">{mode === 'sign-up' ? titles.up : mode === 'reset' ? 'Reset your password' : titles.in}</h1>
+        {lede && <p className="muted">{lede}</p>}
+      </div>
     <div className="stack">
       {mode !== 'reset' && (
         <div className="auth-tabs" role="group" aria-label="Sign in or create an account">
           <button type="button" aria-pressed={mode === 'sign-in'} onClick={() => switchTo('sign-in')}>I have an account</button>
-          <button type="button" aria-pressed={mode === 'sign-up'} onClick={() => switchTo('sign-up')}>I’m new here</button>
+          <button type="button" aria-pressed={mode === 'sign-up'} onClick={() => switchTo('sign-up')}>{audience === 'vendor' ? 'New vendor' : 'I’m new here'}</button>
         </div>
       )}
       <form className="stack" onSubmit={onSubmit} noValidate>
@@ -105,6 +113,7 @@ export default function SignInForm({ next, providers, enabled, initialMode = 'si
         {state.status === 'sent' && <p className="notice notice-ok">{state.message}</p>}
         {state.status === 'error' && <p className="notice notice-error" role="alert">{state.message}</p>}
       </div>
+    </div>
     </div>
   );
 }

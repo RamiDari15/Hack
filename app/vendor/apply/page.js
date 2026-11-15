@@ -9,7 +9,7 @@ export const metadata = { title: 'Apply as a vendor' };
 export default async function ApplyPage() {
   const { supabase, user } = await getSessionUser();
   if (!supabase) redirect('/dashboard');
-  if (!user) redirect('/sign-in?next=/vendor/apply');
+  if (!user) redirect('/sign-in/vendor?next=/vendor/apply');
   return (
     <div className="page wrap-narrow">
       <PageHead back={{ href: '/vendor', label: 'Vendor dashboard' }} title="Apply as a vendor." lede="Tell us about your business. A person on the Vendora team reviews it, and your profile goes live once it is verified." />

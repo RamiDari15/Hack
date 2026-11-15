@@ -41,6 +41,7 @@ export default function MobileNav({ items, signedIn }) {
             <>
               <Link href="/events/new" className="btn btn-bulb btn-block">Start planning</Link>
               <Link href="/sign-in" className="btn btn-ghost btn-block">Sign in</Link>
+              <Link href="/sign-in/vendor" className="btn btn-ghost btn-block">Vendor sign in</Link>
             </>
           )}
         </div>

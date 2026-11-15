@@ -135,6 +135,25 @@ try {
   } else {
     ok('vendor quote labeling (seeding turned off)', false, 'skipped');
   }
+
+  // Separate doors: vendors sign up at /sign-in/vendor and go straight to the application
+  const pv = await (await browser.newContext()).newPage();
+  await pv.goto(`${APP}/vendor`);
+  ok('signed-out vendor area goes to the vendor sign-in', new URL(pv.url()).pathname === '/sign-in/vendor' && await pv.getByRole('heading', { name: 'Vendor sign in' }).isVisible());
+  ok('vendor sign-in links to the planner sign-in', await pv.getByRole('link', { name: 'Sign in as a planner' }).isVisible());
+  await pv.goto(`${APP}/sign-in/vendor?mode=sign-up`);
+  ok('vendor sign-up page is labeled for vendors', await pv.getByRole('heading', { name: 'Create your vendor account' }).isVisible() && await pv.getByText('Vendor account', { exact: true }).isVisible());
+  const VND = `door-vendor-${stamp}@example.test`;
+  await pv.fill('#email', VND);
+  await pv.fill('#password', 'test-password-1234');
+  await pv.click('main button[type=submit]');
+  await pv.waitForURL((u) => u.pathname === '/vendor/apply', { timeout: 20000 });
+  const [{ id: roles }] = await sql(`select array_to_string(roles, ',') from public.profiles p join auth.users u on u.id = p.id where u.email = '${VND}';`);
+  ok('new vendor lands on the application with the vendor role', roles.split(',').includes('vendor'), roles);
+  const pp = await (await browser.newContext()).newPage();
+  await pp.goto(`${APP}/sign-in`);
+  ok('planner sign-in links to the vendor door', await pp.getByRole('heading', { name: 'Sign in to plan' }).isVisible() && await pp.getByRole('link', { name: 'Vendor sign in' }).isVisible());
+  await sql(`delete from auth.users where email = '${VND}';`);
 } catch (e) {
   ok('flow completed without exceptions', false, e.message);
 } finally {

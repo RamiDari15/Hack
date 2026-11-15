@@ -36,7 +36,7 @@ Line: "Every event is a pile of vendors and guesses. Vendora puts them in one pl
 ## 5. Book a vendor (90 s)
 - On the wedding page, **Vendors** lists one booking in every status.
 - Open **Sample Table Kitchen** (Quote received): read the message thread, then **Accept quote**.
-- Switch to `kitchen@demo.test` → **For vendors**: the request shows with the event details. The vendor can reply, send a revised quote or hold the date.
+- Switch to `kitchen@demo.test` at **Vendor sign in** (`/sign-in/vendor`) → **For vendors**: the request shows with the event details. The vendor can reply, send a revised quote or hold the date.
 - Back as Maya: tick the box and **Confirm booking**. The badge turns Confirmed. Nothing is paid or sent without confirmation.
 
 ## 6. Contact sponsors (30 s)

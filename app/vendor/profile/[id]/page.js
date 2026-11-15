@@ -15,7 +15,7 @@ export default async function VendorProfileEdit({ params, searchParams }) {
   if (!UUID_RE.test(id)) notFound();
   const { supabase, user } = await getSessionUser();
   if (!supabase) redirect('/dashboard');
-  if (!user) redirect(`/sign-in?next=/vendor/profile/${id}`);
+  if (!user) redirect(`/sign-in/vendor?next=/vendor/profile/${id}`);
 
   const { data: v } = await supabase.from('vendors').select('*, vendor_packages(id, title, price_cents, description, created_at)').eq('id', id).eq('owner_id', user.id).maybeSingle();
   if (!v) notFound();

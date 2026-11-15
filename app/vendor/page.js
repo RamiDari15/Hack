@@ -9,7 +9,7 @@ export const metadata = { title: 'Vendor dashboard' };
 export default async function VendorHome() {
   const { supabase, user } = await getSessionUser();
   if (!supabase) redirect('/dashboard');
-  if (!user) redirect('/sign-in?next=/vendor');
+  if (!user) redirect('/sign-in/vendor?next=/vendor');
 
   const [{ data: vendors }, { data: bookings }] = await Promise.all([
     supabase.from('vendors').select('id, name, category, city, verification_status, review_note').eq('owner_id', user.id).order('created_at'),

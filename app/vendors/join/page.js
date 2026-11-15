@@ -22,7 +22,8 @@ export default function JoinPage() {
       <section className="join-hero on-dusk">
         <div className="wrap">
           <PageHead title="Bring your work to the night." lede="Venues, caterers, DJs, photographers, florists and rental companies: get inquiries from people planning events near you." size="display-1">
-            <Link className="btn btn-bulb" href="/vendor/apply">Apply now</Link>
+            <Link className="btn btn-bulb" href="/sign-in/vendor?mode=sign-up">Create a vendor account</Link>
+            <Link className="btn btn-ghost" href="/sign-in/vendor">Vendor sign in</Link>
             <a className="btn btn-ghost" href="#fees">How fees work</a>
           </PageHead>
         </div>

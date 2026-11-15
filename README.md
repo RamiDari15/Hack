@@ -37,6 +37,7 @@ Create a project, then run `npx supabase link` and `npx supabase db push` to app
 | `npm run test:db` | Runs the migrations in an in-memory Postgres and checks 183 row-level security rules |
 | `npm run mock:providers` | Local stand-in for OpenAI on port 4010 (testing only) |
 | `npm run test:e2e` | Full browser flow against the running app and local Supabase, then checks every homepage link. Needs Playwright installed globally (`NODE_PATH=$(npm root -g)`) |
+| `node e2e/auth-flow.mjs` | Account workflow: planner and vendor doors, sign up, sign in, wrong password, sign out, redirects, forgot password through the local inbox (26 checks) |
 | `node e2e/planning-tools.mjs` | Filters, shortlist and compare, package and trade-offs, shared planning, style board, event website, weather (NASA POWER stand-in) and seating (35 checks) |
 | `node e2e/api-privacy.mjs` | Calls the Supabase REST API directly as two users to confirm one cannot read or change the other's data |
 
@@ -49,7 +50,7 @@ Create a project, then run `npx supabase link` and `npx supabase db push` to app
 | `/vendors/join` | Public | Requirements, verification, fees (not set yet) |
 | `/discover` | Public page, search needs sign-in | OpenAI web search (built-in `web_search` tool), shown apart from verified listings. Signed-in users can save a result to one of their events |
 | `/sponsorships` | Public | Preview only |
-| `/sign-in` | Public | Email and password (sign in, create account, forgot password), Google, SSOJet (as enabled). `/account/password` sets a new password |
+| `/sign-in`, `/sign-in/vendor` | Public | Separate planner and vendor doors (the vendor door adds the vendor role and sends new vendors to the application; vendor pages redirect there). Email and password (sign in, create account, forgot password), Google, SSOJet (as enabled). `/account/password` sets a new password |
 | `/dashboard` | Signed in | The user's events from the database |
 | `/events/new`, `/events/[id]` | Signed in | Create, edit, delete an event; budget (AI estimate vs vendor quotes), vendors and their status, web results saved to the event (marked external), suggested checklist |
 | `/planner` | Signed in | AI planner. Structured estimate, saved to an event when one is chosen |
