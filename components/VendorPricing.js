@@ -14,7 +14,7 @@ export default function VendorPricing({ options = [] }) {
   return (
     <section className="stack pricing-section" aria-labelledby={`${id}-heading`}>
       <div className="between pricing-heading">
-        <h2 id={`${id}-heading`} className="display-3">Budget options</h2>
+        <h2 id={`${id}-heading`} className="display-3">Pricing options</h2>
         {counted && <div className="field pricing-quantity">
           <label htmlFor={`${id}-quantity`}>{unit === 'person' ? 'Number of people' : 'Service hours'}</label>
           <input id={`${id}-quantity`} type="number" inputMode="numeric" min="1" max="5000" step="1"
