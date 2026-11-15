@@ -41,7 +41,6 @@ export default function Terminal() {
     <section className="term-sec" aria-labelledby="term-title">
       <div className="wrap term-grid">
         <div className="stack-lg" data-reveal>
-          <p className="kicker">For the impatient</p>
           <h2 id="term-title" className="display-1">Or just <em>type it.</em></h2>
           <p className="lede">One line about your party is enough to start. Add details whenever you like.</p>
           <Link href="/planner" className="btn btn-lg btn-pink">Open the planner <span className="arrow" aria-hidden="true">→</span></Link>

@@ -3,7 +3,6 @@
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import HeroGL from './HeroGL';
-import { EVENT_TYPES } from '@/lib/categories';
 
 // Kinetic headline plus a loose pile of shapes and category cards that lean toward the pointer.
 // Motion is CSS; the pointer parallax only runs with a fine pointer and no reduced-motion preference.
@@ -44,7 +43,6 @@ export default function Hero() {
       </div>
       <div className="wrap hero-grid">
         <div className="hero-copy">
-          <p className="sticker hero-sticker">Weddings, birthdays and {EVENT_TYPES.length - 2} more</p>
           <h1 id="hero-title" className="display-hero hero-title">
             {WORDS.map((line, li) => (
               <span className="hero-line" key={li}>

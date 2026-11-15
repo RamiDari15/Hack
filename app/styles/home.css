@@ -367,3 +367,11 @@
   }
 }
 .labels-name { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.3rem, 1.1rem + .6vw, 1.6rem); letter-spacing: -.025em; line-height: 1.1; }
+@media (max-width: 560px) { .step-card { padding-top: clamp(var(--s-6), 4vw, var(--s-7)); } }
+/* Hero: keep each phrase on its own line ("Throw the party." / "Skip the spreadsheet."). */
+.hero-grid { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+.hero-title { font-size: clamp(2.6rem, .6rem + 5.6vw, 6.4rem); line-height: .95; }
+.hero-line { white-space: nowrap; }
+@media (max-width: 420px) { .hero-line { white-space: normal; } }
+.labels-row dt.labels-name { font-size: clamp(1.25rem, 1rem + .8vw, 1.7rem); }
+.labels-row { align-items: baseline; }
