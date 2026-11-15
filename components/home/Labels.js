@@ -10,7 +10,7 @@ export default function Labels() {
     <section className="labels" aria-labelledby="labels-title">
       <div className="wrap labels-grid">
         <div className="stack-lg labels-head" data-reveal>
-          <p className="kicker" data-index="04">Straight answers</p>
+          <p className="kicker">Straight answers</p>
           <h2 id="labels-title" className="display-1">Every price says where it <em>came from.</em></h2>
         </div>
         <dl className="labels-list">

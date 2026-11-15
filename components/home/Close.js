@@ -16,7 +16,7 @@ export default function Close() {
     <section className="close" aria-labelledby="close-title">
       <div className="wrap close-inner">
         <div className="close-head" data-reveal>
-          <p className="kicker" data-index="05">Your turn</p>
+          <p className="kicker">Your turn</p>
           <h2 id="close-title" className="display-1 close-title">
             Let’s plan your <RotatingWord words={ROTATE} />
           </h2>

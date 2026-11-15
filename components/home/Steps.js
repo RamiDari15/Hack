@@ -12,13 +12,13 @@ export default function Steps() {
     <section className="steps" aria-labelledby="steps-title">
       <div className="wrap steps-grid">
         <div className="steps-head" data-reveal>
-          <p className="kicker" data-index="01">How it goes</p>
+          <p className="kicker">How it goes</p>
           <h2 id="steps-title" className="display-1">Three steps. <em>No</em> binders.</h2>
         </div>
         <ol className="steps-stack" role="list">
           {STEPS.map((s, i) => (
             <li key={s.title} className={`step-card step-${s.tone}`} style={{ '--i': i }}>
-              <span className="step-num label">Step {String(i + 1).padStart(2, '0')} / {String(STEPS.length).padStart(2, '0')}</span>
+              <span className="step-num label">Step {i + 1} of {STEPS.length}</span>
               <h3 className="display-2">{s.title}</h3>
               <p className="lede">{s.body}</p>
               <Link href={s.href} className="btn btn-sm">{s.cta} <span className="arrow" aria-hidden="true">→</span></Link>

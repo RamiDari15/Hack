@@ -44,7 +44,7 @@ export default function Hero() {
       </div>
       <div className="wrap hero-grid">
         <div className="hero-copy">
-          <p className="label hero-sticker"><span>For</span> Weddings · Birthdays · Galas · {EVENT_TYPES.length - 3} more</p>
+          <p className="sticker hero-sticker">Weddings, birthdays and {EVENT_TYPES.length - 2} more</p>
           <h1 id="hero-title" className="display-hero hero-title">
             {WORDS.map((line, li) => (
               <span className="hero-line" key={li}>
