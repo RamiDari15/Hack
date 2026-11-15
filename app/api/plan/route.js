@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { fetchWithTimeout, jsonError, readJson, requireUserWithinLimit } from '@/lib/api';
 import { EVENT_TYPES } from '@/lib/categories';
 import { UUID_RE } from '@/lib/format';
+import { readBudgetOption, publishedRate } from '@/lib/vendor-pricing';
 
 // AI planner. Server only: OPENAI_API_KEY never reaches the browser.
 // Uses the OpenAI Responses API with a strict JSON schema, so the UI renders structured,
@@ -13,7 +14,9 @@ Produce a budget ESTIMATE split by category for the event described. Rules:
 - Every amount is a rough estimate range in US dollars (low and high). Never present an amount as a price or a quote.
 - Always include separate rows for taxes and service fees, tips, delivery and travel, setup and cleanup, and a contingency.
 - If the user gives a total budget, keep the sum of the high values at or below it where possible, and say so in assumptions if it is not realistic.
-- Only mention vendors listed under "Verified vendors on Vendora". Never invent vendor names, availability, ratings, or verification status.
+- Only recommend vendors listed under "Verified vendors on Vendora". Never invent vendor names, availability, ratings, or verification status.
+- Calibrate every range with "Price references". Published prices are what local businesses list publicly and may be out of date; budget-guide ranges are Vendora's typical planning ranges. Scale per-person and per-hour figures by the guest count and event length.
+- When a published price shaped a row, you may name that business in the row's notes as "published rate from <name>". Never call a reference a quote, and never say a business is available or verified.
 - State every assumption you make (season, region, service style).
 - Keep the checklist practical, ordered by when it should happen before the event.`;
 
@@ -59,6 +62,47 @@ function sanitizePlan(p) {
   };
 }
 
+// Local published rates and category budget-guide ranges, so estimates start from real numbers.
+async function priceReferences(supabase, location, city) {
+  const fields = 'name, category, city, vendor_packages(title, price_cents, description)';
+  let rows = [];
+  if (/ann\s+arbor/i.test(location)) {
+    ({ data: rows } = await supabase.rpc('vendors_within_radius', { center_latitude: 42.2808, center_longitude: -83.7430, radius_miles: 25 }).select(fields).limit(200));
+  } else if (city) {
+    ({ data: rows } = await supabase.from('vendors').select(fields).ilike('city', `%${city}%`).limit(200));
+  }
+  let scope = 'near the event';
+  if ((rows ?? []).length < 5) {
+    ({ data: rows } = await supabase.from('vendors').select(fields).eq('directory_listed', true).limit(300));
+    scope = 'across the US (few local listings)';
+  }
+  const published = [];
+  const guide = {};
+  const perCategory = {};
+  for (const v of rows ?? []) {
+    for (const p of v.vendor_packages ?? []) {
+      const b = readBudgetOption(p.description);
+      if (b) {
+        const g = (guide[v.category] ??= { unit: b.unit, tiers: {} });
+        if (b.unit !== g.unit) continue;
+        const t = (g.tiers[b.title] ??= { min: Infinity, max: 0 });
+        t.min = Math.min(t.min, b.min_cents);
+        t.max = Math.max(t.max, b.max_cents);
+        continue;
+      }
+      const rate = publishedRate({ priceCents: p.price_cents, note: p.description ?? '' });
+      const n = (perCategory[v.category] ?? 0);
+      if (rate && n < 4 && published.length < 40) { perCategory[v.category] = n + 1; published.push(`- ${v.name} (${v.category}, ${v.city ?? 'city not listed'}): "${p.title}" ${rate}`); }
+    }
+  }
+  const usd = (c) => `$${Math.round(c / 100).toLocaleString('en-US')}`;
+  const guideLines = Object.entries(guide).map(([cat, g]) => `- ${cat} (per ${g.unit}): ${Object.entries(g.tiers).map(([tier, t]) => `${tier} ${usd(t.min)}-${usd(t.max)}`).join(', ')}`);
+  return [
+    `Published prices from local businesses, ${scope}:`, ...(published.length ? published : ['- None published.']),
+    `Budget-guide ranges by category, ${scope}:`, ...(guideLines.length ? guideLines : ['- None available.']),
+  ].join('\n');
+}
+
 export async function POST(request) {
   const apiKey = process.env.OPENAI_API_KEY;
   const model = process.env.OPENAI_MODEL;
@@ -95,7 +139,8 @@ export async function POST(request) {
   const { data: vendors } = await vq;
   const vendorLines = (vendors ?? []).map((v) => `- ${v.name} (${v.category}, ${v.city ?? 'area not listed'})${(v.vendor_packages ?? []).map((p) => `; package "${p.title}" ${p.price_cents == null ? 'quote required' : `$${p.price_cents / 100}`}`).join('')}`).join('\n') || '- None listed for this area yet.';
 
-  const input = `Event details (from the organizer):\n${JSON.stringify(event)}\n\nVerified vendors on Vendora:\n${vendorLines}\n\nRequest:\n${prompt}`;
+  const priceLines = await priceReferences(supabase, event.location, city);
+  const input = `Event details (from the organizer):\n${JSON.stringify(event)}\n\nVerified vendors on Vendora:\n${vendorLines}\n\nPrice references:\n${priceLines}\n\nRequest:\n${prompt}`;
 
   let res;
   try {

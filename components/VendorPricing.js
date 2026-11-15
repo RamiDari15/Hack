@@ -3,7 +3,7 @@
 import { useId, useState } from 'react';
 import { budgetRate, budgetTotal, priceRange } from '@/lib/vendor-pricing';
 
-export default function VendorPricing({ options = [] }) {
+export default function VendorPricing({ options = [], category, directoryListed }) {
   const id = useId();
   const unit = options[0]?.unit;
   const [quantity, setQuantity] = useState(unit === 'hour' ? '4' : '100');
@@ -14,7 +14,7 @@ export default function VendorPricing({ options = [] }) {
   return (
     <section className="stack pricing-section" aria-labelledby={`${id}-heading`}>
       <div className="between pricing-heading">
-        <h2 id={`${id}-heading`} className="display-3">Pricing options</h2>
+        <div className="stack-sm"><h2 id={`${id}-heading`} className="display-3">Budget guide</h2>{directoryListed && <p className="fine">Typical {category ? category.toLowerCase() : ''} ranges to plan with. These are not this business’s prices. Ask them for a quote.</p>}</div>
         {counted && <div className="field pricing-quantity">
           <label htmlFor={`${id}-quantity`}>{unit === 'person' ? 'Number of people' : 'Service hours'}</label>
           <input id={`${id}-quantity`} type="number" inputMode="numeric" min="1" max="5000" step="1"

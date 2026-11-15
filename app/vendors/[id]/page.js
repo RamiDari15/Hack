@@ -45,7 +45,7 @@ export default async function VendorProfile({ params }) {
             {v.sourceUrl && <p className="fine">Photos: <a href={v.sourceUrl} target="_blank" rel="noopener noreferrer">public business listing and its contributors ↗</a></p>}
           </section> : <Placeholder label={v.category} ratio="16 / 9" caption="Portfolio not uploaded yet" />}
           <section className="stack"><h2 className="display-3">About</h2><p className="lede">{v.description || 'This vendor has not written a description yet.'}</p></section>
-          <VendorPricing key={v.id} options={v.budgetOptions} />
+          <VendorPricing key={v.id} options={v.budgetOptions} category={v.category} directoryListed={v.directoryListed} />
           <section className="stack"><h2 className="display-3">{v.directoryListed ? 'Published packages' : 'Packages'}</h2>
             {v.packages?.length ? (
               <dl>{v.packages.map((p) => (

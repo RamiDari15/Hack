@@ -19,7 +19,7 @@ export default function VendorCard({ vendor, index = 0 }) {
         <div className="between"><VerificationBadge vendor={vendor} /><span className="fine">{vendor.city}</span></div>
         <h3 className="title">{vendor.name}</h3>
         <p className="small muted num">
-          {vendor.directoryListed ? (vendor.budgetOptions?.length ? 'View pricing options' : vendor.packages?.length ? 'See published packages' : 'Contact for pricing') : from != null ? `From ${moneyCents(from)}` : 'Quote on request'}
+          {vendor.directoryListed ? (vendor.budgetOptions?.length ? 'See budget guide' : vendor.packages?.length ? 'See published packages' : 'Contact for pricing') : from != null ? `From ${moneyCents(from)}` : 'Quote on request'}
           {vendor.serviceRadiusMi ? `, travels ${vendor.serviceRadiusMi} mi` : ''}
         </p>
       </div>

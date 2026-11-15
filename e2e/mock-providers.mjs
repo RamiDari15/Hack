@@ -5,6 +5,7 @@ import http from 'node:http';
 
 const PORT = Number(process.env.MOCK_PORT || 4010);
 export const calls = [];
+let lastPlanInput = '';
 
 function reply(res, status, body) { res.writeHead(status, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(body)); }
 
@@ -12,6 +13,7 @@ const server = http.createServer((req, res) => {
   let raw = '';
   req.on('data', (c) => { raw += c; });
   req.on('end', () => {
+    if (req.method === 'GET' && req.url === '/last-plan-input') { res.writeHead(200, { 'Content-Type': 'text/plain' }); return res.end(lastPlanInput); }
     let body; try { body = JSON.parse(raw); } catch { return reply(res, 400, { error: 'bad json' }); }
     calls.push({ path: req.url, headers: req.headers, body });
 
@@ -46,6 +48,8 @@ const server = http.createServer((req, res) => {
       if (!/^Bearer \S+/.test(req.headers.authorization || '')) problems.push('missing bearer auth');
       if (!body.model) problems.push('missing model');
       if (typeof body.input !== 'string' || !body.input.includes('Event details')) problems.push('input not grounded in event');
+      if (!/Price references:[\s\S]*\$\d/.test(body.input)) problems.push('input has no price references');
+      lastPlanInput = body.input;
       const f = body.text?.format;
       if (f?.type !== 'json_schema' || f?.strict !== true || !f?.schema || !f?.name) problems.push('text.format is not strict json_schema');
       if (!body.max_output_tokens) problems.push('no max_output_tokens');
@@ -73,6 +77,7 @@ const server = http.createServer((req, res) => {
       });
     }
 
+    if (req.method === 'GET' && req.url === '/last-plan-input') { res.writeHead(200, { 'Content-Type': 'text/plain' }); return res.end(lastPlanInput); }
     reply(res, 404, { error: 'not mocked' });
   });
 });
