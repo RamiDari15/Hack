@@ -1,0 +1,92 @@
+/* ---------- Event walkthrough (3D + floor plan) ---------- */
+.walk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px); gap: var(--s-5); align-items: stretch; margin-top: var(--s-6); }
+.walk-view { position: relative; border-radius: 28px; overflow: hidden; border: 1.5px solid var(--line); background: var(--cream); min-height: 560px; }
+.walk-stage { position: absolute; inset: 0; }
+.walk-canvas { position: absolute; inset: 0; }
+.walk-canvas canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
+.walk-loading, .walk-stage:not(.is-ready):not(.walk-plan) { background: radial-gradient(60% 50% at 50% 55%, var(--sun-soft), var(--cream)); }
+.walk-labels { position: absolute; inset: 0; pointer-events: none; }
+.walk-label {
+  position: absolute; left: 0; top: 0; pointer-events: auto; display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 999px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink);
+  font: 700 .82rem/1 var(--f-ui); white-space: nowrap; cursor: pointer; opacity: 0; transition: opacity .3s, background .2s, color .2s;
+}
+.walk-stage.is-ready .walk-label { opacity: 1; }
+.walk-label:hover { background: var(--sun-soft); }
+.walk-label.is-filled { background: var(--sun); }
+.walk-label.is-active { background: var(--ink); color: var(--cream); }
+.walk-count { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--ink); color: var(--cream); font-size: .7rem; }
+.walk-label.is-active .walk-count { background: var(--sun); color: var(--ink); }
+
+.walk-hud { position: absolute; left: var(--s-4); right: var(--s-4); bottom: var(--s-4); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); pointer-events: none; }
+.walk-hud > * { pointer-events: auto; }
+.walk-modes, .walk-nav { display: inline-flex; align-items: center; gap: 4px; padding: 4px; border-radius: 999px; background: color-mix(in srgb, var(--paper) 88%, transparent); border: 1.5px solid var(--line); backdrop-filter: blur(8px); }
+.walk-modes button { border: 0; background: none; padding: 8px 14px; border-radius: 999px; font: 700 .82rem/1 var(--f-ui); color: var(--ink-2); cursor: pointer; }
+.walk-modes button[aria-pressed='true'] { background: var(--ink); color: var(--cream); }
+.walk-arrow { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--paper); font-weight: 700; font-size: 1.05rem; cursor: pointer; }
+.walk-arrow:hover { background: var(--sun); }
+.walk-pos { padding: 0 var(--s-3); font-weight: 700; font-size: var(--t-sm); min-width: 13ch; text-align: center; }
+.walk-overview-btn { border: 1.5px solid var(--ink); background: var(--paper); border-radius: 999px; padding: 10px 16px; font: 700 .82rem/1 var(--f-ui); cursor: pointer; }
+.walk-overview-btn:hover { background: var(--sun-soft); }
+
+.walk-panel { border-radius: 28px; background: var(--paper); border: 1.5px solid var(--line); padding: clamp(var(--s-5), 2.5vw, var(--s-6)); max-height: 680px; overflow: auto; }
+.walk-detail { display: grid; gap: var(--s-4); }
+.walk-h { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem); letter-spacing: -.025em; line-height: 1.05; }
+.walk-sub { color: var(--ink-2); }
+.walk-group { display: grid; gap: var(--s-2); padding-top: var(--s-4); border-top: 1.5px solid var(--line); }
+.walk-group h3 { font-size: var(--t-sm); font-weight: 700; color: var(--ink-2); }
+.walk-list { list-style: none; display: grid; gap: var(--s-2); }
+.walk-list li { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: 10px 12px; border-radius: 14px; background: var(--cream); }
+.walk-name { display: grid; gap: 2px; min-width: 0; }
+.walk-name a { font-weight: 700; text-decoration: none; overflow-wrap: anywhere; }
+.walk-name a:hover { text-decoration: underline; }
+.walk-name small { color: var(--ink-2); font-size: var(--t-xs); }
+.walk-empty { color: var(--ink-2); font-size: var(--t-sm); }
+.walk-more { font-weight: 700; font-size: var(--t-sm); }
+.walk-note { min-height: 1.2em; font-size: var(--t-sm); font-weight: 600; color: var(--pink-deep); }
+.walk-index { list-style: none; display: grid; border-top: 1.5px solid var(--line); }
+.walk-index button { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 12px 2px; border: 0; border-bottom: 1.5px solid var(--line); background: none; font: 600 var(--t-base)/1.2 var(--f-ui); cursor: pointer; text-align: left; }
+.walk-index button:hover span { text-decoration: underline; }
+.walk-index b { min-width: 26px; text-align: center; padding: 2px 8px; border-radius: 999px; color: var(--ink-2); }
+.walk-index b.is-on { background: var(--sun); color: var(--ink); }
+
+/* Floor plan */
+.walk-plan { background: radial-gradient(70% 60% at 50% 50%, #f7ecd9, var(--cream)); }
+.walk-plan-lines { position: absolute; inset: 4%; width: 92%; height: 92%; }
+.walk-plan-lines line { stroke: var(--ink-2); stroke-width: .05; stroke-dasharray: .25 .2; }
+.walk-plan-rug { fill: none; stroke: var(--ink); stroke-width: .06; }
+.walk-plan-floor { fill: var(--sun); stroke: var(--ink); stroke-width: .06; }
+.walk-plan-center { position: absolute; left: 50%; top: 50%; translate: -50% -50%; font-weight: 700; font-size: var(--t-xs); }
+.walk-plan-stop {
+  position: absolute; translate: -50% -50%; display: grid; gap: 2px; justify-items: center; min-width: 92px; padding: 10px 12px;
+  border-radius: 18px; border: 1.5px solid var(--ink); background: var(--paper); cursor: pointer; font-family: var(--f-ui);
+  transition: transform .2s var(--ease), background .2s;
+}
+.walk-plan-stop b { font-size: .9rem; }
+.walk-plan-stop span { font-size: .72rem; color: var(--ink-2); }
+.walk-plan-stop.is-filled { background: var(--sun); }
+.walk-plan-stop.is-active { background: var(--ink); color: var(--cream); transform: scale(1.06); }
+.walk-plan-stop.is-active span { color: var(--cream); }
+.walk-plan-stop:hover { transform: scale(1.04); }
+
+.walk-entry { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-4); padding: var(--s-5) var(--s-6); border-radius: 24px; background: var(--ink); color: var(--cream); text-decoration: none; }
+.walk-entry b { font-size: clamp(1.2rem, 1rem + .6vw, 1.5rem); letter-spacing: -.02em; }
+.walk-entry span { color: #d9ccb6; font-size: var(--t-sm); }
+.walk-entry i { font-style: normal; display: inline-grid; place-items: center; padding: 10px 18px; border-radius: 999px; background: var(--sun); color: var(--ink); font-weight: 700; }
+.walk-entry:hover i { background: var(--pink-2); }
+
+@media (max-width: 960px) {
+  .walk { grid-template-columns: 1fr; }
+  .walk-view { min-height: 460px; }
+  .walk-panel { max-height: none; }
+}
+@media (max-width: 560px) {
+  .walk-view { min-height: 420px; border-radius: 22px; }
+  .walk-hud { left: var(--s-2); right: var(--s-2); bottom: var(--s-2); gap: var(--s-2); }
+  .walk-pos { min-width: 0; font-size: var(--t-xs); padding: 0 6px; }
+  .walk-label { padding: 5px 9px; font-size: .74rem; }
+  .walk-plan-stop { min-width: 70px; padding: 7px 8px; }
+  .walk-plan-stop b { font-size: .76rem; }
+  .walk-overview-btn { order: -1; }
+}
+@media (prefers-reduced-motion: reduce) { .walk-label, .walk-plan-stop { transition: none; } }

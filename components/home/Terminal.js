@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 // "Or just type it": a command types itself out when the section scrolls in, then the lines
 // list what the planner does. It describes features, not results, so there are no numbers to invent.
-const CMD = 'plan "garden wedding" --guests 150';
+const CMD = 'A garden wedding for 150 in June, around Ann Arbor';
 const OUT = [
   ['ok', 'budget split by category, sized to your number'],
   ['ok', 'tips, delivery, setup and cleanup as their own rows'],
@@ -45,15 +45,15 @@ export default function Terminal() {
           <p className="lede">One line about your party is enough to start. Add details whenever you like.</p>
           <Link href="/planner" className="btn btn-lg btn-pink">Open the planner <span className="arrow" aria-hidden="true">→</span></Link>
         </div>
-        <div className="term" ref={ref} data-tilt>
-          <div className="term-bar" aria-hidden="true"><span>vendora / planner</span><span>ready</span></div>
-          <div className="term-body">
-            <p className="sr-only">Example: {CMD}. The planner returns: {OUT.map((o) => o[1]).join('; ')}.</p>
-            <p aria-hidden="true"><span className="term-prompt">~ $</span> {CMD.slice(0, n)}<span className={`term-caret${typing ? '' : ' is-idle'}`} /></p>
-            <ul aria-hidden="true" role="list">
-              {OUT.slice(0, shown).map(([k, t]) => <li key={t} className={`term-line term-${k}`}><b>{k === 'ok' ? '✓' : '…'}</b> {t}</li>)}
-            </ul>
+        <div className="ask" ref={ref}>
+          <p className="sr-only">Example: {CMD}. The planner returns: {OUT.map((o) => o[1]).join('; ')}.</p>
+          <div className="ask-input" aria-hidden="true">
+            <span className="ask-text">{CMD.slice(0, n)}<span className={`term-caret${typing ? '' : ' is-idle'}`} /></span>
+            <span className={`ask-send${typing ? '' : ' is-ready'}`}>Build my plan →</span>
           </div>
+          <ul className="ask-out" aria-hidden="true" role="list">
+            {OUT.map(([k, t], i) => <li key={t} className={`ask-line ask-${k}${i < shown ? ' is-in' : ''}`}><b>{k === 'ok' ? '✓' : '…'}</b><span>{t}</span></li>)}
+          </ul>
         </div>
       </div>
     </section>

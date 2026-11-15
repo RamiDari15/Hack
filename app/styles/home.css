@@ -375,3 +375,41 @@
 @media (max-width: 420px) { .hero-line { white-space: normal; } }
 .labels-row dt.labels-name { font-size: clamp(1.25rem, 1rem + .8vw, 1.7rem); }
 .labels-row { align-items: baseline; }
+
+/* ---------- Steps: text + a small picture of the step ---------- */
+.step-card { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: center; column-gap: var(--s-6); align-content: center; box-shadow: 0 30px 60px -38px rgba(31, 25, 21, .55); border-width: 1.5px; }
+.step-text { display: grid; gap: var(--s-4); justify-items: start; }
+.step-art { display: grid; gap: 10px; padding: var(--s-5); border-radius: 20px; background: color-mix(in srgb, var(--paper) 78%, transparent); border: 1.5px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+.step-paper .step-art { background: var(--cream); }
+.art-row { display: grid; grid-template-columns: 4.5rem 1fr; align-items: center; gap: 10px; font-weight: 600; font-size: var(--t-sm); }
+.art-row i { height: 12px; border-radius: 6px; background: var(--ink); width: var(--w); transform-origin: left; }
+.art-row:nth-child(2) i { background: var(--pink-deep); }
+.art-row:nth-child(3) i, .art-row:nth-child(4) i { background: color-mix(in srgb, var(--ink) 45%, transparent); }
+.art-person { display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 14px; background: var(--paper); font-weight: 600; }
+.art-person b { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--sun); border: 1.5px solid var(--ink); }
+.art-person:nth-child(2) b { background: var(--pink-2); }
+.art-person em { font-style: normal; color: color-mix(in srgb, var(--ink) 30%, transparent); font-size: 1.1rem; }
+.art-person.is-on em { color: var(--pink-deep); }
+.art-check { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: var(--paper); font-weight: 600; }
+.art-check i { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--sun); border: 1.5px solid var(--ink); font-style: normal; font-size: .8rem; font-weight: 800; }
+@media (prefers-reduced-motion: no-preference) {
+  .art-row i { animation: grow-x 1s var(--ease) both; }
+  .art-row:nth-child(2) i { animation-delay: .1s; } .art-row:nth-child(3) i { animation-delay: .2s; } .art-row:nth-child(4) i { animation-delay: .3s; }
+  @keyframes grow-x { from { transform: scaleX(0); } }
+}
+@media (max-width: 860px) { .step-card { grid-template-columns: 1fr; row-gap: var(--s-5); min-height: 0; } }
+
+/* ---------- "Or just type it": the planner's own input, not a fake terminal ---------- */
+.ask { display: grid; gap: var(--s-4); padding: clamp(var(--s-5), 3vw, var(--s-6)); border-radius: 28px; background: var(--paper); border: 1.5px solid var(--line); box-shadow: 0 30px 60px -38px rgba(31, 25, 21, .5); }
+.ask-input { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); padding: 14px 14px 14px 20px; border-radius: 20px; border: 2px solid var(--ink); background: var(--cream); min-height: 64px; }
+.ask-text { font-size: clamp(1rem, .9rem + .4vw, 1.2rem); font-weight: 600; min-height: 1.4em; }
+.ask-text .term-caret { width: 2px; height: 1.15em; background: var(--pink-deep); margin-left: 2px; }
+.ask-send { padding: 10px 16px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 12%, transparent); color: var(--ink-2); font-weight: 700; font-size: var(--t-sm); transition: background .3s, color .3s; }
+.ask-send.is-ready { background: var(--sun); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.ask-out { list-style: none; display: grid; gap: 6px; }
+.ask-line { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: var(--cream); font-weight: 500; opacity: .28; transition: opacity .4s var(--ease), translate .4s var(--ease); translate: 0 4px; }
+.ask-line.is-in { opacity: 1; translate: 0 0; }
+.ask-line b { display: grid; place-items: center; flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--sun); border: 1.5px solid var(--ink); font-size: .8rem; }
+.ask-wait b { background: var(--pink-2); }
+@media (prefers-reduced-motion: reduce) { .ask-line { opacity: 1; translate: none; transition: none; } }
+.step-art { justify-self: stretch; } .step-card .display-2 { font-size: clamp(1.9rem, 1.3rem + 1.8vw, 3rem); }
