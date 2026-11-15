@@ -54,12 +54,12 @@ export default async function VendorProfile({ params }) {
           <VendorCalendar entries={v.calendar} />
           <section className="stack"><h2 className="display-3">Setup requirements</h2><p className="muted">{v.setupRequirements || 'Not provided yet.'}</p></section>
           <section className="stack"><h2 className="display-3">Booking and cancellation</h2><p className="muted">{v.bookingPolicy || 'Not provided yet. The vendor’s policy is shown before you confirm any booking.'}</p></section>
-          <VendorReviews reviews={v.demoReviews} googleReviewsUrl={v.googleReviewsUrl} sourceUrl={v.sourceUrl} />
+          <VendorReviews googleReviewsUrl={v.googleReviewsUrl} sourceUrl={v.sourceUrl} />
         </div>
         <aside className="profile-aside">
           <div className="panel stack">
             <h2 className="title">{v.directoryListed ? 'Contact the business' : 'Request a quote'}</h2>
-            <p className="fine">{v.calendarIsDemo ? 'Calendar entries are generated for preview, not supplied by the business. Confirm actual availability directly.' : 'Confirm current prices, policies and availability directly with the business.'}</p>
+            <p className="fine">{v.calendarIsDemo ? 'This sample calendar is for a fictional business. Confirm availability with the vendor.' : 'Confirm current prices, policies and availability directly with the business.'}</p>
             {v.directoryListed ? (
               <div className="stack">
                 {v.address && <p className="small">{v.address}</p>}

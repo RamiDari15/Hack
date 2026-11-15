@@ -43,69 +43,69 @@ select set_config('request.jwt.claims', '{"sub":"d0000000-0000-4000-8000-0000000
 insert into public.vendors (id, owner_id, name, category, city, service_radius_mi, description, setup_requirements, booking_policy,
   legal_name, website, contact_email, verification_status, review_note, submitted_at) values
 ('a0000000-0000-4000-8000-000000000001', 'd0000000-0000-4000-8000-000000000003', 'Sample Lantern Hall', 'Venues', 'Ann Arbor, MI', 25,
-  'Demo listing, not a real business. A brick hall with a string-lit courtyard, seats 180 for dinner.', 'Load-in from 2pm. House power on every wall.', 'Sample policy: 30% deposit to hold the date.',
+  'Fictional business. A brick hall with a string-lit courtyard, seats 180 for dinner.', 'Load-in from 2pm. House power on every wall.', 'Sample policy: 30% deposit to hold the date.',
   'Sample Lantern Hall LLC', 'https://example.com', 'lanterns@demo.test', 'verified', null, now()),
 ('a0000000-0000-4000-8000-000000000002', 'd0000000-0000-4000-8000-000000000003', 'Sample Orchard Barn', 'Venues', 'Ypsilanti, MI', 30,
-  'Demo listing, not a real business. Restored barn beside an apple orchard, open-air ceremony lawn.', 'Generator needed for amplified music outdoors.', 'Sample policy: full refund up to 90 days out.',
+  'Fictional business. Restored barn beside an apple orchard, open-air ceremony lawn.', 'Generator needed for amplified music outdoors.', 'Sample policy: full refund up to 90 days out.',
   'Sample Orchard Barn LLC', 'https://example.com', 'lanterns@demo.test', 'verified', null, now()),
 ('a0000000-0000-4000-8000-000000000003', 'd0000000-0000-4000-8000-000000000004', 'Sample Table Kitchen', 'Catering', 'Ann Arbor, MI', 40,
-  'Demo listing, not a real business. Family-style dinners and late-night snacks.', 'Needs a prep room with two outlets.', 'Sample policy: final headcount 14 days before.',
+  'Fictional business. Family-style dinners and late-night snacks.', 'Needs a prep room with two outlets.', 'Sample policy: final headcount 14 days before.',
   'Sample Table Kitchen LLC', 'https://example.com', 'kitchen@demo.test', 'verified', null, now()),
 ('a0000000-0000-4000-8000-000000000004', 'd0000000-0000-4000-8000-000000000004', 'Sample Sugar Studio', 'Cake & desserts', 'Detroit, MI', 50,
-  'Demo listing, not a real business. Tiered cakes and dessert tables.', 'Cool table away from direct sun.', null,
+  'Fictional business. Tiered cakes and dessert tables.', 'Cool table away from direct sun.', null,
   'Sample Sugar Studio LLC', 'https://example.com', 'kitchen@demo.test', 'verified', null, now()),
 ('a0000000-0000-4000-8000-000000000005', 'd0000000-0000-4000-8000-000000000004', 'Sample Pour House', 'Bar services', 'Ann Arbor, MI', 30,
-  'Demo listing, not a real business. Licensed bartenders and a mobile bar.', 'Venue must allow outside alcohol service.', null,
+  'Fictional business. Licensed bartenders and a mobile bar.', 'Venue must allow outside alcohol service.', null,
   'Sample Pour House LLC', 'https://example.com', 'kitchen@demo.test', 'verified', null, now()),
 ('a0000000-0000-4000-8000-000000000006', 'd0000000-0000-4000-8000-000000000005', 'Sample North Light Photo', 'Photography', 'Ann Arbor, MI', 60,
-  'Demo listing, not a real business. Documentary-style photos, edited gallery in three weeks.', null, null,
+  'Fictional business. Documentary-style photos, edited gallery in three weeks.', null, null,
   'Sample North Light LLC', 'https://example.com', 'studio@demo.test', 'verified', null, now()),
 ('a0000000-0000-4000-8000-000000000007', 'd0000000-0000-4000-8000-000000000005', 'Sample Night Shift DJs', 'Music & DJ', 'Detroit, MI', 60,
-  'Demo listing, not a real business. DJ and MC with dance-floor lighting.', 'One 20A circuit near the floor.', null,
+  'Fictional business. DJ and MC with dance-floor lighting.', 'One 20A circuit near the floor.', null,
   'Sample Night Shift LLC', 'https://example.com', 'studio@demo.test', 'verified', null, now()),
 ('a0000000-0000-4000-8000-000000000008', 'd0000000-0000-4000-8000-000000000005', 'Sample Petal Room', 'Florists', 'Ypsilanti, MI', 35,
-  'Demo listing, not a real business. Seasonal, garden-style arrangements.', null, null,
+  'Fictional business. Seasonal, garden-style arrangements.', null, null,
   'Sample Petal Room LLC', 'https://example.com', 'studio@demo.test', 'verified', null, now()),
 ('a0000000-0000-4000-8000-000000000009', 'd0000000-0000-4000-8000-000000000005', 'Sample Rent-a-Glow', 'Rentals', 'Ann Arbor, MI', 45,
-  'Demo listing, not a real business. String lights, lanterns, tables and chairs.', 'Ladder access for overhead lights.', null,
+  'Fictional business. String lights, lanterns, tables and chairs.', 'Ladder access for overhead lights.', null,
   'Sample Rent-a-Glow LLC', 'https://example.com', 'studio@demo.test', 'verified', null, now()),
 ('a0000000-0000-4000-8000-000000000010', 'd0000000-0000-4000-8000-000000000006', 'Sample Velvet Strings', 'Entertainment', 'Ann Arbor, MI', 40,
-  'Demo listing, not a real business. String quartet for ceremonies.', null, null,
+  'Fictional business. String quartet for ceremonies.', null, null,
   'Sample Velvet Strings LLC', 'https://example.com', 'newvendor@demo.test', 'pending', null, now()),
 ('a0000000-0000-4000-8000-000000000011', 'd0000000-0000-4000-8000-000000000006', 'Sample Glow Booth', 'Photo booth', 'Detroit, MI', 50,
-  'Demo listing, not a real business. Open-air photo booth with prints.', null, null,
+  'Fictional business. Open-air photo booth with prints.', null, null,
   '', null, 'newvendor@demo.test', 'rejected', 'Sample note: add your legal business name and a website so we can check the business.', now())
 on conflict (id) do nothing;
 
 select set_config('request.jwt.claims', '', false);
 
 insert into public.vendor_packages (vendor_id, title, price_cents, description) values
-('a0000000-0000-4000-8000-000000000001', 'Evening hall and courtyard', 420000, 'Sample price for the demo. 5pm to midnight.'),
-('a0000000-0000-4000-8000-000000000001', 'Ceremony only', 150000, 'Sample price for the demo. Two hours.'),
+('a0000000-0000-4000-8000-000000000001', 'Evening hall and courtyard', 420000, 'Sample price. 5pm to midnight.'),
+('a0000000-0000-4000-8000-000000000001', 'Ceremony only', 150000, 'Sample price. Two hours.'),
 ('a0000000-0000-4000-8000-000000000002', 'Full day barn and lawn', null, 'Quote required.'),
-('a0000000-0000-4000-8000-000000000003', 'Family-style dinner for 150', 975000, 'Sample price for the demo. About $65 per guest.'),
-('a0000000-0000-4000-8000-000000000003', 'Late-night snacks', 90000, 'Sample price for the demo. Serves up to 150.'),
-('a0000000-0000-4000-8000-000000000004', 'Three-tier cake', 65000, 'Sample price for the demo.'),
+('a0000000-0000-4000-8000-000000000003', 'Family-style dinner for 150', 975000, 'Sample price. About $65 per guest.'),
+('a0000000-0000-4000-8000-000000000003', 'Late-night snacks', 90000, 'Sample price. Serves up to 150.'),
+('a0000000-0000-4000-8000-000000000004', 'Three-tier cake', 65000, 'Sample price.'),
 ('a0000000-0000-4000-8000-000000000005', 'Bar service, four hours', null, 'Quote required.'),
-('a0000000-0000-4000-8000-000000000006', 'Eight hours of coverage', 380000, 'Sample price for the demo.'),
-('a0000000-0000-4000-8000-000000000007', 'DJ and MC, five hours', 160000, 'Sample price for the demo.'),
+('a0000000-0000-4000-8000-000000000006', 'Eight hours of coverage', 380000, 'Sample price.'),
+('a0000000-0000-4000-8000-000000000007', 'DJ and MC, five hours', 160000, 'Sample price.'),
 ('a0000000-0000-4000-8000-000000000008', 'Ceremony and centerpieces', null, 'Quote required.'),
-('a0000000-0000-4000-8000-000000000009', 'Courtyard string lights', 75000, 'Sample price for the demo.');
+('a0000000-0000-4000-8000-000000000009', 'Courtyard string lights', 75000, 'Sample price.');
 
 -- ---------------------------------------------------------------- events
 insert into public.events (id, owner_id, title, event_type, event_date, location, guest_count, budget_cents, style, notes) values
 ('e0000000-0000-4000-8000-000000000001', 'd0000000-0000-4000-8000-000000000001', 'Maya and Sam’s garden wedding (sample)', 'Wedding',
-  '2027-06-12', 'Ann Arbor, MI', 150, 3000000, 'Garden, string lights', 'Sample event for the demo.'),
+  '2027-06-12', 'Ann Arbor, MI', 150, 3000000, 'Garden, string lights', 'Sample event.'),
 ('e0000000-0000-4000-8000-000000000002', 'd0000000-0000-4000-8000-000000000001', 'Jordan’s graduation party (sample)', 'Graduation',
-  '2027-05-01', 'Ypsilanti, MI', 60, 500000, 'Backyard', 'Sample event for the demo.')
+  '2027-05-01', 'Ypsilanti, MI', 60, 500000, 'Backyard', 'Sample event.')
 on conflict (id) do nothing;
 
 -- A saved planner estimate for the wedding, so the budget table has rows.
 insert into public.ai_requests (user_id, kind, event_id, input, output) values
 ('d0000000-0000-4000-8000-000000000001', 'plan', 'e0000000-0000-4000-8000-000000000001',
  '{"prompt":"Sample request: plan our garden wedding for 150 guests within $30,000."}',
- '{"summary":"Sample estimate (demo data). A June garden wedding for 150 guests in Ann Arbor fits a $30,000 budget with a buffer.",
-   "assumptions":["June Saturday in southeast Michigan","Family-style dinner","Sample data for the demo"],
+ '{"summary":"Sample estimate. A June garden wedding for 150 guests in Ann Arbor fits a $30,000 budget with a buffer.",
+   "assumptions":["June Saturday in southeast Michigan","Family-style dinner","Sample data"],
    "categories":[
      {"name":"Venues","low":3800,"high":5200,"notes":"Hall and courtyard"},
      {"name":"Catering","low":9000,"high":11500,"notes":"Family-style dinner"},

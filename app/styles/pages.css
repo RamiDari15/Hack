@@ -53,11 +53,6 @@
 .calendar-legend > span { padding: 4px 8px; border-radius: 6px; }
 .calendar-agenda { list-style: none; display: grid; gap: var(--s-3); }
 .calendar-agenda li { border-top: 1px solid var(--line); padding-top: var(--s-3); gap: var(--s-3); }
-.demo-rating { color: var(--ink); }
-.demo-rating > span { color: #865c08; }
-.demo-review-details summary { cursor: pointer; padding-block: var(--s-3); }
-.demo-review-list { list-style: none; display: grid; gap: var(--s-4); }
-.demo-review-list > li { border-top: 1px solid var(--line); padding-top: var(--s-4); }
 @media (max-width: 480px) { .vendor-calendar { padding: var(--s-3); } .calendar-day { min-height: 42px; gap: 2px; } .calendar-grid td { padding: 1px; } }
 @media (max-width: 760px) { .filterbar { grid-template-columns: 1fr 1fr; } .filterbar .field:first-child { grid-column: 1 / -1; } }
 
