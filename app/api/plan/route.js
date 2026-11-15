@@ -15,6 +15,7 @@ Produce a budget ESTIMATE split by category for the event described. Rules:
 - Always include separate rows for taxes and service fees, tips, delivery and travel, setup and cleanup, and a contingency.
 - If the user gives a total budget, keep the sum of the high values at or below it where possible, and say so in assumptions if it is not realistic.
 - Only recommend vendors listed under "Verified vendors on Vendora". Never invent vendor names, availability, ratings, or verification status.
+- If the event details include "rsvps", treat coming as the firm headcount and coming plus maybe plus no_reply_yet as the upper bound; size per-person costs and catering from those numbers and mention meal counts in the catering notes.
 - Calibrate every range with "Price references". Published prices are what local businesses list publicly and may be out of date; budget-guide ranges are Vendora's typical planning ranges. Scale per-person and per-hour figures by the guest count and event length.
 - When a published price shaped a row, you may name that business in the row's notes as "published rate from <name>". Never call a reference a quote, and never say a business is available or verified.
 - State every assumption you make (season, region, service style).
@@ -125,10 +126,24 @@ export async function POST(request) {
     guests: clean(String(body?.event?.guests ?? ''), 7), budget: clean(String(body?.event?.budget ?? ''), 12), style: clean(body?.event?.style, 160),
   };
   if (body?.eventId && UUID_RE.test(body.eventId)) {
-    const { data } = await supabase.from('events').select('id, event_type, event_date, location, guest_count, budget_cents, style').eq('id', body.eventId).maybeSingle();
+    const { data } = await supabase.from('events').select('id, event_type, event_date, location, guest_count, budget_cents, style, guest_list_enabled, meal_options').eq('id', body.eventId).maybeSingle();
     if (data) {
       eventId = data.id;
       event = { type: data.event_type, date: data.event_date ?? '', location: data.location ?? '', guests: String(data.guest_count ?? ''), budget: data.budget_cents == null ? '' : String(data.budget_cents / 100), style: data.style ?? '' };
+      // Optional guest list: real RSVP numbers and meal counts, when the organizer uses it.
+      if (data.guest_list_enabled) {
+        const { data: guests } = await supabase.from('event_guests').select('status, party_size, attending, meal, dietary').eq('event_id', data.id);
+        if (guests?.length) {
+          const sum = (st, f) => guests.filter((g) => g.status === st).reduce((n, g) => n + (f(g) ?? 0), 0);
+          const meals = {};
+          for (const g of guests) if (g.status === 'yes' && g.meal) meals[g.meal] = (meals[g.meal] ?? 0) + (g.attending ?? 0);
+          event.rsvps = {
+            coming: sum('yes', (g) => g.attending), maybe: sum('maybe', (g) => g.attending),
+            no_reply_yet: sum('invited', (g) => g.party_size), declined_parties: guests.filter((g) => g.status === 'no').length,
+            meals, dietary_needs: guests.filter((g) => g.status !== 'no' && g.dietary).length,
+          };
+        }
+      }
     }
   }
 

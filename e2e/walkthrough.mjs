@@ -131,7 +131,7 @@ try {
 
   await p.goto(`${APP}/events/${eid}`);
   ok('sponsor step is done on the guide', await p.locator('.plan-guide li.is-done', { hasText: 'Contact sponsors' }).isVisible());
-  ok('guide now shows 4 of 6 or fewer done', /of 6 done/.test(await p.locator('.plan-guide .badge').first().textContent()));
+  ok('guide shows progress out of 7 steps', /of 7 done/.test(await p.locator('.plan-guide .badge').first().textContent()));
 
   const ps = await page();
   await ps.goto(`${APP}/events/${eid}/choose`);

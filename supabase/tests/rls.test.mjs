@@ -148,5 +148,54 @@ r = await as(null, `select id from public.vendors_within_radius(42.2808,-83.7430
 await db.exec(`update public.vendors set latitude=43.5 where id='${directoryVendor}';`);
 r = await as(null, `select id from public.vendors_within_radius(42.2808,-83.7430,25)`); check('radius search excludes public listings beyond 25 miles', r.rows?.length === 0, r);
 r = await as(null, `select id from public.vendors_within_radius(42.2808,-83.7430,-25)`); check('negative search radius yields no listings', r.rows?.length === 0, r);
+
+// Guest list, RSVPs and registry
+r = await as(B, `insert into public.event_guests(event_id,name,party_size) values ('${eid}','Guest One',2) returning rsvp_token`); const gtok = r.rows?.[0]?.rsvp_token; check('owner adds a guest', !!gtok, r);
+r = await as(B, `insert into public.event_guests(event_id,name) values ('${eid}','Guest Two') returning rsvp_token`); const gtok2 = r.rows?.[0]?.rsvp_token;
+r = await as(A, `insert into public.event_guests(event_id,name) values ('${eid}','Intruder')`); check('others cannot add guests', !!r.error, r);
+r = await as(A, `select id from public.event_guests`); check('others cannot read the guest list', r.rows?.length === 0, r);
+r = await as(null, `select id from public.event_guests`); check('anon cannot read guests directly', !r.rows?.length, r);
+r = await as(null, `select * from public.rsvp_lookup('${gtok}')`); check('RSVP link inactive while the guest list is off', r.rows?.length === 0, r);
+r = await as(B, `update public.events set guest_list_enabled=true, meal_options='{Fish,Veg}' where id='${eid}' returning id`); check('owner turns on guest list', r.rows?.length === 1, r);
+r = await as(A, `update public.events set guest_list_enabled=false where id='${eid}' returning id`); check('others cannot toggle the guest list', !r.rows?.length, r);
+r = await as(null, `select guest_name, event_title from public.rsvp_lookup('${gtok}')`); check('guest reads own RSVP with the token', r.rows?.[0]?.guest_name === 'Guest One', r);
+r = await as(null, `select * from public.rsvp_lookup(gen_random_uuid())`); check('unknown token reads nothing', r.rows?.length === 0, r);
+r = await as(null, `select public.rsvp_respond('${gtok}','yes',3,'Fish',null)`); check('RSVP cannot exceed the invited party size', !!r.error, r);
+r = await as(null, `select public.rsvp_respond('${gtok}','yes',2,'Steak',null)`); check('RSVP meal must be one of the options', !!r.error, r);
+r = await as(null, `select public.rsvp_respond('${gtok}','perhaps',1,null,null)`); check('RSVP status is validated', !!r.error, r);
+r = await as(null, `select public.rsvp_respond('${gtok}','yes',2,'Fish','No nuts')`); check('guest replies with a valid RSVP', !r.error, r);
+r = await as(B, `select status, attending, meal from public.event_guests where rsvp_token='${gtok}'`); check('owner sees the reply', r.rows?.[0]?.status === 'yes' && r.rows[0].attending === 2 && r.rows[0].meal === 'Fish', r);
+r = await as(null, `select public.rsvp_respond(gen_random_uuid(),'yes',1,null,null)`); check('unknown token cannot reply', !!r.error, r);
+r = await as(B, `update public.events set registry_enabled=true where id='${eid}'`);
+r = await as(B, `insert into public.event_registry_items(event_id,title,quantity) values ('${eid}','Blender',1) returning id`); const giftId = r.rows?.[0]?.id; check('owner adds a registry giftId', !!giftId, r);
+r = await as(A, `insert into public.event_registry_items(event_id,title) values ('${eid}','Spam')`); check('others cannot add gifts', !!r.error, r);
+r = await as(null, `select remaining from public.registry_for_guest('${gtok}')`); check('guest sees open gifts', r.rows?.[0]?.remaining === 1, r);
+r = await as(null, `insert into public.registry_claims(item_id,guest_id,quantity) select '${giftId}', id, 1 from public.event_guests limit 1`); check('claims cannot be written directly', !!r.error, r);
+r = await as(null, `select public.registry_claim('${gtok}','${giftId}',1)`); check('guest claims a giftId', !r.error, r);
+r = await as(null, `select public.registry_claim('${gtok2}','${giftId}',1)`); check('a claimed giftId cannot be claimed twice', !!r.error, r);
+r = await as(null, `select remaining, mine from public.registry_for_guest('${gtok2}')`); check('other guests see it as taken, not by whom', r.rows?.[0]?.remaining === 0 && r.rows[0].mine === 0 && !('guest_name' in (r.rows?.[0] ?? {})), r);
+r = await as(null, `select public.registry_claim('${gtok2}',gen_random_uuid(),1)`); check('cannot claim a giftId from another registry', !!r.error, r);
+// Day-of timeline
+r = await as(B, `insert into public.event_timeline_items(event_id,start_time,title,event_vendor_id) values ('${eid}','14:00','Venue setup','${bid}') returning id`); check('owner adds a timeline item linked to a booking', !!r.rows?.[0], r);
+r = await as(A, `select title from public.event_timeline_items`); check('linked vendor reads its timeline item', r.rows?.length === 1, r);
+r = await as(C, `select title from public.event_timeline_items`); check('cohost reads the timeline', r.rows?.length === 1, r);
+r = await as(ADM, `select title from public.event_timeline_items`); check('strangers cannot read the timeline', r.rows?.length === 0, r);
+r = await as(C, `select name from public.event_guests`); check('cohost reads the guest list', r.rows?.length === 2, r);
+r = await as(C, `insert into public.event_guests(event_id,name) values ('${eid}','Cohost add')`); check('cohost cannot add guests', !!r.error, r);
+r = await as(A, `insert into public.event_timeline_items(event_id,start_time,title) values ('${eid}','15:00','Vendor edit')`); check('vendors cannot write the timeline', !!r.error, r);
+r = await as(C, `insert into public.events(owner_id,title,event_type) values ('${C}','C party','Birthday') returning id`); const cEvent = r.rows?.[0]?.id;
+r = await as(C, `insert into public.event_timeline_items(event_id,start_time,title,event_vendor_id) values ('${cEvent}','15:00','Borrowed booking','${bid}')`); check('cannot link a timeline item to another event’s booking', !!r.error, r);
+// Email alerts
+r = await as(A, `select id from public.email_outbox`); check('users cannot read the email outbox', !!r.error || r.rows?.length === 0, r);
+r = await as(A, `select * from public.claim_email_outbox(5)`); check('users cannot claim queued emails', !!r.error, r);
+r = await as(null, `select * from public.claim_email_outbox(5)`); check('anon cannot claim queued emails', !!r.error, r);
+r = await db.query(`select to_email from public.email_outbox where subject = 'New message on a booking'`); check('a booking message queues an email alert', r.rows.some((x) => x.to_email === 'a@x.test'), r.rows);
+r = await as(A, `update public.profiles set email_alerts=false where id='${A}' returning email_alerts`); check('user turns off own email alerts', r.rows?.[0]?.email_alerts === false, r);
+r = await as(A, `update public.profiles set email_alerts=false where id='${B}' returning id`); check('cannot change someone else’s alerts', !r.rows?.length, r);
+const queued = async () => (await db.query(`select count(*)::int n from public.email_outbox where to_email = 'a@x.test'`)).rows[0].n;
+const beforeQuiet = await queued();
+r = await as(B, `insert into public.messages(event_vendor_id,body) values ('${bid}','second')`);
+check('no email queued once alerts are off', !r.error && (await queued()) === beforeQuiet, { r, beforeQuiet });
+r = await db.query(`select link from public.notifications where link like '/vendor/bookings/%'`); check('notification links point at /bookings', r.rows.length === 0, r.rows);
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail) process.exit(1);

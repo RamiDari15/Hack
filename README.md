@@ -81,6 +81,11 @@ Vendor onboarding forms and an admin verification screen, quote replies and mess
 | `/admin` | Admins | Verify vendors or ask for changes with a note |
 | `/bookings/[id]` | The organizer and the vendor | Messages, quotes, accept, hold, confirm, cancel |
 | `/events/[id]/choose` | Event viewers | Vendor walkthrough: one category at a time, ranked by verification, location, published price vs. the AI estimate and the vendor's calendar; "Help me choose" asks the AI to compare (`/api/vendor-advice`) |
+| `/events/[id]/guests`, `/rsvp/[token]` | Event owner; guests by private link | Optional guest list, RSVPs with meal choices, headcount sync to the event and planner |
+| `/events/[id]/registry` | Event owner; guests on their RSVP page | Optional registry; guests claim gifts (links only, nothing sold) |
+| `/events/[id]/timeline` | Event viewers; linked vendors see their items | Day-of run sheet, AI draft from bookings (`/api/timeline`), print |
+| `/events/[id]/quotes` | Event viewers | Side-by-side quotes by category vs. the AI estimate |
+| `/account` | Signed in | Name and email alerts. Alerts are queued in Postgres and sent by the server (local: Mailpit; production: Resend) |
 | `/events/[id]/sponsors` | Event owner | Sponsor list, proposal drafted from the event, email from your own mail app, status tracking |
 
 Make an account an admin (local database only):

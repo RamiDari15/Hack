@@ -24,10 +24,11 @@ export default async function BookingPage({ params }) {
   if (!supabase) redirect('/dashboard');
   if (!user) redirect(`/sign-in?next=/bookings/${id}`);
 
-  const [{ data: rows }, { data: quotes }, { data: messages }] = await Promise.all([
+  const [{ data: rows }, { data: quotes }, { data: messages }, { data: times }] = await Promise.all([
     supabase.rpc('booking_summaries', { only_booking: id }),
     supabase.from('quotes').select('id, amount_cents, description, valid_until, status, created_at').eq('event_vendor_id', id).order('created_at', { ascending: false }),
     supabase.from('messages').select('id, sender_id, body, created_at').eq('event_vendor_id', id).order('created_at'),
+    supabase.from('event_timeline_items').select('id, start_time, end_time, title, notes, source').eq('event_vendor_id', id).order('start_time'),
   ]);
   const b = rows?.[0];
   if (!b) notFound();
@@ -79,6 +80,17 @@ export default async function BookingPage({ params }) {
         </section>
 
         <div className="stack-lg">
+          {times?.length > 0 && (
+            <section className="panel stack-sm" aria-labelledby="times-h">
+              <h2 id="times-h">On the day</h2>
+              <ul role="list" className="stack-sm">
+                {times.map((t) => (
+                  <li key={t.id} className="small"><b className="num">{t.start_time.slice(0, 5)}{t.end_time ? `–${t.end_time.slice(0, 5)}` : ''}</b> {t.title}{t.source === 'ai' ? <span className="badge badge-warn" style={{ marginLeft: 8 }}>Draft, confirm</span> : null}{t.notes ? <span className="fine block">{t.notes}</span> : null}</li>
+                ))}
+              </ul>
+              <p className="fine">From the organizer’s day-of timeline. Reply in messages if a time does not work.</p>
+            </section>
+          )}
           <section className="panel stack" aria-labelledby="quotes-h">
             <h2 id="quotes-h">Quotes</h2>
             {quotes?.length ? (

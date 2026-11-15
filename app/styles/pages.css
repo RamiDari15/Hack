@@ -200,3 +200,34 @@
 .reasons .reason-plain::before { content: '·'; color: var(--muted); }
 .advice { border-style: dashed; }
 .choose-nav { flex-wrap: wrap; gap: var(--s-3); padding-top: var(--s-4); }
+
+/* Compare quotes */
+.compare-section { margin-bottom: var(--s-7, 3rem); }
+.compare-table tbody th { text-align: left; font-weight: 600; padding: var(--s-3); border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink); }
+.compare-table .block { display: block; font-weight: 400; }
+.compare-table .block-badge { display: table; margin: var(--s-1) 0 0 auto; }
+.compare-table td.small { min-width: 220px; }
+.text-warn { color: var(--warn); }
+
+/* Guest list */
+.guest-row .title .fine { font-weight: 400; }
+
+/* Day-of timeline */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; }
+.timeline > li { display: grid; grid-template-columns: 9rem minmax(0, 1fr) auto; gap: var(--s-4); align-items: start; padding: var(--s-4) 0; border-top: 1px solid var(--line); }
+.timeline-time { font-weight: 700; }
+.timeline-time .fine { display: block; font-weight: 400; }
+@media (max-width: 560px) { .timeline > li { grid-template-columns: 1fr; gap: var(--s-2); } }
+
+@media print {
+  .site-header, .site-footer, header nav, footer, .no-print, .back-link, .mobile-nav { display: none !important; }
+  body { background: #fff; }
+  .panel { border: 0; box-shadow: none; padding: 0; }
+  .event-layout { display: block; }
+}
+.event-tools a { display: flex; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) 0; border-top: 1px solid var(--line); text-decoration: none; color: var(--ink); font-weight: 600; font-size: var(--t-sm); }
+.event-tools a:hover { color: var(--dusk-3, var(--ink)); text-decoration: underline; }
+.guide-optional { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); padding-top: var(--s-4); border-top: 1px solid var(--line); }
+.event-tools a { display: flex; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) 0; border-top: 1px solid var(--line); text-decoration: none; color: var(--ink); font-weight: 600; font-size: var(--t-sm); }
+.event-tools a:hover { text-decoration: underline; }
+.guide-optional { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); padding-top: var(--s-4); border-top: 1px solid var(--line); }

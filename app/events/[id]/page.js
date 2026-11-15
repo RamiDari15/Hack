@@ -18,7 +18,7 @@ export default async function EventPage({ params, searchParams }) {
   if (!supabase) redirect('/dashboard');
   if (!user) redirect(`/sign-in?next=/events/${id}`);
 
-  const [{ data: event }, { data: bookings }, { data: plans }, { data: saved }, { data: sponsors }] = await Promise.all([
+  const [{ data: event }, { data: bookings }, { data: plans }, { data: saved }, { data: sponsors }, { count: timelineCount }, { count: guestCount }, { count: giftCount }] = await Promise.all([
     supabase.from('events').select('*').eq('id', id).maybeSingle(),
     supabase.from('event_vendors')
       .select('id, status, hold_expires_at, created_at, vendors(id, name, category, city), quotes(id, amount_cents, description, valid_until, status, created_at)')
@@ -27,6 +27,9 @@ export default async function EventPage({ params, searchParams }) {
       .order('created_at', { ascending: false }).limit(1),
     supabase.from('event_saved_results').select('id, title, url, host, snippet, created_at').eq('event_id', id).order('created_at', { ascending: false }),
     supabase.from('sponsor_leads').select('id, status').eq('event_id', id),
+    supabase.from('event_timeline_items').select('id', { count: 'exact', head: true }).eq('event_id', id),
+    supabase.from('event_guests').select('id', { count: 'exact', head: true }).eq('event_id', id),
+    supabase.from('event_registry_items').select('id', { count: 'exact', head: true }).eq('event_id', id),
   ]);
   if (!event) notFound();
 
@@ -52,7 +55,7 @@ export default async function EventPage({ params, searchParams }) {
         <div><dt>Quotes received</dt><dd className="num">{quotes.length}</dd></div>
       </dl>
 
-      <PlanGuide event={event} plan={plan} bookings={rows} quotes={quotes} sponsors={sponsors ?? []} />
+      <PlanGuide event={event} plan={plan} bookings={rows} quotes={quotes} sponsors={sponsors ?? []} timelineCount={timelineCount ?? 0} guestCount={guestCount ?? 0} giftCount={giftCount ?? 0} />
 
       <div className="event-layout">
         <div className="stack-lg">
@@ -131,6 +134,14 @@ export default async function EventPage({ params, searchParams }) {
         </div>
 
         <aside className="stack-lg">
+          <nav className="panel stack-sm event-tools" aria-label="Event tools">
+            <h2 className="label">Event tools</h2>
+            <Link href={`/events/${event.id}/quotes`}>Compare quotes <span className="fine">{quotes.length} received</span></Link>
+            <Link href={`/events/${event.id}/timeline`}>Day-of timeline <span className="fine">{timelineCount ? `${timelineCount} items` : 'Not started'}</span></Link>
+            <Link href={`/events/${event.id}/guests`}>Guest list and RSVPs <span className="fine">{event.guest_list_enabled ? `${guestCount ?? 0} guests` : 'Optional, off'}</span></Link>
+            <Link href={`/events/${event.id}/registry`}>Registry <span className="fine">{event.registry_enabled ? `${giftCount ?? 0} gifts` : 'Optional, off'}</span></Link>
+            <Link href={`/events/${event.id}/sponsors`}>Sponsors <span className="fine">{(sponsors ?? []).length} on your list</span></Link>
+          </nav>
           <details className="panel disclosure" id="edit-details" open={sp?.edit === '1' || undefined}>
             <summary>Edit details</summary>
             <div style={{ marginTop: 'var(--s-5)' }}>

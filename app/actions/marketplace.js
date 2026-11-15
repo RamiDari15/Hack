@@ -2,6 +2,8 @@
 
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { after } from 'next/server';
+import { drainEmailOutbox } from '@/lib/email';
 import { getSessionUser } from '@/lib/supabase/server';
 import { CATEGORIES } from '@/lib/categories';
 import { UUID_RE } from '@/lib/format';
@@ -24,6 +26,8 @@ async function session() {
   const { supabase, user } = await getSessionUser();
   if (!supabase) return { error: 'The database is not connected yet.' };
   if (!user) return { error: 'Sign in again to continue.' };
+  // Booking changes queue email alerts in the database; send them once the response is out.
+  after(() => drainEmailOutbox().catch(() => {}));
   return { supabase, user };
 }
 
@@ -253,7 +257,7 @@ export async function updateAccount(_prev, fd) {
   if (s.error) return { error: s.error };
   const name = str(fd.get('display_name'), 120);
   if (!name) return { error: 'Enter a name.' };
-  const { error } = await s.supabase.from('profiles').update({ display_name: name }).eq('id', s.user.id);
+  const { error } = await s.supabase.from('profiles').update({ display_name: name, email_alerts: fd.get('email_alerts') === 'on' }).eq('id', s.user.id);
   if (error) return { error: 'Could not save.' };
   revalidatePath('/account');
   return { ok: true, message: 'Saved.' };

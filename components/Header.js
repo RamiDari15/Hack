@@ -32,6 +32,7 @@ export default async function Header() {
           <Link href={user ? '/vendor' : '/vendors/join'} className="nav-quiet">For vendors</Link>
           {user ? (
             <>
+              <Link href="/account" className="nav-quiet">Account</Link>
               <Link href="/dashboard" className="btn btn-sm btn-bulb">Your events</Link>
               <form action="/auth/sign-out" method="post">
                 <button type="submit" className="nav-quiet as-link">Sign out</button>

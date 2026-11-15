@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 // Step-by-step guide for planning one event. Each step is marked done from the event's real data,
 // and the first unfinished step is highlighted as the next thing to do.
-export default function PlanGuide({ event, plan, bookings, quotes, sponsors }) {
+export default function PlanGuide({ event, plan, bookings, quotes, sponsors, timelineCount = 0, guestCount = 0, giftCount = 0 }) {
   const confirmed = bookings.find((b) => b.status === 'confirmed');
   const quoted = bookings.find((b) => (b.quotes ?? []).some((q) => q.status === 'sent'));
   const steps = [
@@ -28,13 +28,19 @@ export default function PlanGuide({ event, plan, bookings, quotes, sponsors }) {
       key: 'quotes', title: 'Compare and accept quotes',
       text: 'Quotes replace AI estimates in your budget as they arrive. Accept the ones that fit.',
       done: quotes.some((q) => q.status === 'accepted'),
-      cta: quoted ? { href: `/bookings/${quoted.id}`, label: 'Review a quote' } : { href: '#vendors-h', label: 'See vendors' },
+      cta: { href: `/events/${event.id}/quotes`, label: quoted ? 'Compare quotes' : 'See quotes' },
     },
     {
       key: 'confirm', title: 'Confirm a booking',
       text: 'You confirm each booking yourself. Nothing is paid or sent without your confirmation.',
       done: Boolean(confirmed),
       cta: { href: confirmed ? `/bookings/${confirmed.id}` : '#vendors-h', label: confirmed ? 'Open booking' : 'See vendors' },
+    },
+    {
+      key: 'timeline', title: 'Plan the day',
+      text: 'Build a run sheet: when each vendor arrives, sets up and leaves. The AI can draft it from your bookings.',
+      done: timelineCount > 0,
+      cta: { href: `/events/${event.id}/timeline`, label: timelineCount ? 'Open timeline' : 'Build timeline' },
     },
     {
       key: 'sponsors', title: 'Contact sponsors',
@@ -68,6 +74,13 @@ export default function PlanGuide({ event, plan, bookings, quotes, sponsors }) {
           );
         })}
       </ol>
+      <div className="guide-optional">
+        <p className="label">Optional</p>
+        <div className="row">
+          <Link className="btn btn-sm btn-outline" href={`/events/${event.id}/guests`}>{event.guest_list_enabled ? `Guest list (${guestCount})` : 'Add a guest list and RSVPs'}</Link>
+          <Link className="btn btn-sm btn-outline" href={`/events/${event.id}/registry`}>{event.registry_enabled ? `Registry (${giftCount})` : 'Add a registry'}</Link>
+        </div>
+      </div>
       {plan?.checklist?.length > 0 && (
         <div className="stack-sm guide-ai">
           <div className="between"><h3 className="label">Tasks the planner generated for this event</h3><span className="badge badge-warn">AI suggestion</span></div>

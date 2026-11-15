@@ -2,6 +2,8 @@
 
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { after } from 'next/server';
+import { drainEmailOutbox } from '@/lib/email';
 import { getSessionUser } from '@/lib/supabase/server';
 import { EVENT_TYPES } from '@/lib/categories';
 import { UUID_RE } from '@/lib/format';
@@ -90,6 +92,7 @@ export async function requestQuote(_prev, formData) {
   if (error) return { error: 'Could not send the inquiry. The vendor may not be verified yet.' };
   revalidatePath(`/events/${eventId}`);
   revalidatePath(`/events/${eventId}/choose`);
+  after(() => drainEmailOutbox().catch(() => {}));
   return { ok: true, message: 'Inquiry sent. The vendor’s reply will appear on your event page.' };
 }
 

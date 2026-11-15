@@ -1,9 +1,9 @@
-# Vendora demo walkthrough (about 7 minutes)
+# Vendora demo walkthrough (about 8 minutes)
 
 ## Before you present
 1. `git pull`, then `npx supabase start` (Docker running).
 2. `npx supabase db reset`, then `python3 scripts/import-vendors.py --apply`.
-3. `.env.local` has the Supabase URL and anon key, `OPENAI_API_KEY` and `OPENAI_MODEL=gpt-4.1-mini`.
+3. `.env.local` has the Supabase URL and anon key, `SUPABASE_SERVICE_ROLE_KEY` (from `npx supabase status`, for email alerts), `OPENAI_API_KEY` and `OPENAI_MODEL=gpt-4.1-mini`.
 4. `npm run dev -- --port 3100`. Open http://localhost:3100 and, in a second tab, the sign-in inbox at http://127.0.0.1:55324.
 5. Run one planner request and one web search beforehand, so you know the key works.
 
@@ -41,11 +41,19 @@ Line: "Every event is a pile of vendors and guesses. Vendora puts them in one pl
 - On the wedding page, **Contact sponsors**. Sample Bloom Florist is already marked Contacted.
 - Add a sponsor with an email: Vendora drafts a proposal from the event details. **Email** opens your own mail app with it; Vendora never sends anything itself. Then **Mark as contacted**.
 
-## 7. Trust and safety (45 s), as admin
+## 7. Guests, registry, day-of and quotes (60 s)
+- Wedding page, **Event tools**:
+  - **Guest list and RSVPs** (optional, on for the sample): 3 coming, 3 maybe, 2 not replied; meal counts. **Use 8 as the guest count** feeds the planner and per-person prices. Copy an RSVP link and open it in a private window: the guest replies without an account and can claim a registry gift.
+  - **Registry** (optional): Sample picnic blanket already claimed.
+  - **Day-of timeline**: **Draft with AI** builds a run sheet from confirmed and held bookings (labeled AI draft). **Print run sheet**. Sample Lantern Hall sees its times on its booking page.
+  - **Compare quotes**: every quote by category against the AI estimate, with per-guest cost.
+- Email alerts: as `kitchen@demo.test`, send Maya a message; the email lands in the inbox tab (http://127.0.0.1:55324). Turn alerts off under **Account**.
+
+## 8. Trust and safety (45 s), as admin
 - `admin@demo.test` → `/admin`: Sample Velvet Strings is waiting for review. Show the legal name and website check, then **Verify**.
 - Mention: vendors only appear as Verified after review, and a stranger gets a 404 on someone else's booking (database row-level security, 95 automated checks).
 
-## 8. Web search (optional, 30 s)
+## 9. Web search (optional, 30 s)
 **Web search** → "outdoor wedding venues with string lights near Ann Arbor". Results are labeled **External, confirm** and kept apart from verified vendors. Save one to the event.
 
 ## If something goes wrong

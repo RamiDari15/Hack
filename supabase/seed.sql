@@ -160,3 +160,26 @@ insert into public.sponsor_leads (event_id, name, url, contact_email, reason, st
   E'Hi Sample Bloom Florist team,\n\nWe are planning a 150-guest garden wedding in Ann Arbor on June 12, 2027. Would you be open to sponsoring the welcome table? In return we can offer a sign at the entrance and a thank-you in the program.\n\nThank you for considering it.'),
 ('e0000000-0000-4000-8000-000000000001', 'Sample Main Street Bakery', null, null,
   'Fictional business. Could provide favors in exchange for a mention.', 'idea', null);
+
+-- Sample guest list, registry and day-of timeline for the wedding. Fictional guests with .test addresses.
+update public.events set guest_list_enabled = true, registry_enabled = true, meal_options = '{Chicken,Salmon,Vegetarian}'
+where id = 'e0000000-0000-4000-8000-000000000001';
+
+insert into public.event_guests (event_id, name, email, party_size, status, attending, meal, dietary, rsvp_token, responded_at) values
+('e0000000-0000-4000-8000-000000000001', 'Ana Ruiz (sample)', 'ana@guests.test', 2, 'yes', 2, 'Salmon', null, 'c0000000-0000-4000-8000-000000000001', now() - interval '3 days'),
+('e0000000-0000-4000-8000-000000000001', 'Ben Okafor (sample)', 'ben@guests.test', 1, 'yes', 1, 'Vegetarian', 'No nuts', 'c0000000-0000-4000-8000-000000000002', now() - interval '2 days'),
+('e0000000-0000-4000-8000-000000000001', 'Chen family (sample)', 'chen@guests.test', 4, 'maybe', 3, null, null, 'c0000000-0000-4000-8000-000000000003', now() - interval '1 day'),
+('e0000000-0000-4000-8000-000000000001', 'Dana Price (sample)', null, 1, 'no', 0, null, null, 'c0000000-0000-4000-8000-000000000004', now() - interval '1 day'),
+('e0000000-0000-4000-8000-000000000001', 'Eli Brooks (sample)', 'eli@guests.test', 2, 'invited', null, null, null, 'c0000000-0000-4000-8000-000000000005', null);
+
+insert into public.event_registry_items (id, event_id, title, price_note, quantity, note) values
+('f0000000-0000-4000-8000-000000000001', 'e0000000-0000-4000-8000-000000000001', 'Sample gift: dinner plates', 'Sample price, about $20 each', 8, 'Any plain white set'),
+('f0000000-0000-4000-8000-000000000002', 'e0000000-0000-4000-8000-000000000001', 'Sample gift: picnic blanket', 'Sample price, about $45', 1, null),
+('f0000000-0000-4000-8000-000000000003', 'e0000000-0000-4000-8000-000000000001', 'Sample gift: honeymoon fund contribution', null, 10, 'Any amount, given in person');
+insert into public.registry_claims (item_id, guest_id, quantity)
+select 'f0000000-0000-4000-8000-000000000002', id, 1 from public.event_guests where rsvp_token = 'c0000000-0000-4000-8000-000000000001';
+
+insert into public.event_timeline_items (event_id, start_time, end_time, title, notes, event_vendor_id, source) values
+('e0000000-0000-4000-8000-000000000001', '14:00', '16:30', 'Sample Lantern Hall opens for setup', 'Sample time. Hall access from 2pm per the accepted quote.', 'b0000000-0000-4000-8000-000000000001', 'organizer'),
+('e0000000-0000-4000-8000-000000000001', '17:00', '17:30', 'Ceremony in the courtyard', null, null, 'organizer'),
+('e0000000-0000-4000-8000-000000000001', '23:30', '00:00', 'Last dance, then the hall closes at midnight', null, 'b0000000-0000-4000-8000-000000000001', 'organizer');

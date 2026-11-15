@@ -43,6 +43,24 @@ const server = http.createServer((req, res) => {
       });
     }
 
+    if (req.method === 'POST' && req.url === '/v1/responses' && body.text?.format?.name === 'day_timeline') {
+      // Day-of timeline draft
+      const problems = [];
+      if (!/^Bearer \S+/.test(req.headers.authorization || '')) problems.push('missing bearer auth');
+      if (body.text.format.strict !== true || !body.text.format.schema) problems.push('text.format is not strict json_schema');
+      const ids = [...String(body.input ?? '').matchAll(/- booking ([0-9a-f-]{36}):/g)].map((m) => m[1]);
+      if (!String(body.input ?? '').includes('Event details')) problems.push('input not grounded in event');
+      if (problems.length) return reply(res, 400, { error: { message: problems.join('; ') } });
+      const items = [
+        ...(ids[0] ? [{ start: '13:00', end: '15:00', title: 'Mock: first booked vendor arrives and sets up (test data)', booking_id: ids[0], notes: 'Confirm with the vendor.' }] : []),
+        { start: '16:00', end: '16:30', title: 'Mock: ceremony (test data)', booking_id: '', notes: '' },
+        { start: '18:00', end: '', title: 'Mock: dinner (test data)', booking_id: '00000000-0000-4000-8000-000000000000', notes: 'Invented booking id must be dropped.' },
+        { start: '25:99', end: '', title: 'Invalid time must be dropped', booking_id: '', notes: '' },
+      ];
+      return reply(res, 200, { id: 'resp_mock_tl', object: 'response', status: 'completed', model: body.model,
+        output: [{ type: 'message', id: 'msg_mock_tl', role: 'assistant', status: 'completed', content: [{ type: 'output_text', text: JSON.stringify({ items }), annotations: [] }] }] });
+    }
+
     if (req.method === 'POST' && req.url === '/v1/responses' && body.text?.format?.name === 'vendor_advice') {
       // Vendor walkthrough "Help me choose" request
       const problems = [];
