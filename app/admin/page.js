@@ -22,7 +22,7 @@ export default async function AdminPage({ searchParams }) {
   const list = vendors ?? [];
 
   return (
-    <div className="page wrap">
+    <div className="page wrap pg pg-admin">
       <PageHead title="Vendor review." lede="Check each business against its website and registration before verifying. Verified vendors appear in search and can receive inquiries." />
       <nav className="chips" aria-label="Filter by status">
         {Object.entries(VENDOR_STATUS).map(([k, s]) => <a key={k} className="chip" href={`/admin?show=${k}`} aria-current={k === show ? 'page' : undefined}>{s.label}</a>)}

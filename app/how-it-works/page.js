@@ -28,7 +28,7 @@ const FAQS = [
 
 export default function HowItWorksPage() {
   return (
-    <div className="page wrap">
+    <div className="page wrap pg pg-hiw">
       <PageHead title="From the first idea to the night itself." lede="Five steps, from idea to party." />
 
       <ol className="hiw-steps">
@@ -39,7 +39,7 @@ export default function HowItWorksPage() {
               <h2 className="display-3">{t}</h2>
               <p className="muted measure">{d}</p>
             </div>
-            <span className={`badge ${status === 'Live' ? 'badge-ok' : status === 'Planned' ? 'badge-plain' : 'badge-info'}`}>{status}</span>
+            <span className={`hiw-status ${status === 'Planned' ? 'is-planned' : 'is-live'}`}>{status}</span>
           </li>
         ))}
       </ol>

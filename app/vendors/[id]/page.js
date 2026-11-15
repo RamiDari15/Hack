@@ -37,12 +37,12 @@ export default async function VendorProfile({ params, searchParams }) {
   }
 
   return (
-    <article className="page wrap">
-      <header className="page-head">
+    <article className="page wrap pg pg-vendor-profile">
+      <header className="page-head profile-head">
         <Link href={`/vendors?category=${encodeURIComponent(v.category)}`} className="back-link">{v.category}</Link>
-        <h1 className="display-2" style={{ maxWidth: '18ch' }}>{v.name}</h1>
-        <div className="row"><VerificationBadge vendor={v} /><span className="small muted">{v.city}{v.serviceRadiusMi ? `, travels up to ${v.serviceRadiusMi} mi` : ''}</span>
-          <SaveVendorButton vendorId={v.id} saved={saved} signedIn={Boolean(user)} /><a className="btn btn-sm" href="#vendor-plan-actions">Add to an event</a></div>
+        <h1 className="display-2">{v.name}</h1>
+        <p className="profile-meta"><span>{[v.category, v.city].filter(Boolean).join(' · ')}{v.serviceRadiusMi ? ` · travels up to ${v.serviceRadiusMi} mi` : ''}</span><VerificationBadge vendor={v} /></p>
+        <div className="row page-actions"><SaveVendorButton vendorId={v.id} saved={saved} signedIn={Boolean(user)} /><a className="btn btn-sm" href="#vendor-plan-actions">Add to an event</a></div>
       </header>
       {v.directoryListed && <p className="listing-status fine"><a href={v.sourceUrl} target="_blank" rel="noopener noreferrer">Public business source ↗</a><span aria-hidden="true"> · </span>Not yet verified by Vendora</p>}
 
@@ -53,7 +53,7 @@ export default async function VendorProfile({ params, searchParams }) {
             {v.photos.length > 1 && <div className="portfolio-thumbnails">{v.photos.slice(1).map((photo, i) => <div className="vendor-photo" key={photo}><Image src={photo} alt={`${v.name} portfolio photo ${i + 2}`} fill sizes="(max-width: 760px) 50vw, 22vw" unoptimized /></div>)}</div>}
             {v.sourceUrl && <p className="fine">Photos: <a href={v.sourceUrl} target="_blank" rel="noopener noreferrer">public business listing and its contributors ↗</a></p>}
           </section> : <Placeholder label={v.category} ratio="16 / 9" caption="Portfolio not uploaded yet" />}
-          <section className="stack"><h2 className="display-3">About</h2><p className="lede">{v.description || 'This vendor has not written a description yet.'}</p></section>
+          <section className="stack"><h2 className="display-3">About</h2><p className="lede profile-about">{v.description || 'This vendor has not written a description yet.'}</p></section>
           <PublishedPricing packages={v.packages} vendorId={v.id} events={events} signedIn={Boolean(user)} category={v.category} sourceUrl={v.sourceUrl}/>
           <VendorPricing key={v.id} options={v.budgetOptions} category={v.category} directoryListed={v.directoryListed} vendorId={v.id} events={events} signedIn={Boolean(user)} />
           <VendorCalendar entries={v.calendar} />
@@ -67,7 +67,7 @@ export default async function VendorProfile({ params, searchParams }) {
             <VendorEventActions vendorId={v.id} events={events} signedIn={Boolean(user)} eventId={events.find(e=>e.id===sp?.event)?.id} />
           </div>
 
-          <div className="panel panel-pop stack">
+          <div className="panel stack profile-contact">
             <h2 className="title">{v.directoryListed ? 'Contact the business' : 'Request a quote'}</h2>
             <p className="fine">{v.calendarIsDemo ? 'This sample calendar is for a fictional business. Confirm availability with the vendor.' : 'Check prices and dates with them directly.'}</p>
             {v.directoryListed ? (

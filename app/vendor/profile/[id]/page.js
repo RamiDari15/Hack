@@ -23,7 +23,7 @@ export default async function VendorProfileEdit({ params, searchParams }) {
   const pkgs = [...(v.vendor_packages ?? [])].sort((a, b) => a.created_at.localeCompare(b.created_at));
 
   return (
-    <div className="page wrap">
+    <div className="page wrap pg pg-vendor-edit">
       <PageHead back={{ href: '/vendor', label: 'Vendor dashboard' }} title={v.name} lede={`${v.category}${v.city ? `, ${v.city}` : ''}`}>
         <span className={`badge ${s.tone}`}>{s.label}</span>
         {v.verification_status === 'verified' && <Link className="btn btn-sm btn-outline" href={`/vendors/${v.id}`}>View public page</Link>}
@@ -45,9 +45,9 @@ export default async function VendorProfileEdit({ params, searchParams }) {
             <ul role="list" className="booking-list">
               {pkgs.map((p) => (
                 <li key={p.id}>
-                  <div className="stack-sm"><span className="title">{p.title}</span>{p.description && <span className="fine">{p.description}</span>}</div>
+                  <div className="stack-sm"><p className="title">{p.title}</p>{p.description && <p className="fine">{p.description}</p>}</div>
                   <div className="row">
-                    <span className="badge badge-accent num">{p.price_cents == null ? 'Quote required' : moneyCents(p.price_cents)}</span>
+                    <span className="pkg-price num">{p.price_cents == null ? 'Quote required' : moneyCents(p.price_cents)}</span>
                     <form action={removePackage}><input type="hidden" name="id" value={p.id} /><input type="hidden" name="vendor_id" value={v.id} /><button className="btn btn-sm btn-outline" type="submit">Remove</button></form>
                   </div>
                 </li>
