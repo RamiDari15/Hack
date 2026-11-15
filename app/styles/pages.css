@@ -509,3 +509,36 @@ a:hover .ph-shapes, .vendor-card:hover .ph-shapes { transform: scale(1.06) rotat
   .plan-dest { border-radius: 18px; }
   .plan-dest select { max-width: 100%; flex: 1; }
 }
+
+/* Planner form: numbered sections with room to breathe. */
+.planner-form { gap: 0; padding: clamp(var(--s-5), 3vw, var(--s-7)); }
+.planner-form > * + * { margin-top: var(--s-6); }
+.planner-form > .between { margin-top: var(--s-6); }
+.planner-form > fieldset, .planner-form > .form-section { padding-top: var(--s-6); border-top: 1.5px solid var(--line); }
+.planner-form > fieldset:first-child, .planner-form > .form-section:first-child { padding-top: 0; border-top: 0; }
+.planner-form .form-grid { row-gap: var(--s-5); }
+.form-step {
+  display: flex; align-items: center; gap: 12px; width: 100%; margin-bottom: var(--s-5); padding: 0;
+  font-family: var(--f-display); font-weight: 800; font-size: clamp(1.3rem, 1.1rem + .6vw, 1.6rem); letter-spacing: -.03em; line-height: 1; text-transform: none; color: var(--ink);
+}
+.form-step i {
+  display: inline-grid; place-items: center; width: 34px; height: 34px; flex: none; border-radius: 50%;
+  background: var(--sun); border: 2px solid var(--ink); font-family: var(--f-accent); font-style: italic; font-weight: 400; font-size: 1.2rem; letter-spacing: 0;
+}
+.planner-form fieldset:nth-of-type(2) .form-step i { background: var(--pink-2); }
+.form-section .form-step i { background: var(--paper); }
+.planner-form .hint { display: block; margin-top: 6px; }
+.planner-using { padding: var(--s-3) var(--s-4); border-radius: 14px; background: var(--cream-2, var(--sun-soft)); }
+.planner-result > .empty { padding: clamp(var(--s-5), 3vw, var(--s-7)); display: grid; gap: var(--s-4); }
+.empty-title { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); letter-spacing: -.035em; line-height: 1; }
+.planner-result > .empty .dot-list { display: grid; gap: var(--s-3); font-size: var(--t-md); }
+/* Legends normally sit on the fieldset border and outside the grid; floating them makes them ordinary items. */
+.planner-form > fieldset { border-top: 0; padding-top: 0; }
+.planner-form legend.form-step { float: left; margin-bottom: var(--s-1); padding-top: var(--s-6); border-top: 1.5px solid var(--line); }
+.planner-form > fieldset:first-child legend.form-step { padding-top: 0; border-top: 0; }
+.planner-form > fieldset.stack > legend.form-step + * { clear: both; }
+.planner-form > fieldset.stack { display: grid; gap: var(--s-5); }
+.planner-form > fieldset.stack > legend.form-step { margin-bottom: 0; }
+.seg-pills { width: 100%; }
+.seg-pills label { flex: 1; text-align: center; }
+.seg-pills span { padding: .5rem .6rem; }

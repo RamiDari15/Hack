@@ -105,7 +105,7 @@ export default function PlannerForm({ events, initialEventId, signedIn, configur
         )}
         {!eventId && (
           <fieldset className="form-grid plain-fieldset">
-            <legend className="label" style={{ gridColumn: '1 / -1' }}>1. The basics</legend>
+            <legend className="form-step" style={{ gridColumn: '1 / -1' }}><i>1</i>The basics</legend>
             <div className="field"><label htmlFor="type">Type</label><select id="type" value={manual.type} onChange={set('type')}>{EVENT_TYPE_GROUPS.map((g) => <optgroup key={g.label} label={g.label}>{g.types.map((t) => <option key={t}>{t}</option>)}</optgroup>)}</select></div>
             <div className="field"><label htmlFor="date">Date</label><input id="date" type="date" value={manual.date} onChange={set('date')} /></div>
             <div className="field"><label htmlFor="loc">Location</label><input id="loc" value={manual.location} onChange={set('location')} placeholder="Ann Arbor, MI" autoComplete="address-level2" /></div>
@@ -116,7 +116,7 @@ export default function PlannerForm({ events, initialEventId, signedIn, configur
           </fieldset>
         )}
         <fieldset className="plain-fieldset stack">
-          <legend className="label">{eventId ? 'Shape the plan' : '2. The feel'}</legend>
+          <legend className="form-step">{eventId ? 'Shape the plan' : <><i>2</i>The feel</>}</legend>
           <div className="form-grid">
             <fieldset className="plain-fieldset stack-sm">
               <legend className="field-label">Setting</legend>
@@ -131,8 +131,9 @@ export default function PlannerForm({ events, initialEventId, signedIn, configur
           {!eventId && <div className="field"><label htmlFor="style-other">Other style (optional)</label><input id="style-other" value={otherStyle} onChange={(e) => setOtherStyle(e.target.value)} maxLength={80} placeholder="Lantern-lit courtyard" /></div>}
           <Toggles legend="Where should the money go first?" options={PRIORITIES} value={priorities} onChange={setPriorities} max={3} hint="Up to 3. These get more of the budget." />
         </fieldset>
-        <div className="field">
-          <label htmlFor="prompt">{eventId ? 'Anything else?' : '3. Anything else?'} <span className="fine">(optional)</span></label>
+        <div className="field form-section">
+          <p className="form-step" aria-hidden="true">{eventId ? 'Anything else?' : <><i>3</i>Anything else?</>}</p>
+          <label htmlFor="prompt">Tell it anything else <span className="fine">(optional)</span></label>
           <textarea id="prompt" value={prompt} onChange={(e) => setPrompt(e.target.value)} maxLength={2000} rows={3} placeholder={EXAMPLES[0]} />
           <div className="chips" aria-label="Example requests">
             {EXAMPLES.map((x) => <button key={x} type="button" className="chip" onClick={() => setPrompt(x)}>{x}</button>)}
@@ -159,13 +160,14 @@ export default function PlannerForm({ events, initialEventId, signedIn, configur
 function PlannerEmpty() {
   return (
     <div className="empty">
-      <p className="label">What you get</p>
+      <h2 className="empty-title">What you get</h2>
       <ul className="dot-list">
-        <li>A budget split with a low and high ballpark per category</li>
-        <li>Taxes, tips, delivery, setup, cleanup, and contingency as their own rows</li>
-        <li>The assumptions behind every number</li>
-        <li>Missing items, savings ideas, and a checklist</li>
+        <li>Your budget split by category, with a low and high ballpark for each</li>
+        <li>Tips, delivery, setup and cleanup as their own rows</li>
+        <li>Listed vendors near you that fit each category</li>
+        <li>A timeline you can edit and add to your to-dos</li>
       </ul>
+      <p className="fine">Every number is an AI ballpark until a vendor sends a real quote.</p>
     </div>
   );
 }

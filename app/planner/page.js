@@ -18,7 +18,6 @@ export default async function PlannerPage({ searchParams }) {
   return (
     <div className="page wrap">
       <PageHead title="Ask the planner." lede="Tell it about the day. You get a budget split, what you might be forgetting, and a to-do list." />
-      <p className="notice notice-warn">These are AI ballparks to plan with. Real quotes from vendors replace them.</p>
       <PlannerForm events={events} initialEventId={selected} signedIn={Boolean(user)} configured={Boolean(supabase)} />
     </div>
   );
