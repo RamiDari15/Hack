@@ -99,6 +99,9 @@ def main():
     missing = {category: counts[category] for category in categories if counts[category] < 20}
     if missing:
         raise SystemExit(f'Every category must contain at least 20 sourced businesses: {missing}')
+    budgets = json.loads((ROOT / 'data/vendors/budget-options.json').read_text())
+    if any(len(budgets.get(r['source_url'], [])) != 3 for r in records):
+        raise SystemExit('Regenerate three budget options per business with scripts/generate-budget-options.py.')
     today = datetime.now(ZoneInfo('America/Detroit')).date()
     sql = ['begin;']
     existing = set()
@@ -128,15 +131,19 @@ def main():
         sql.append(f"insert into public.vendors ({columns}) values ({','.join(literal(v) for v in values.values())}) on conflict (id) do update set {updates};")
         for number, offer in enumerate(r['offers']):
             low, high = offer.get('min'), offer.get('max')
-            price = f"Published range: {low:g}–{high:g} {offer['currency']}." if isinstance(low, (int, float)) and isinstance(high, (int, float)) else 'Contact the business for current pricing.'
-            unit = {'E48': 'Per event.', 'C62': 'Confirm the per-person or package basis with the business.'}.get(offer.get('unit'), 'Confirm the pricing basis with the business.')
+            price = f"Published range: {low:g}–{high:g} {offer['currency']}." if isinstance(low, (int, float)) and isinstance(high, (int, float)) else f"Published starting price: {low:g} {offer['currency']}." if isinstance(low, (int, float)) else 'Contact the business for current pricing.'
+            unit = {'E48': 'Per event.', 'C62': 'Per person.', 'HUR': 'Per hour.'}.get(offer.get('unit'), 'Confirm the pricing basis with the business.')
             note = f'{price} {unit} Source: {r["source_url"]} Prices and inclusions may change.'
             package_id = identity(r['source_url'] + ':package:' + str(number))
             sql.append(f"insert into public.vendor_packages (id,vendor_id,title,price_cents,description) values ({literal(package_id)},{literal(vendor_id)},{literal(offer['title'])},null,{literal(note)}) on conflict (id) do update set title=excluded.title,description=excluded.description;")
+        for number, option in enumerate(budgets[r['source_url']]):
+            package_id = identity(r['source_url'] + ':budget:' + str(number))
+            sql.append(f"insert into public.vendor_packages (id,vendor_id,title,price_cents,description) values ({literal(package_id)},{literal(vendor_id)},{literal(option['title'])},null,{literal(json.dumps(option))}) on conflict (id) do update set title=excluded.title,price_cents=null,description=excluded.description;")
         # Remove any calendar entries an older version of this importer generated.
         sql.append(f'delete from public.vendor_calendar_entries where vendor_id={literal(vendor_id)} and is_demo;')
     sql.append("notify pgrst, 'reload schema'; commit;")
     print(json.dumps({'vendors': len(records), 'photos': sum(len(r['photos']) for r in records),
+                      'budget_options': sum(len(budgets[r['source_url']]) for r in records),
                       'published_packages': sum(len(r['offers']) for r in records),
                       'categories': dict(Counter(r['category'] for r in records))}, indent=2))
     if args.sql_output:

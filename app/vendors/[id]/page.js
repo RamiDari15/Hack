@@ -2,13 +2,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getVendor } from '@/lib/vendors';
 import { getSessionUser } from '@/lib/supabase/server';
-import { moneyCents } from '@/lib/format';
+import { publishedRate } from '@/lib/vendor-pricing';
 import Placeholder from '@/components/ui/Placeholder';
 import { VerificationBadge } from '@/components/VendorCard';
 import RequestQuote from './RequestQuote';
 import Image from 'next/image';
 import VendorCalendar from '@/components/VendorCalendar';
 import VendorReviews from '@/components/VendorReviews';
+import VendorPricing from '@/components/VendorPricing';
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -44,12 +45,14 @@ export default async function VendorProfile({ params }) {
             {v.sourceUrl && <p className="fine">Photos: <a href={v.sourceUrl} target="_blank" rel="noopener noreferrer">public business listing and its contributors ↗</a></p>}
           </section> : <Placeholder label={v.category} ratio="16 / 9" caption="Portfolio not uploaded yet" />}
           <section className="stack"><h2 className="display-3">About</h2><p className="lede">{v.description || 'This vendor has not written a description yet.'}</p></section>
-          <section className="stack"><h2 className="display-3">Packages</h2>
+          <VendorPricing key={v.id} options={v.budgetOptions} />
+          <section className="stack"><h2 className="display-3">{v.directoryListed ? 'Published packages' : 'Packages'}</h2>
             {v.packages?.length ? (
               <dl>{v.packages.map((p) => (
-                <div className="kv" key={`${p.title}-${p.note}`}><dt>{p.title}{p.note && <><br /><span className="fine">{p.note}</span></>}</dt><dd>{p.priceCents != null ? moneyCents(p.priceCents) : v.directoryListed ? 'Published details' : 'Quote'}</dd></div>
+                <div className="kv" key={`${p.title}-${p.note}`}><dt>{p.title}{p.note && !v.directoryListed && <><br /><span className="fine">{p.note}</span></>}</dt><dd>{publishedRate(p) || 'Request a quote'}</dd></div>
               ))}</dl>
             ) : <p className="muted">{v.directoryListed ? 'No packages published. Contact the business for pricing.' : 'No packages listed. Request a quote.'}</p>}
+            {!!v.packages?.length && v.sourceUrl && <p className="fine"><a href={v.sourceUrl} target="_blank" rel="noopener noreferrer">View published package details ↗</a></p>}
           </section>
           <VendorCalendar entries={v.calendar} />
           <section className="stack"><h2 className="display-3">Setup requirements</h2><p className="muted">{v.setupRequirements || 'Not provided yet.'}</p></section>
