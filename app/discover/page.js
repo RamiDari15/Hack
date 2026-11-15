@@ -5,7 +5,9 @@ import PageHead from '@/components/PageHead';
 
 export const metadata = { title: 'Web search' };
 
-export default async function DiscoverPage() {
+export default async function DiscoverPage({ searchParams }) {
+  const sp = await searchParams;
+  const initialQuery = typeof sp?.q === 'string' ? sp.q.slice(0, 300) : '';
   const { user, supabase } = await getSessionUser();
   const { vendors, mode } = await listVendors({ verifiedOnly: true });
   let events = [];
@@ -16,7 +18,7 @@ export default async function DiscoverPage() {
   return (
     <div className="page wrap">
       <PageHead title="Search past our listings." lede="Look for venues, vendors and ideas across the web. Results come from an AI web search and sit apart from verified vendors, each with its source." />
-      <DiscoverSearch signedIn={Boolean(user)} configured={Boolean(supabase)} verified={vendors.slice(0, 3).map((v) => ({ id: v.id, name: v.name, category: v.category, city: v.city, sample: v.sample }))} verifiedMode={mode} events={events} />
+      <DiscoverSearch signedIn={Boolean(user)} configured={Boolean(supabase)} verified={vendors.slice(0, 3).map((v) => ({ id: v.id, name: v.name, category: v.category, city: v.city, sample: v.sample }))} verifiedMode={mode} events={events} initialQuery={initialQuery} />
     </div>
   );
 }

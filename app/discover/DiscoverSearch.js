@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import SaveResult from './SaveResult';
 
-export default function DiscoverSearch({ signedIn, configured, verified, verifiedMode, events = [] }) {
-  const [query, setQuery] = useState('');
+export default function DiscoverSearch({ signedIn, configured, verified, verifiedMode, events = [], initialQuery = '' }) {
+  const [query, setQuery] = useState(initialQuery);
   const [state, setState] = useState({ status: 'idle', results: [], error: '', at: null });
 
   async function search(e) {

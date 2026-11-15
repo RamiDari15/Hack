@@ -43,6 +43,24 @@ const server = http.createServer((req, res) => {
       });
     }
 
+    if (req.method === 'POST' && req.url === '/v1/responses' && body.text?.format?.name === 'vendor_advice') {
+      // Vendor walkthrough "Help me choose" request
+      const problems = [];
+      if (!/^Bearer \S+/.test(req.headers.authorization || '')) problems.push('missing bearer auth');
+      if (body.text.format.strict !== true || !body.text.format.schema) problems.push('text.format is not strict json_schema');
+      const ids = [...String(body.input ?? '').matchAll(/- id ([0-9a-f-]{36}):/g)].map((m) => m[1]);
+      if (!String(body.input ?? '').includes('Event details') || !ids.length) problems.push('input not grounded in event and vendors');
+      if (problems.length) return reply(res, 400, { error: { message: problems.join('; ') } });
+      const advice = {
+        summary: 'Mock advice (test data). The first vendor is verified and has no calendar conflict.',
+        pick: ids[0],
+        vendors: [{ id: ids[0], fit: 'Verified, with a published price.' }, { id: '00000000-0000-4000-8000-000000000000', fit: 'Invented vendor that must be dropped.' }],
+        questions: ['Is our date open?', 'What does the package include?', 'Are tax and gratuity included?'],
+      };
+      return reply(res, 200, { id: 'resp_mock_adv', object: 'response', status: 'completed', model: body.model,
+        output: [{ type: 'message', id: 'msg_mock_adv', role: 'assistant', status: 'completed', content: [{ type: 'output_text', text: JSON.stringify(advice), annotations: [] }] }] });
+    }
+
     if (req.method === 'POST' && req.url === '/v1/responses') {
       const problems = [];
       if (!/^Bearer \S+/.test(req.headers.authorization || '')) problems.push('missing bearer auth');

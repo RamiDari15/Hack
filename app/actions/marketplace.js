@@ -323,9 +323,11 @@ export async function saveSponsorLead(_prev, fd) {
   const url = str(fd.get('url'), 2000);
   if (!name) return { error: 'Missing the sponsor name.' };
   if (url && !/^https?:\/\//.test(url)) return { error: 'That link is not valid.' };
-  const { error } = await s.supabase.from('sponsor_leads').insert({ event_id: eid, name, url: url || null, reason: str(fd.get('reason'), 1000) || null });
+  const email = str(fd.get('contact_email'), 200);
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { error: 'That email does not look right.' };
+  const { error } = await s.supabase.from('sponsor_leads').insert({ event_id: eid, name, url: url || null, contact_email: email || null, reason: str(fd.get('reason'), 1000) || null });
   if (error) return { error: 'Only the event owner can add sponsor leads.' };
-  revalidatePath(`/events/${eid}/sponsors`);
+  revalidatePath(`/events/${eid}/sponsors`); revalidatePath(`/events/${eid}`);
   return { ok: true, message: 'Added to your list.' };
 }
 
@@ -342,7 +344,7 @@ export async function updateSponsorLead(_prev, fd) {
   if (fd.has('proposal')) patch.proposal = str(fd.get('proposal'), 6000) || null;
   const { error } = await s.supabase.from('sponsor_leads').update(patch).eq('id', lid);
   if (error) return { error: 'Could not save.' };
-  revalidatePath(`/events/${eid}/sponsors`);
+  revalidatePath(`/events/${eid}/sponsors`); revalidatePath(`/events/${eid}`);
   return { ok: true, message: 'Saved.' };
 }
 
@@ -351,5 +353,5 @@ export async function deleteSponsorLead(fd) {
   const lid = id(fd); const eid = id(fd, 'event_id');
   if (s.error || !lid) return;
   await s.supabase.from('sponsor_leads').delete().eq('id', lid);
-  revalidatePath(`/events/${eid}/sponsors`);
+  revalidatePath(`/events/${eid}/sponsors`); revalidatePath(`/events/${eid}`);
 }

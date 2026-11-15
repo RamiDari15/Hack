@@ -152,3 +152,11 @@ insert into public.vendor_calendar_entries (vendor_id, starts_at, ends_at, statu
 ('a0000000-0000-4000-8000-000000000001', '2027-06-26T16:00:00Z', '2027-06-27T04:00:00Z', 'blocked', 'Sample maintenance day', true),
 ('a0000000-0000-4000-8000-000000000006', '2027-06-12T14:00:00Z', '2027-06-12T23:00:00Z', 'tentative', 'Sample hold for a wedding', true),
 ('a0000000-0000-4000-8000-000000000006', '2027-06-20T14:00:00Z', '2027-06-20T23:00:00Z', 'booked', 'Sample graduation shoot', true);
+
+-- Sample sponsor leads for the wedding. Fictional businesses with .test addresses, so nothing reaches a real inbox.
+insert into public.sponsor_leads (event_id, name, url, contact_email, reason, status, proposal) values
+('e0000000-0000-4000-8000-000000000001', 'Sample Bloom Florist', null, 'hello@sample-bloom.test',
+  'Fictional business. A local florist reaching couples planning summer weddings.', 'contacted',
+  E'Hi Sample Bloom Florist team,\n\nWe are planning a 150-guest garden wedding in Ann Arbor on June 12, 2027. Would you be open to sponsoring the welcome table? In return we can offer a sign at the entrance and a thank-you in the program.\n\nThank you for considering it.'),
+('e0000000-0000-4000-8000-000000000001', 'Sample Main Street Bakery', null, null,
+  'Fictional business. Could provide favors in exchange for a mention.', 'idea', null);

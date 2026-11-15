@@ -1,4 +1,4 @@
-# Vendora demo walkthrough (about 5 minutes)
+# Vendora demo walkthrough (about 7 minutes)
 
 ## Before you present
 1. `git pull`, then `npx supabase start` (Docker running).
@@ -25,17 +25,27 @@ Line: "Every event is a pile of vendors and guesses. Vendora puts them in one pl
 - The planner uses the event details, verified vendors and local published prices.
 - Show the budget table: **AI estimate** rows vs **Vendor quote** rows. Quotes replace estimates as they arrive.
 
-## 4. Book a vendor (90 s)
+## 4. Choose vendors with the walkthrough (60 s)
+- On the wedding page, point at **Plan step by step**: each step ticks itself off from the event's real data, and the planner's generated tasks sit underneath.
+- Click **Choose vendors**. One category at a time, vendors are ranked for this event: verified first, published prices against the AI estimate, and each vendor's Vendora calendar for June 12 (Sample Lantern Hall shows as booked that day).
+- Click **Compare venues with AI**: the planner explains the best fit using only the vendors on the page and lists questions to ask. It is labeled AI suggestion.
+- **Next: Catering** moves through the categories. **Request a quote** sends an inquiry after a confirmation tick.
+
+## 5. Book a vendor (90 s)
 - On the wedding page, **Vendors** lists one booking in every status.
 - Open **Sample Table Kitchen** (Quote received): read the message thread, then **Accept quote**.
 - Switch to `kitchen@demo.test` → **For vendors**: the request shows with the event details. The vendor can reply, send a revised quote or hold the date.
 - Back as Maya: tick the box and **Confirm booking**. The badge turns Confirmed. Nothing is paid or sent without confirmation.
 
-## 5. Trust and safety (45 s), as admin
+## 6. Contact sponsors (30 s)
+- On the wedding page, **Contact sponsors**. Sample Bloom Florist is already marked Contacted.
+- Add a sponsor with an email: Vendora drafts a proposal from the event details. **Email** opens your own mail app with it; Vendora never sends anything itself. Then **Mark as contacted**.
+
+## 7. Trust and safety (45 s), as admin
 - `admin@demo.test` → `/admin`: Sample Velvet Strings is waiting for review. Show the legal name and website check, then **Verify**.
 - Mention: vendors only appear as Verified after review, and a stranger gets a 404 on someone else's booking (database row-level security, 95 automated checks).
 
-## 6. Web search (optional, 30 s)
+## 8. Web search (optional, 30 s)
 **Web search** → "outdoor wedding venues with string lights near Ann Arbor". Results are labeled **External, confirm** and kept apart from verified vendors. Save one to the event.
 
 ## If something goes wrong

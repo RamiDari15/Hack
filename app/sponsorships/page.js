@@ -1,23 +1,27 @@
+import Link from 'next/link';
 import PageHead from '@/components/PageHead';
 import { sampleSponsors } from '@/lib/sample-data';
 
 export const metadata = { title: 'Sponsorships' };
 
 const STEPS = [
-  'Describe the audience, place, theme, attendance and what you can offer a sponsor',
-  'Web research finds possible sponsors',
-  'The planner explains each match and drafts a proposal',
-  'You approve every recipient and every message',
-  'Track replies, follow-ups and agreed benefits',
+  'Open your event and choose Contact sponsors',
+  'Search the web for local businesses that fit your crowd, or add ones you know',
+  'Vendora drafts a proposal from your event details. Edit it to say what you can offer',
+  'Email each sponsor from your own inbox. Vendora never sends anything for you',
+  'Mark who you contacted, who agreed and who declined',
 ];
 
 export default function SponsorshipsPage() {
   return (
     <div className="page wrap">
       <PageHead title="Find sponsors who fit your crowd." lede="For festivals, fundraisers and community events. Nothing is ever sent without your approval." />
-      <p className="notice notice-warn">Preview only. The sponsor database is not populated, no sponsor contacts are shown, and sending is not built.</p>
+      <div className="row page-actions">
+        <Link className="btn btn-bulb" href="/dashboard">Contact sponsors for an event</Link>
+        <Link className="btn btn-outline" href="/events/new">Create an event</Link>
+      </div>
       <section className="split-section" aria-labelledby="sp-how">
-        <h2 id="sp-how" className="display-2">How it will work</h2>
+        <h2 id="sp-how" className="display-2">How it works</h2>
         <ol className="num-list">{STEPS.map((s) => <li key={s}><p>{s}</p></li>)}</ol>
       </section>
       <section className="split-section" aria-labelledby="sp-ex">

@@ -1,0 +1,83 @@
+import Link from 'next/link';
+
+// Step-by-step guide for planning one event. Each step is marked done from the event's real data,
+// and the first unfinished step is highlighted as the next thing to do.
+export default function PlanGuide({ event, plan, bookings, quotes, sponsors }) {
+  const confirmed = bookings.find((b) => b.status === 'confirmed');
+  const quoted = bookings.find((b) => (b.quotes ?? []).some((q) => q.status === 'sent'));
+  const steps = [
+    {
+      key: 'details', title: 'Add the event details',
+      text: 'Date, location, guest count and budget shape every estimate and vendor search.',
+      done: Boolean(event.event_date && event.location && event.guest_count && event.budget_cents != null),
+      cta: { href: `/events/${event.id}?edit=1#edit-details`, label: 'Edit details' },
+    },
+    {
+      key: 'estimate', title: 'Build a budget estimate',
+      text: 'The AI planner splits your budget using verified vendors and local published prices.',
+      done: Boolean(plan),
+      cta: { href: `/planner?event=${event.id}`, label: plan ? 'Rebuild estimate' : 'Build an estimate' },
+    },
+    {
+      key: 'vendors', title: 'Choose vendors',
+      text: 'Walk through each category with vendors ranked for your budget, date and location.',
+      done: bookings.length > 0,
+      cta: { href: `/events/${event.id}/choose`, label: 'Choose vendors' },
+    },
+    {
+      key: 'quotes', title: 'Compare and accept quotes',
+      text: 'Quotes replace AI estimates in your budget as they arrive. Accept the ones that fit.',
+      done: quotes.some((q) => q.status === 'accepted'),
+      cta: quoted ? { href: `/bookings/${quoted.id}`, label: 'Review a quote' } : { href: '#vendors-h', label: 'See vendors' },
+    },
+    {
+      key: 'confirm', title: 'Confirm a booking',
+      text: 'You confirm each booking yourself. Nothing is paid or sent without your confirmation.',
+      done: Boolean(confirmed),
+      cta: { href: confirmed ? `/bookings/${confirmed.id}` : '#vendors-h', label: confirmed ? 'Open booking' : 'See vendors' },
+    },
+    {
+      key: 'sponsors', title: 'Contact sponsors',
+      text: 'List local businesses that fit your crowd, draft a proposal and email them from your own inbox.',
+      done: sponsors.some((s) => s.status === 'contacted' || s.status === 'agreed'),
+      cta: { href: `/events/${event.id}/sponsors`, label: 'Contact sponsors' },
+    },
+  ];
+  const next = steps.find((s) => !s.done);
+  const doneCount = steps.filter((s) => s.done).length;
+
+  return (
+    <section className="panel stack plan-guide" aria-labelledby="guide-h">
+      <div className="panel-head">
+        <h2 id="guide-h">Plan step by step</h2>
+        <span className="badge badge-plain num">{doneCount} of {steps.length} done</span>
+      </div>
+      <div className="guide-bar" aria-hidden="true"><span style={{ width: `${(doneCount / steps.length) * 100}%` }} /></div>
+      <ol role="list" className="guide-steps">
+        {steps.map((s, i) => {
+          const isNext = s === next;
+          return (
+            <li key={s.key} className={s.done ? 'is-done' : isNext ? 'is-next' : undefined} aria-current={isNext ? 'step' : undefined}>
+              <span className="guide-dot num" aria-hidden="true">{s.done ? '✓' : i + 1}</span>
+              <div className="stack-sm guide-body">
+                <h3 className="title">{s.title}<span className="sr-only">{s.done ? ' (done)' : isNext ? ' (next step)' : ''}</span></h3>
+                {(isNext || !s.done) && <p className="small muted">{s.text}</p>}
+              </div>
+              <Link className={`btn btn-sm ${isNext ? '' : 'btn-outline'}`} href={s.cta.href}>{s.cta.label}</Link>
+            </li>
+          );
+        })}
+      </ol>
+      {plan?.checklist?.length > 0 && (
+        <div className="stack-sm guide-ai">
+          <div className="between"><h3 className="label">Tasks the planner generated for this event</h3><span className="badge badge-warn">AI suggestion</span></div>
+          <ol className="num-list">{plan.checklist.map((c, i) => <li key={i}><div><b>{c.task}</b><p className="fine">{c.when}</p></div></li>)}</ol>
+          <p className="fine">Generated from your event details. Rebuild the estimate after changing details to refresh them.</p>
+        </div>
+      )}
+      {plan && !plan.checklist?.length && <p className="fine">Rebuild the estimate to get tasks tailored to this event.</p>}
+      {!plan && <p className="fine">Build an estimate and the planner adds tasks tailored to this event here.</p>}
+      {!next && <p className="notice notice-ok">Every step is done. Keep an eye on vendor messages as the date gets closer.</p>}
+    </section>
+  );
+}

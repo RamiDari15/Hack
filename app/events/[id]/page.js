@@ -5,6 +5,7 @@ import { UUID_RE, BOOKING_STATUS, formatDate, money, moneyCents } from '@/lib/fo
 import EventForm from '@/components/EventForm';
 import BudgetTable from '@/components/BudgetTable';
 import PageHead from '@/components/PageHead';
+import PlanGuide from '@/components/PlanGuide';
 import { updateEvent, deleteEvent, removeExternalResult } from '../actions';
 
 export const metadata = { title: 'Event' };
@@ -17,7 +18,7 @@ export default async function EventPage({ params, searchParams }) {
   if (!supabase) redirect('/dashboard');
   if (!user) redirect(`/sign-in?next=/events/${id}`);
 
-  const [{ data: event }, { data: bookings }, { data: plans }, { data: saved }] = await Promise.all([
+  const [{ data: event }, { data: bookings }, { data: plans }, { data: saved }, { data: sponsors }] = await Promise.all([
     supabase.from('events').select('*').eq('id', id).maybeSingle(),
     supabase.from('event_vendors')
       .select('id, status, hold_expires_at, created_at, vendors(id, name, category, city), quotes(id, amount_cents, description, valid_until, status, created_at)')
@@ -25,6 +26,7 @@ export default async function EventPage({ params, searchParams }) {
     supabase.from('ai_requests').select('id, output, created_at').eq('event_id', id).eq('kind', 'plan')
       .order('created_at', { ascending: false }).limit(1),
     supabase.from('event_saved_results').select('id, title, url, host, snippet, created_at').eq('event_id', id).order('created_at', { ascending: false }),
+    supabase.from('sponsor_leads').select('id, status').eq('event_id', id),
   ]);
   if (!event) notFound();
 
@@ -39,6 +41,7 @@ export default async function EventPage({ params, searchParams }) {
       <PageHead back={{ href: '/dashboard', label: 'Your events' }} title={event.title} lede={meta}>
         <span className="badge badge-plain">{event.event_type}</span>
         {event.style && <span className="badge badge-plain">{event.style}</span>}
+        <Link className="btn btn-sm btn-bulb" href={`/events/${event.id}/sponsors`}>Contact sponsors</Link>
       </PageHead>
       {sp?.created && <p className="notice notice-ok">Event created. Next, build an estimate with the planner or find vendors.</p>}
 
@@ -48,6 +51,8 @@ export default async function EventPage({ params, searchParams }) {
         <div><dt>Vendors contacted</dt><dd className="num">{rows.length}</dd></div>
         <div><dt>Quotes received</dt><dd className="num">{quotes.length}</dd></div>
       </dl>
+
+      <PlanGuide event={event} plan={plan} bookings={rows} quotes={quotes} sponsors={sponsors ?? []} />
 
       <div className="event-layout">
         <div className="stack-lg">
@@ -70,7 +75,7 @@ export default async function EventPage({ params, searchParams }) {
           <section className="panel stack" aria-labelledby="vendors-h">
             <div className="panel-head">
               <h2 id="vendors-h">Vendors</h2>
-              <Link className="btn btn-sm btn-outline" href="/vendors">Find vendors</Link>
+              <Link className="btn btn-sm" href={`/events/${event.id}/choose`}>Choose vendors step by step</Link>
             </div>
             {rows.length ? (
               <ul role="list" className="booking-list">
@@ -123,16 +128,10 @@ export default async function EventPage({ params, searchParams }) {
             )}
           </section>
 
-          {plan?.checklist?.length > 0 && (
-            <section className="panel stack" aria-labelledby="check-h">
-              <div className="panel-head"><h2 id="check-h">Suggested checklist</h2><span className="badge badge-warn">AI suggestion</span></div>
-              <ol className="num-list">{plan.checklist.map((c, i) => <li key={i}><div><b>{c.task}</b><p className="fine">{c.when}</p></div></li>)}</ol>
-            </section>
-          )}
         </div>
 
         <aside className="stack-lg">
-          <details className="panel disclosure">
+          <details className="panel disclosure" id="edit-details" open={sp?.edit === '1' || undefined}>
             <summary>Edit details</summary>
             <div style={{ marginTop: 'var(--s-5)' }}>
               <EventForm compact action={updateEvent} eventId={event.id} submitLabel="Save changes" initial={{

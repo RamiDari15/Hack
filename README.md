@@ -80,6 +80,8 @@ Vendor onboarding forms and an admin verification screen, quote replies and mess
 | `/vendor`, `/vendor/apply`, `/vendor/profile/[id]` | Signed in | Apply as a vendor, edit the profile and packages, see incoming requests |
 | `/admin` | Admins | Verify vendors or ask for changes with a note |
 | `/bookings/[id]` | The organizer and the vendor | Messages, quotes, accept, hold, confirm, cancel |
+| `/events/[id]/choose` | Event viewers | Vendor walkthrough: one category at a time, ranked by verification, location, published price vs. the AI estimate and the vendor's calendar; "Help me choose" asks the AI to compare (`/api/vendor-advice`) |
+| `/events/[id]/sponsors` | Event owner | Sponsor list, proposal drafted from the event, email from your own mail app, status tracking |
 
 Make an account an admin (local database only):
 

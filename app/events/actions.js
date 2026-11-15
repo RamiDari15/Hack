@@ -89,6 +89,7 @@ export async function requestQuote(_prev, formData) {
   if (error?.code === '23505') return { ok: true, message: 'You already sent this vendor an inquiry for that event.' };
   if (error) return { error: 'Could not send the inquiry. The vendor may not be verified yet.' };
   revalidatePath(`/events/${eventId}`);
+  revalidatePath(`/events/${eventId}/choose`);
   return { ok: true, message: 'Inquiry sent. The vendor’s reply will appear on your event page.' };
 }
 
