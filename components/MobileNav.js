@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -8,18 +9,20 @@ export default function MobileNav({ items, signedIn, inbox = 0 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const btnRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => { setOpen(false); }, [pathname]);
   useEffect(() => {
     if (!open) return undefined;
     const onKey = (e) => { if (e.key === 'Escape') { setOpen(false); btnRef.current?.focus(); } };
     document.addEventListener('keydown', onKey);
-    document.body.style.overflow = 'hidden';
+    const root = document.documentElement; root.style.overflow = 'hidden';
     // Keep focus inside the open menu: everything behind it is inert.
     const behind = [document.querySelector('main'), document.querySelector('.site-footer'), document.querySelector('.wordmark-link')].filter(Boolean);
     behind.forEach((el) => { el.inert = true; });
     document.querySelector('#mobile-menu a')?.focus();
-    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = ''; behind.forEach((el) => { el.inert = false; }); };
+    return () => { document.removeEventListener('keydown', onKey); root.style.overflow = ''; behind.forEach((el) => { el.inert = false; }); };
   }, [open]);
 
   return (
@@ -31,6 +34,7 @@ export default function MobileNav({ items, signedIn, inbox = 0 }) {
       <button ref={btnRef} type="button" className="menu-btn" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen((o) => !o)}>
         {open ? 'Close' : 'Menu'}
       </button>
+      {mounted && createPortal(
       <div id="mobile-menu" className="mobile-panel" hidden={!open} role="dialog" aria-modal="true" aria-label="Menu">
         <nav aria-label="Mobile">
           <ul role="list">
@@ -57,7 +61,9 @@ export default function MobileNav({ items, signedIn, inbox = 0 }) {
             </>
           )}
         </div>
-      </div>
+      </div>,
+        document.body,
+      )}
     </div>
   );
 }

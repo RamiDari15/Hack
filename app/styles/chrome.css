@@ -159,3 +159,11 @@ html.cursor-on .cursor-ring.is-text ~ .cursor-dot { width: 2px; height: 22px; ma
 /* Magnetic buttons ease back when released */
 .btn { transition: transform var(--d-fast) var(--ease), box-shadow var(--d-fast) var(--ease), background var(--d-fast) var(--ease), color var(--d-fast) var(--ease), border-color var(--d-fast) var(--ease), translate .35s var(--ease-spring); }
 html.cursor-on .cursor-ring.has-label ~ .cursor-dot { opacity: 0; }
+
+/* Cursor v2: always visible (inverts whatever is under it), snappier, no lag trail. */
+.cursor-dot { background: #fff; mix-blend-mode: difference; width: 10px; height: 10px; margin: -5px 0 0 -5px; }
+.cursor-ring { border-color: #fff; mix-blend-mode: difference; }
+.cursor-ring.is-link { background: #fff; border-color: #fff; width: 48px; height: 48px; margin: -24px 0 0 -24px; }
+.cursor-ring.has-label { mix-blend-mode: normal; background: var(--ink); color: var(--sun); border-color: var(--sun); }
+html.cursor-on .cursor-ring.is-link ~ .cursor-dot { opacity: 0; }
+html:has(.mobile-panel:not([hidden])) .site-header { background: var(--cream); border-bottom-color: var(--line); }

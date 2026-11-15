@@ -73,7 +73,7 @@ export default function Fx() {
     const pos = { x: innerWidth / 2, y: innerHeight / 2, rx: innerWidth / 2, ry: innerHeight / 2 };
     let craf = 0, shown = false;
     const loop = () => {
-      pos.rx += (pos.x - pos.rx) * 0.18; pos.ry += (pos.y - pos.ry) * 0.18;
+      pos.rx += (pos.x - pos.rx) * 0.35; pos.ry += (pos.y - pos.ry) * 0.35;
       dot.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
       ring.style.transform = `translate3d(${pos.rx}px, ${pos.ry}px, 0)`;
       craf = requestAnimationFrame(loop);
