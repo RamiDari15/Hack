@@ -34,9 +34,10 @@ Create a project, then run `npx supabase link` and `npx supabase db push` to app
 | --- | --- |
 | `npm run dev` / `build` / `lint` | Develop, production build (with ESLint), lint |
 | `npm run db:start` | Local Supabase with the migrations applied |
-| `npm run test:db` | Runs the migrations in an in-memory Postgres and checks 32 row-level security rules |
+| `npm run test:db` | Runs the migrations in an in-memory Postgres and checks 183 row-level security rules |
 | `npm run mock:providers` | Local stand-in for OpenAI on port 4010 (testing only) |
 | `npm run test:e2e` | Full browser flow against the running app and local Supabase, then checks every homepage link. Needs Playwright installed globally (`NODE_PATH=$(npm root -g)`) |
+| `node e2e/planning-tools.mjs` | Filters, shortlist and compare, package and trade-offs, shared planning, style board, event website, weather (NASA POWER stand-in) and seating (35 checks) |
 | `node e2e/api-privacy.mjs` | Calls the Supabase REST API directly as two users to confirm one cannot read or change the other's data |
 
 ## Pages
@@ -44,7 +45,7 @@ Create a project, then run `npx supabase link` and `npx supabase db push` to app
 | --- | --- | --- |
 | `/` | Public | Homepage, sections in the order of the approved brief |
 | `/how-it-works` | Public | The five steps, each marked live or planned |
-| `/vendors`, `/vendors/[id]` | Public | Verified vendors from Supabase (samples when not connected). Filters: category, location. Profile shows packages and lets a signed-in user send an inquiry for one of their events, after an explicit confirmation |
+| `/vendors`, `/vendors/[id]` | Public | Verified vendors from Supabase (samples when not connected). Filters: category, location, distance from Ann Arbor, published price cap, verified only, has photos; sort by price or distance. Profile shows packages and lets a signed-in user send an inquiry for one of their events, after an explicit confirmation |
 | `/vendors/join` | Public | Requirements, verification, fees (not set yet) |
 | `/discover` | Public page, search needs sign-in | OpenAI web search (built-in `web_search` tool), shown apart from verified listings. Signed-in users can save a result to one of their events |
 | `/sponsorships` | Public | Preview only |
@@ -71,7 +72,7 @@ Create a project, then run `npx supabase link` and `npx supabase db push` to app
 - **Not tested:** a hosted Supabase project, Google and SSOJet sign-in, real email delivery, and live OpenAI calls.
 
 ## Not built yet
-Vendor onboarding forms and an admin verification screen, quote replies and messaging UI for vendors, holds and calendars, payments and invoices, favorites and compare, cohosts, a weather provider and the NASA POWER features, walkthrough generation, sponsor data and outreach sending, reviews, notifications, real legal pages.
+Payments and invoices, reviews, sending sponsor outreach from Vendora, real legal pages, a hosted deployment.
 
 ## Marketplace pages
 
@@ -87,6 +88,14 @@ Vendor onboarding forms and an admin verification screen, quote replies and mess
 | `/events/[id]/quotes` | Event viewers | Side-by-side quotes by category vs. the AI estimate |
 | `/account` | Signed in | Name and email alerts. Alerts are queued in Postgres and sent by the server (local: Mailpit; production: Resend) |
 | `/events/[id]/sponsors` | Event owner | Sponsor list, proposal drafted from the event, email from your own mail app, status tracking |
+| `/events/[id]/shortlist`, `/events/[id]/compare` | Event viewers | Shortlist vendors (public listings too), vote and comment together, compare 2 to 4 side by side: photos, published price, services, distance, policies, setup, votes |
+| `/events/[id]/package` | Event viewers (owner picks) | One vendor per category, combined cost against the budget, and a what-if budget trade-off tool (guest count, Save/Middle/Splurge, skip optional categories). Nothing in the trade-off tool is saved |
+| `/events/[id]/team`, `/invites/[token]` | Event owner; invitee | Invite a partner or planner by link. Helpers can shortlist, vote, comment, message vendors and own tasks, not book or pay |
+| `/events/[id]/tasks` | Event viewers | Shared checklist with owners; import the planner's tasks |
+| `/events/[id]/board` | Event viewers | Style board by section (venue, flowers, decor, outfits). Photos are resized in the browser and stay private to the event |
+| `/events/[id]/website`, `/e/[slug]` | Owner; anyone with the link | Public event page: date, place, schedule items marked Shown, registry. Never shows guest names, vendors or budget. `?g=<rsvp token>` adds a reply button |
+| `/events/[id]` weather panel | Event viewers (owner refreshes) | NASA POWER daily history (20 years, 3 days either side of the date): rain on the date, rainy days, typical high and low, hot and windy days. History, not a forecast |
+| `/events/[id]/seating` | Event viewers (owner edits) | Tables and seats; counts guests coming or not replied; arrange automatically or move guests by hand |
 
 Make an account an admin (local database only):
 
@@ -108,3 +117,4 @@ docker exec -i supabase_db_vendora psql -U postgres -c "update public.profiles s
 | `studio@demo.test` | Vendor with a hold and a new inquiry |
 | `lanterns@demo.test` | Vendor with a confirmed booking |
 | `newvendor@demo.test` | Vendor with one application in review and one sent back |
+| `sam@demo.test` | Maya's partner on the wedding: shortlist votes, comments and tasks |

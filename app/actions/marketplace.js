@@ -292,7 +292,7 @@ export async function inviteCohost(_prev, fd) {
   const { error } = await s.supabase.from('event_invites').insert({ event_id: eid, email, created_by: s.user.id });
   if (error?.code === '23505') return { error: 'That person is already invited.' };
   if (error) return { error: 'Only the event owner can invite cohosts.' };
-  revalidatePath(`/events/${eid}`);
+  revalidatePath(`/events/${eid}/team`); revalidatePath(`/events/${eid}`);
   return { ok: true, message: 'Invite link created. Copy it below and send it yourself.' };
 }
 
@@ -303,7 +303,7 @@ export async function removeCohost(fd) {
   const inviteId = id(fd, 'invite_id'); const userId = id(fd, 'user_id');
   if (inviteId) await s.supabase.from('event_invites').delete().eq('id', inviteId);
   if (userId) await s.supabase.from('event_members').delete().eq('event_id', eid).eq('user_id', userId);
-  revalidatePath(`/events/${eid}`);
+  revalidatePath(`/events/${eid}/team`); revalidatePath(`/events/${eid}`);
 }
 
 export async function acceptInvite(fd) {

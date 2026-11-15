@@ -6,6 +6,7 @@ import { publishedRate } from '@/lib/vendor-pricing';
 import Placeholder from '@/components/ui/Placeholder';
 import { VerificationBadge } from '@/components/VendorCard';
 import RequestQuote from './RequestQuote';
+import ShortlistButton from '@/components/ShortlistButton';
 import Image from 'next/image';
 import VendorCalendar from '@/components/VendorCalendar';
 import VendorReviews from '@/components/VendorReviews';
@@ -83,6 +84,13 @@ export default async function VendorProfile({ params }) {
               <RequestQuote vendorId={v.id} vendorName={v.name} events={events} />
             )}
           </div>
+          {user && events.length > 0 && (
+            <div className="panel stack-sm">
+              <h2 className="title">Compare before you decide</h2>
+              <p className="fine">Save it to an event’s shortlist to vote, comment and compare side by side.</p>
+              <ShortlistButton vendorId={v.id} events={events} />
+            </div>
+          )}
         </aside>
       </div>
     </article>

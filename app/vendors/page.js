@@ -6,6 +6,8 @@ import PageHead from '@/components/PageHead';
 
 export const metadata = { title: 'Find vendors' };
 
+const PRICE_CAPS = [500, 1000, 2500, 5000, 10000];
+
 export default async function VendorsPage({ searchParams }) {
   const sp = await searchParams;
   const category = isCategory(sp?.category) ? sp.category : '';
@@ -14,14 +16,22 @@ export default async function VendorsPage({ searchParams }) {
   const date = typeof sp?.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(sp.date) ? sp.date : '';
   const page = Math.min(10000, Math.max(1, Number.parseInt(sp?.page, 10) || 1));
   const pageSize = 24;
-  const { vendors, error, total } = await listVendors({ category, location, page, pageSize });
-  const qs = (c) => { const p = new URLSearchParams(); if (c) p.set('category', c); if (location) p.set('location', location); if (date) p.set('date', date); const s = p.toString(); return s ? `/vendors?${s}` : '/vendors'; };
+  const verifiedOnly = sp?.verified === '1';
+  const hasPhotos = sp?.photos === '1';
+  const radius = [10, 25, 50].includes(Number(sp?.radius)) ? Number(sp.radius) : 25;
+  const maxPrice = PRICE_CAPS.includes(Number(sp?.max)) ? Number(sp.max) : null;
+  const sort = ['recommended', 'price', 'distance'].includes(sp?.sort) ? sp.sort : 'recommended';
+  const { vendors, error, total, capped } = await listVendors({ category, location, page, pageSize, verifiedOnly, hasPhotos, radius, maxPriceCents: maxPrice == null ? null : maxPrice * 100, sort });
+  const current = { category, location, date, verified: verifiedOnly ? '1' : '', photos: hasPhotos ? '1' : '', radius: nearAnnArbor && radius !== 25 ? String(radius) : '', max: maxPrice ? String(maxPrice) : '', sort: sort === 'recommended' ? '' : sort };
+  const build = (over) => { const p = new URLSearchParams(); for (const [k, v] of Object.entries({ ...current, ...over })) if (v) p.set(k, v); const q = p.toString(); return q ? `/vendors?${q}` : '/vendors'; };
+  const qs = (c) => build({ category: c, page: '' });
+  const pageUrl = (n) => build({ page: String(n) });
   const count = `${total} ${total === 1 ? 'vendor' : 'vendors'}`;
-  const pageUrl = (n) => { const p = new URLSearchParams(); if (category) p.set('category', category); if (location) p.set('location', location); if (date) p.set('date', date); p.set('page', String(n)); return `/vendors?${p}`; };
+  const activeFilters = [verifiedOnly && 'verified only', hasPhotos && 'with photos', maxPrice && `published price from $${maxPrice.toLocaleString('en-US')} or less`].filter(Boolean);
 
   return (
     <div className="page wrap">
-      <PageHead title={category || 'Find the people who make it.'} lede={`${count}${nearAnnArbor ? ' within 25 miles of Ann Arbor' : location ? ` near ${location}` : ''}. Browse businesses across the United States.`} />
+      <PageHead title={category || 'Find the people who make it.'} lede={`${count}${activeFilters.length ? `, ${activeFilters.join(', ')}` : ''}${nearAnnArbor ? ` within ${radius} miles of Ann Arbor` : location ? ` near ${location}` : ''}. Browse businesses across the United States.`} />
       <p className="small"><Link href="/vendors?location=Ann%20Arbor">Browse the Ann Arbor area · 25-mile radius</Link></p>
 
       <form method="get" className="filterbar" aria-label="Filter vendors">
@@ -30,6 +40,22 @@ export default async function VendorsPage({ searchParams }) {
         <div className="field"><label htmlFor="f-loc">Location</label><input id="f-loc" name="location" defaultValue={location} placeholder="City" /></div>
         <div className="field"><label htmlFor="f-date">Event date</label><input id="f-date" name="date" type="date" defaultValue={date} /></div>
         <button className="btn" type="submit">Search</button>
+        <details className="filter-more" open={Boolean(activeFilters.length || current.radius || current.sort) || undefined}>
+          <summary>More filters</summary>
+          <div className="filter-grid">
+            <div className="field"><label htmlFor="f-max">Published price up to</label>
+              <select id="f-max" name="max" defaultValue={maxPrice ?? ''}><option value="">Any price</option>{PRICE_CAPS.map((c) => <option key={c} value={c}>${c.toLocaleString('en-US')}</option>)}</select></div>
+            <div className="field"><label htmlFor="f-radius">Distance (Ann Arbor area)</label>
+              <select id="f-radius" name="radius" defaultValue={String(radius)}>{[10, 25, 50].map((r) => <option key={r} value={r}>Within {r} miles</option>)}</select></div>
+            <div className="field"><label htmlFor="f-sort">Sort</label>
+              <select id="f-sort" name="sort" defaultValue={sort}><option value="recommended">Verified first</option><option value="price">Lowest published price</option><option value="distance">Nearest (Ann Arbor area)</option></select></div>
+            <div className="stack-sm">
+              <label className="check-row"><input type="checkbox" name="verified" value="1" defaultChecked={verifiedOnly} /><span>Verified by Vendora only</span></label>
+              <label className="check-row"><input type="checkbox" name="photos" value="1" defaultChecked={hasPhotos} /><span>Has photos</span></label>
+            </div>
+          </div>
+          <p className="fine">Price filters use each business’s own published starting price (per event, person or hour as listed). Businesses with no published price are left out when a price limit is set.</p>
+        </details>
       </form>
       <nav className="chips filter-chips" aria-label="Categories">
         <Link className="chip" href={qs('')} aria-current={!category ? 'true' : undefined}>All</Link>
@@ -40,6 +66,7 @@ export default async function VendorsPage({ searchParams }) {
         <p className="notice">Verified vendors can take inquiries here. Public listings are real businesses we found online: they are not verified by Vendora, so contact them directly to check prices and availability.</p>
         {date && <p className="notice">Your event date is {date}. Availability is confirmed by each vendor, so this date does not filter the list.</p>}
         {error && <p className="notice notice-error" role="alert">{error}</p>}
+        {capped && <p className="notice">Price filters looked at the first 600 matches. Narrow by category or location for a complete list.</p>}
       </div>
 
       {vendors.length === 0 && !error ? (
@@ -49,7 +76,7 @@ export default async function VendorsPage({ searchParams }) {
           <div className="row"><Link className="btn btn-outline" href="/vendors">Clear filters</Link><Link className="btn btn-outline" href="/discover">Search the web</Link></div>
         </div>
       ) : (
-        <ul role="list" className="vendor-grid">{vendors.map((v, i) => <li key={v.id}><VendorCard vendor={v} index={i} /></li>)}</ul>
+        <ul role="list" className="vendor-grid">{vendors.map((v, i) => <li key={v.id}><VendorCard vendor={v} index={i} showDistance={nearAnnArbor} /></li>)}</ul>
       )}
       {total > pageSize && <nav className="between pagination" aria-label="Vendor pages">
         {page > 1 ? <Link className="btn btn-outline" href={pageUrl(page - 1)}>Previous page</Link> : <span />}

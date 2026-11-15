@@ -9,17 +9,18 @@ export function VerificationBadge({ vendor }) {
   return <span className="badge badge-warn">Verification pending</span>;
 }
 
-export default function VendorCard({ vendor, index = 0 }) {
+export default function VendorCard({ vendor, index = 0, showDistance = false }) {
   const priced = (vendor.packages ?? []).map((p) => p.priceCents).filter((n) => n != null);
   const from = priced.length ? Math.min(...priced) : null;
   return (
     <Link href={`/vendors/${vendor.id}`} className="vendor-card">
       {vendor.photos?.[0] ? <div className="vendor-photo"><Image src={vendor.photos[0]} alt={`${vendor.name} portfolio`} fill sizes="(max-width: 760px) 100vw, 33vw" unoptimized /></div> : <Placeholder label={vendor.category} seed={index} />}
       <div className="vendor-card-body">
-        <div className="between"><VerificationBadge vendor={vendor} /><span className="fine">{vendor.city}</span></div>
+        <div className="between"><VerificationBadge vendor={vendor} /><span className="fine">{vendor.city}{showDistance && vendor.distanceMi != null ? `, ${vendor.distanceMi} mi` : ''}</span></div>
         <h3 className="title">{vendor.name}</h3>
         <p className="small muted num">
-          {vendor.directoryListed ? (vendor.budgetOptions?.length ? 'See budget guide' : vendor.packages?.length ? 'See published packages' : 'Contact for pricing') : from != null ? `From ${moneyCents(from)}` : 'Quote on request'}
+          {vendor.lowestPrice ? `Published from ${moneyCents(vendor.lowestPrice.cents)}${vendor.lowestPrice.unit !== 'event' ? ` / ${vendor.lowestPrice.unit}` : ''}`
+            : vendor.directoryListed ? (vendor.budgetOptions?.length ? 'See budget guide' : 'Contact for pricing') : from != null ? `From ${moneyCents(from)}` : 'Quote on request'}
           {vendor.serviceRadiusMi ? `, travels ${vendor.serviceRadiusMi} mi` : ''}
         </p>
       </div>

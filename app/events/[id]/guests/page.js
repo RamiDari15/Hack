@@ -30,7 +30,7 @@ export default async function GuestsPage({ params }) {
   if (!user) redirect(`/sign-in?next=/events/${id}/guests`);
 
   const [{ data: event }, { data: guests }] = await Promise.all([
-    supabase.from('events').select('id, owner_id, title, event_type, event_date, location, guest_count, guest_list_enabled, meal_options').eq('id', id).maybeSingle(),
+    supabase.from('events').select('id, owner_id, title, event_type, event_date, location, guest_count, guest_list_enabled, meal_options, website_enabled, website_slug').eq('id', id).maybeSingle(),
     supabase.from('event_guests').select('*').eq('event_id', id).order('created_at'),
   ]);
   if (!event) notFound();
@@ -116,6 +116,7 @@ export default async function GuestsPage({ params }) {
                       <div className="row">
                         <span className={`badge ${st.tone}`}>{st.label}</span>
                         {isOwner && <CopyButton text={link} label="Copy RSVP link" />}
+                        {isOwner && event.website_enabled && event.website_slug && <CopyButton text={`${origin}/e/${event.website_slug}?g=${g.rsvp_token}`} label="Copy website link" />}
                         {isOwner && g.email && <a className="btn btn-sm btn-outline" href={`mailto:${g.email}?subject=${encodeURIComponent(`RSVP: ${event.title}`)}&body=${encodeURIComponent(inviteText(g))}`}>Email invite</a>}
                         {isOwner && <form action={removeGuest}>{hidden}<input type="hidden" name="id" value={g.id} /><button className="btn btn-sm btn-outline" type="submit">Remove</button></form>}
                       </div>

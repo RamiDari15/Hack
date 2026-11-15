@@ -7,6 +7,7 @@ import PageHead from '@/components/PageHead';
 import ActionForm from '@/components/forms/ActionForm';
 import { requestQuote } from '@/app/events/actions';
 import AskAdvice from './AskAdvice';
+import ShortlistButton from '@/components/ShortlistButton';
 
 export const metadata = { title: 'Choose vendors' };
 
@@ -20,10 +21,11 @@ export default async function ChooseVendorsPage({ params, searchParams }) {
   if (!supabase) redirect('/dashboard');
   if (!user) redirect(`/sign-in?next=/events/${id}/choose`);
 
-  const [{ data: event }, { data: plans }, { data: bookings }] = await Promise.all([
+  const [{ data: event }, { data: plans }, { data: bookings }, { data: shortlisted }] = await Promise.all([
     supabase.from('events').select('id, owner_id, title, event_type, event_date, location, guest_count, budget_cents').eq('id', id).maybeSingle(),
     supabase.from('ai_requests').select('output').eq('event_id', id).eq('kind', 'plan').order('created_at', { ascending: false }).limit(1),
     supabase.from('event_vendors').select('id, status, vendor_id, vendors(category)').eq('event_id', id),
+    supabase.from('event_shortlist').select('vendor_id').eq('event_id', id),
   ]);
   if (!event) notFound();
   const plan = plans?.[0]?.output ?? null;
@@ -31,6 +33,7 @@ export default async function ChooseVendorsPage({ params, searchParams }) {
   const isOwner = event.owner_id === user.id;
   const byCategory = {};
   for (const b of bookings ?? []) if (b.status !== 'cancelled') (byCategory[b.vendors?.category] ??= []).push(b);
+  const onShortlist = new Set((shortlisted ?? []).map((r) => r.vendor_id));
   const bookingFor = Object.fromEntries((bookings ?? []).map((b) => [b.vendor_id, b]));
 
   const firstOpen = steps.findIndex((s) => !byCategory[s.category]);
@@ -72,6 +75,7 @@ export default async function ChooseVendorsPage({ params, searchParams }) {
               </ActionForm>
             ) : v.website ? <a className="btn btn-sm btn-outline" href={v.website} target="_blank" rel="noopener noreferrer nofollow">Visit website<span className="sr-only"> (opens in a new tab)</span></a> : null}
           <Link className="btn btn-sm btn-outline" href={`/vendors/${v.id}`}>See profile</Link>
+          {onShortlist.has(v.id) ? <Link className="badge badge-ok" href={`/events/${event.id}/shortlist`}>On shortlist</Link> : <ShortlistButton vendorId={v.id} eventId={event.id} />}
         </div>
       </article>
     );

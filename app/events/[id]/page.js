@@ -6,6 +6,7 @@ import EventForm from '@/components/EventForm';
 import BudgetTable from '@/components/BudgetTable';
 import PageHead from '@/components/PageHead';
 import PlanGuide from '@/components/PlanGuide';
+import WeatherRisk from '@/components/WeatherRisk';
 import { updateEvent, deleteEvent, removeExternalResult } from '../actions';
 
 export const metadata = { title: 'Event' };
@@ -18,7 +19,7 @@ export default async function EventPage({ params, searchParams }) {
   if (!supabase) redirect('/dashboard');
   if (!user) redirect(`/sign-in?next=/events/${id}`);
 
-  const [{ data: event }, { data: bookings }, { data: plans }, { data: saved }, { data: sponsors }, { count: timelineCount }, { count: guestCount }, { count: giftCount }] = await Promise.all([
+  const [{ data: event }, { data: bookings }, { data: plans }, { data: saved }, { data: sponsors }, { count: timelineCount }, { count: guestCount }, { count: giftCount }, { data: weather }] = await Promise.all([
     supabase.from('events').select('*').eq('id', id).maybeSingle(),
     supabase.from('event_vendors')
       .select('id, status, hold_expires_at, created_at, vendors(id, name, category, city), quotes(id, amount_cents, description, valid_until, status, created_at)')
@@ -30,6 +31,7 @@ export default async function EventPage({ params, searchParams }) {
     supabase.from('event_timeline_items').select('id', { count: 'exact', head: true }).eq('event_id', id),
     supabase.from('event_guests').select('id', { count: 'exact', head: true }).eq('event_id', id),
     supabase.from('event_registry_items').select('id', { count: 'exact', head: true }).eq('event_id', id),
+    supabase.from('event_weather').select('*').eq('event_id', id).maybeSingle(),
   ]);
   if (!event) notFound();
 
@@ -134,8 +136,16 @@ export default async function EventPage({ params, searchParams }) {
         </div>
 
         <aside className="stack-lg">
+          <WeatherRisk event={event} weather={weather} isOwner={event.owner_id === user.id} />
           <nav className="panel stack-sm event-tools" aria-label="Event tools">
             <h2 className="label">Event tools</h2>
+            <Link href={`/events/${event.id}/shortlist`}>Shortlist and compare <span className="fine">vote together</span></Link>
+            <Link href={`/events/${event.id}/package`}>Package and trade-offs <span className="fine">total vs. budget</span></Link>
+            <Link href={`/events/${event.id}/website`}>Event website <span className="fine">{event.website_enabled ? 'Live' : 'Not published'}</span></Link>
+            <Link href={`/events/${event.id}/seating`}>Seating chart <span className="fine">{event.guest_list_enabled ? 'from RSVPs' : 'needs the guest list'}</span></Link>
+            <Link href={`/events/${event.id}/board`}>Style board <span className="fine">venue, flowers, decor, outfits</span></Link>
+            <Link href={`/events/${event.id}/tasks`}>Shared checklist <span className="fine">tasks and owners</span></Link>
+            <Link href={`/events/${event.id}/team`}>Planning team <span className="fine">invite people</span></Link>
             <Link href={`/events/${event.id}/quotes`}>Compare quotes <span className="fine">{quotes.length} received</span></Link>
             <Link href={`/events/${event.id}/timeline`}>Day-of timeline <span className="fine">{timelineCount ? `${timelineCount} items` : 'Not started'}</span></Link>
             <Link href={`/events/${event.id}/guests`}>Guest list and RSVPs <span className="fine">{event.guest_list_enabled ? `${guestCount ?? 0} guests` : 'Optional, off'}</span></Link>

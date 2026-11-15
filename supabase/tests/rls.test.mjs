@@ -197,5 +197,68 @@ const beforeQuiet = await queued();
 r = await as(B, `insert into public.messages(event_vendor_id,body) values ('${bid}','second')`);
 check('no email queued once alerts are off', !r.error && (await queued()) === beforeQuiet, { r, beforeQuiet });
 r = await db.query(`select link from public.notifications where link like '/vendor/bookings/%'`); check('notification links point at /bookings', r.rows.length === 0, r.rows);
+// Shortlist, votes and comments
+r = await as(A, `insert into public.vendors(owner_id,name,category) values ('${A}','A Barn','Venues') returning id`); const vid2 = r.rows?.[0]?.id;
+await as(ADM, `update public.vendors set verification_status='verified' where id='${vid2}'`);
+r = await as(B, `insert into public.event_shortlist(event_id,vendor_id) values ('${eid}','${vid}') returning id`); const sl1 = r.rows?.[0]?.id; check('owner shortlists a vendor', !!sl1, r);
+r = await as(C, `insert into public.event_shortlist(event_id,vendor_id,in_package) values ('${eid}','${vid2}',true)`); check('helpers cannot add straight into the package', !!r.error, r);
+r = await as(C, `insert into public.event_shortlist(event_id,vendor_id) values ('${eid}','${vid2}') returning id, added_by`); const sl2 = r.rows?.[0]?.id; check('cohost shortlists a vendor', !!sl2 && r.rows[0].added_by === C, r);
+r = await as(ADM, `insert into public.event_shortlist(event_id,vendor_id) values ('${eid}','${vid2}')`); check('strangers cannot shortlist into an event', !!r.error, r);
+r = await as(ADM, `select id from public.event_shortlist`); check('strangers cannot read the shortlist', r.rows?.length === 0, r);
+r = await as(C, `update public.event_shortlist set in_package=true where id='${sl2}' returning id`); check('cohost cannot change the package', !r.rows?.length, r);
+await as(B, `update public.event_shortlist set in_package=true where id='${sl1}'`);
+r = await as(B, `update public.event_shortlist set in_package=true where id='${sl2}' returning id`);
+r = await as(B, `select id from public.event_shortlist where in_package`); check('one package pick per category', r.rows?.length === 1 && r.rows[0].id === sl2, r);
+r = await as(C, `insert into public.shortlist_votes(shortlist_id,vote) values ('${sl1}',1) returning user_id`); check('cohost votes', r.rows?.[0]?.user_id === C, r);
+r = await as(C, `insert into public.shortlist_votes(shortlist_id,user_id,vote) values ('${sl2}','${B}',1)`); check('cannot vote as someone else', !!r.error, r);
+r = await as(C, `insert into public.shortlist_votes(shortlist_id,vote) values ('${sl2}',5)`); check('votes are up or down only', !!r.error, r);
+r = await as(ADM, `insert into public.shortlist_votes(shortlist_id,vote) values ('${sl1}',1)`); check('strangers cannot vote', !!r.error, r);
+r = await as(C, `insert into public.shortlist_comments(shortlist_id,body) values ('${sl1}','Love the courtyard') returning id`); const cm = r.rows?.[0]?.id; check('cohost comments', !!cm, r);
+r = await as(B, `select body from public.shortlist_comments`); check('owner reads comments', r.rows?.length === 1, r);
+r = await as(B, `delete from public.shortlist_comments where id='${cm}' returning id`); check('only the author deletes a comment', !r.rows?.length, r);
+r = await as(ADM, `select id from public.shortlist_comments`); check('strangers cannot read comments', r.rows?.length === 0, r);
+r = await as(A, `select id from public.event_shortlist`); check('vendors cannot see who shortlisted them', r.rows?.length === 0, r);
+r = await as(C, `select display_name, is_owner from public.event_people('${eid}')`); check('event people lists owner and cohost', r.rows?.length === 2 && r.rows[0].is_owner === true, r);
+r = await as(ADM, `select * from public.event_people('${eid}')`); check('strangers get no event people', r.rows?.length === 0, r);
+// Shared tasks
+r = await as(C, `insert into public.event_tasks(event_id,title,assignee_id) values ('${eid}','Book tasting','${C}') returning id`); const tk = r.rows?.[0]?.id; check('cohost adds a task for self', !!tk, r);
+r = await as(C, `insert into public.event_tasks(event_id,title,assignee_id) values ('${eid}','Spy','${ADM}')`); check('tasks can only go to people on the event', !!r.error, r);
+r = await as(C, `update public.event_tasks set done=true where id='${tk}' returning done`); check('cohost ticks off a task', r.rows?.[0]?.done === true, r);
+r = await as(C, `update public.event_tasks set created_by='${B}' where id='${tk}'`); check('task creator cannot be rewritten', !!r.error, r);
+r = await as(C, `update public.event_tasks set event_id='${cEvent}' where id='${tk}'`); check('tasks cannot move to another event', !!r.error, r);
+r = await as(ADM, `select id from public.event_tasks`); check('strangers cannot read tasks', r.rows?.length === 0, r);
+// Style boards
+r = await as(C, `insert into public.style_board_items(event_id,section,image_url) values ('${eid}','flowers','https://example.com/p.jpg') returning id`); const bi = r.rows?.[0]?.id; check('cohost pins a photo link', !!bi, r);
+r = await as(C, `insert into public.style_board_items(event_id,section,image_url) values ('${eid}','flowers','http://example.com/p.jpg')`); check('photo links must be https', !!r.error, r);
+r = await as(C, `insert into public.style_board_items(event_id,section,image_data) values ('${eid}','decor','data:text/html;base64,PHNjcmlwdD4=')`); check('uploads must be images', !!r.error, r);
+r = await as(C, `insert into public.style_board_items(event_id,section) values ('${eid}','decor')`); check('a board item needs exactly one image', !!r.error, r);
+r = await as(C, `insert into public.style_board_items(event_id,section,image_url) values ('${eid}','shoes','https://example.com/p.jpg')`); check('board sections are fixed', !!r.error, r);
+r = await as(ADM, `select id from public.style_board_items`); check('strangers cannot see the board', r.rows?.length === 0, r);
+r = await as(B, `delete from public.style_board_items where id='${bi}' returning id`); check('owner can remove any board item', r.rows?.length === 1, r);
+// Event website
+r = await as(null, `select public.event_website('b-site') s`); check('no website until published', r.rows?.[0]?.s === null, r);
+r = await as(B, `update public.events set website_enabled=true, website_slug='b-site', website_intro='Welcome' where id='${eid}' returning id`); check('owner publishes the website', r.rows?.length === 1, r);
+r = await as(B, `update public.events set website_slug='Bad Slug!' where id='${eid}'`); check('website slugs are validated', !!r.error, r);
+await as(B, `update public.event_timeline_items set show_on_website=true where event_id='${eid}'`);
+await as(B, `insert into public.event_timeline_items(event_id,start_time,title) values ('${eid}','20:00','Private: pay the band')`);
+r = await as(null, `select public.event_website('b-site') s`); const site = r.rows?.[0]?.s;
+check('anyone reads the published website', site?.title === 'B wedding' && site.intro === 'Welcome', r);
+check('website shows only schedule items marked shown', site?.schedule?.length === 1 && site.schedule[0].title === 'Venue setup', site);
+check('website leaks no guest names, vendors or budget', !/Guest One|A Venue|budget|owner_id|rsvp_token|vendor/i.test(JSON.stringify(site)), site);
+r = await as(C, `update public.events set website_enabled=false where id='${eid}' returning id`); check('cohost cannot unpublish the website', !r.rows?.length, r);
+// Weather
+r = await as(C, `insert into public.event_weather(event_id,event_date,latitude,longitude,summary) values ('${eid}','2027-06-12',42.28,-83.74,'{}')`); check('cohost cannot write weather', !!r.error, r);
+r = await as(B, `insert into public.event_weather(event_id,event_date,latitude,longitude,summary) values ('${eid}','2027-06-12',42.28,-83.74,'{"risk":"low"}') returning event_id`); check('owner saves weather history', !!r.rows?.[0], r);
+r = await as(C, `select summary->>'risk' risk from public.event_weather`); check('cohost reads weather history', r.rows?.[0]?.risk === 'low', r);
+r = await as(ADM, `select event_id from public.event_weather`); check('strangers cannot read weather', r.rows?.length === 0, r);
+// Seating
+r = await as(B, `insert into public.event_tables(event_id,name,seats) values ('${eid}','Table 1',8) returning id`); const tb = r.rows?.[0]?.id; check('owner adds a table', !!tb, r);
+r = await as(B, `insert into public.event_tables(event_id,name,seats) values ('${eid}','Huge',500)`); check('table size is limited', !!r.error, r);
+r = await as(C, `insert into public.event_tables(event_id,name) values ('${eid}','Cohost table')`); check('cohost cannot add tables', !!r.error, r);
+r = await as(B, `update public.event_guests set table_id='${tb}' where rsvp_token='${gtok}' returning table_id`); check('owner seats a guest', r.rows?.[0]?.table_id === tb, r);
+r = await as(C, `insert into public.event_tables(event_id,name) values ('${cEvent}','C table') returning id`); const ctb = r.rows?.[0]?.id;
+r = await as(B, `update public.event_guests set table_id='${ctb}' where rsvp_token='${gtok}'`); check('cannot seat a guest at another event’s table', !!r.error, r);
+r = await as(C, `select name from public.event_tables`); check('cohost sees the tables', r.rows?.length === 2, r);
+r = await as(ADM, `select id from public.event_tables`); check('strangers cannot see tables', r.rows?.length === 0, r);
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail) process.exit(1);

@@ -1,4 +1,4 @@
-# Vendora demo walkthrough (about 8 minutes)
+# Vendora demo walkthrough (about 10 minutes)
 
 ## Before you present
 1. `git pull`, then `npx supabase start` (Docker running).
@@ -6,9 +6,10 @@
 3. `.env.local` has the Supabase URL and anon key, `SUPABASE_SERVICE_ROLE_KEY` (from `npx supabase status`, for email alerts), `OPENAI_API_KEY` and `OPENAI_MODEL=gpt-4.1-mini`.
 4. `npm run dev -- --port 3100`. Open http://localhost:3100 and, in a second tab, the sign-in inbox at http://127.0.0.1:55324.
 5. Run one planner request and one web search beforehand, so you know the key works.
+6. On the wedding page, press **Check weather history** once, so the NASA POWER panel is filled (needs internet access to power.larc.nasa.gov).
 
 Use three browser windows (or one normal and two private) so each person stays signed in:
-organizer `maya@demo.test`, vendor `kitchen@demo.test`, admin `admin@demo.test`.
+organizer `maya@demo.test`, vendor `kitchen@demo.test`, admin `admin@demo.test`. For shared planning, `sam@demo.test` is Maya's partner.
 
 ## 1. The idea (homepage, 30 s)
 Scroll the homepage slowly: the string lights turn into a crowd, then vendor groups, then a floor plan.
@@ -16,6 +17,7 @@ Line: "Every event is a pile of vendors and guesses. Vendora puts them in one pl
 
 ## 2. Find vendors (45 s)
 - **Vendors** → type `Ann Arbor` in Location → Search. Real local businesses within 25 miles.
+- Open **More filters**: price cap (uses each business's own published price), 10/25/50 miles, sort by lowest price or nearest, verified only, has photos.
 - Open a public listing: photos, published packages, budget guide, contact links. Point out "Not yet verified by Vendora".
 - Open **Sample Lantern Hall**: a verified vendor. Note the calendar (June 2027) and the "Request a quote" box.
 
@@ -49,9 +51,19 @@ Line: "Every event is a pile of vendors and guesses. Vendora puts them in one pl
   - **Compare quotes**: every quote by category against the AI estimate, with per-guest cost.
 - Email alerts: as `kitchen@demo.test`, send Maya a message; the email lands in the inbox tab (http://127.0.0.1:55324). Turn alerts off under **Account**.
 
+## 7b. Plan together: shortlist, package, team (75 s)
+- Wedding → **Shortlist**: Sample Lantern Hall and Sample Table Kitchen are in the package; Sam added Sample Orchard Barn and voted yes, with comments from both. Tick Lantern Hall and Orchard Barn → **Compare selected**: photos, published price, distance, policies and votes side by side.
+- **Package**: chosen vendors plus AI estimates for the rest, against the $30,000 budget. In **Budget trade-offs**, drag the guest slider, set a category to Save or untick an optional one, and the total and savings ideas update. Label: what-if, not saved.
+- **Team**: create an invite link for a partner (Vendora doesn't email it). **Tasks**: shared checklist with owners; Sam already finished one. **Style board**: add a photo under Flowers.
+
+## 7c. Website, weather and seating (60 s)
+- **Website**: live at `/e/sample-garden-wedding`. Shows the date, place, the ceremony time and the registry, never guest names, vendors or budget. Each guest's "Copy website link" adds their own reply button.
+- **Weather risk** (wedding page, right column): NASA POWER daily records for the last 20 years around June 12 in Ann Arbor: how many years it rained on the date, typical high and low, very hot and windy days, and advice. It says history, not a forecast. This is the NASA track feature.
+- **Seating chart**: two sample tables, Ana and Ben seated. **Arrange automatically** places the rest; guests who said no are left out and parties that haven't replied count at full size.
+
 ## 8. Trust and safety (45 s), as admin
 - `admin@demo.test` → `/admin`: Sample Velvet Strings is waiting for review. Show the legal name and website check, then **Verify**.
-- Mention: vendors only appear as Verified after review, and a stranger gets a 404 on someone else's booking (database row-level security, 95 automated checks).
+- Mention: vendors only appear as Verified after review, and a stranger gets a 404 on someone else's booking (database row-level security, 183 automated checks).
 
 ## 9. Web search (optional, 30 s)
 **Web search** → "outdoor wedding venues with string lights near Ann Arbor". Results are labeled **External, confirm** and kept apart from verified vendors. Save one to the event.

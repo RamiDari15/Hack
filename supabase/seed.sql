@@ -7,6 +7,7 @@
 --   kitchen@demo.test   vendor owner: Sample Table Kitchen, Sample Sugar Studio, Sample Pour House
 --   studio@demo.test    vendor owner: Sample North Light Photo, Sample Night Shift DJs, Sample Petal Room, Sample Rent-a-Glow
 --   newvendor@demo.test vendor owner with one application in review and one sent back
+--   sam@demo.test       partner helping plan the wedding (shortlist votes, comments, tasks)
 
 -- ---------------------------------------------------------------- accounts
 create or replace function pg_temp.demo_user(uid uuid, mail text, full_name text) returns void language plpgsql as $$
@@ -183,3 +184,38 @@ insert into public.event_timeline_items (event_id, start_time, end_time, title, 
 ('e0000000-0000-4000-8000-000000000001', '14:00', '16:30', 'Sample Lantern Hall opens for setup', 'Sample time. Hall access from 2pm per the accepted quote.', 'b0000000-0000-4000-8000-000000000001', 'organizer'),
 ('e0000000-0000-4000-8000-000000000001', '17:00', '17:30', 'Ceremony in the courtyard', null, null, 'organizer'),
 ('e0000000-0000-4000-8000-000000000001', '23:30', '00:00', 'Last dance, then the hall closes at midnight', null, 'b0000000-0000-4000-8000-000000000001', 'organizer');
+
+-- ---------------------------------------------------------------- shared planning, package, website, seating
+-- A sample partner who helps plan the wedding. Sign in as sam@demo.test to see the shared view.
+select pg_temp.demo_user('d0000000-0000-4000-8000-000000000007', 'sam@demo.test', 'Sam (sample partner)');
+update public.profiles set roles = '{customer,organizer}' where id = 'd0000000-0000-4000-8000-000000000007';
+insert into public.event_members (event_id, user_id) values ('e0000000-0000-4000-8000-000000000001', 'd0000000-0000-4000-8000-000000000007') on conflict do nothing;
+
+insert into public.event_shortlist (id, event_id, vendor_id, added_by, in_package) values
+('a1000000-0000-4000-8000-000000000001', 'e0000000-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-000000000001', 'd0000000-0000-4000-8000-000000000001', true),
+('a1000000-0000-4000-8000-000000000002', 'e0000000-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-000000000002', 'd0000000-0000-4000-8000-000000000007', false),
+('a1000000-0000-4000-8000-000000000003', 'e0000000-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-000000000003', 'd0000000-0000-4000-8000-000000000001', true);
+insert into public.shortlist_votes (shortlist_id, user_id, vote) values
+('a1000000-0000-4000-8000-000000000001', 'd0000000-0000-4000-8000-000000000001', 1),
+('a1000000-0000-4000-8000-000000000002', 'd0000000-0000-4000-8000-000000000007', 1),
+('a1000000-0000-4000-8000-000000000002', 'd0000000-0000-4000-8000-000000000001', -1);
+insert into public.shortlist_comments (shortlist_id, user_id, body) values
+('a1000000-0000-4000-8000-000000000002', 'd0000000-0000-4000-8000-000000000007', 'Sample comment: the orchard lawn would be lovely for the ceremony.'),
+('a1000000-0000-4000-8000-000000000002', 'd0000000-0000-4000-8000-000000000001', 'Sample comment: worried about renting a generator for music.');
+
+insert into public.event_tasks (event_id, title, due_note, assignee_id, done, created_by) values
+('e0000000-0000-4000-8000-000000000001', 'Sample task: book a tasting with Table Kitchen', '2 months before', 'd0000000-0000-4000-8000-000000000001', false, 'd0000000-0000-4000-8000-000000000001'),
+('e0000000-0000-4000-8000-000000000001', 'Sample task: send the guest list links', '3 months before', 'd0000000-0000-4000-8000-000000000007', true, 'd0000000-0000-4000-8000-000000000001'),
+('e0000000-0000-4000-8000-000000000001', 'Sample task: pick a florist', null, null, false, 'd0000000-0000-4000-8000-000000000007');
+
+update public.events set website_enabled = true, website_slug = 'sample-garden-wedding',
+  website_intro = 'Sample welcome message. We can’t wait to celebrate with you in the courtyard.'
+where id = 'e0000000-0000-4000-8000-000000000001';
+update public.event_timeline_items set show_on_website = true
+where event_id = 'e0000000-0000-4000-8000-000000000001' and title = 'Ceremony in the courtyard';
+
+insert into public.event_tables (id, event_id, name, seats) values
+('a2000000-0000-4000-8000-000000000001', 'e0000000-0000-4000-8000-000000000001', 'Table 1', 8),
+('a2000000-0000-4000-8000-000000000002', 'e0000000-0000-4000-8000-000000000001', 'Table 2', 8);
+update public.event_guests set table_id = 'a2000000-0000-4000-8000-000000000001'
+where rsvp_token in ('c0000000-0000-4000-8000-000000000001', 'c0000000-0000-4000-8000-000000000002');

@@ -13,6 +13,23 @@ const server = http.createServer((req, res) => {
   let raw = '';
   req.on('data', (c) => { raw += c; });
   req.on('end', () => {
+    if (req.method === 'GET' && req.url.startsWith('/api/temporal/daily/point')) {
+      // NASA POWER daily point stand-in (test data, not NASA's). Checks the documented query.
+      const q = new URL(req.url, 'http://x').searchParams;
+      const need = ['parameters', 'community', 'longitude', 'latitude', 'start', 'end', 'format'];
+      const missing = need.filter((k) => !q.get(k));
+      if (missing.length || !q.get('parameters').includes('PRECTOTCORR')) return reply(res, 422, { messages: [`missing ${missing.join(',')}`] });
+      calls.push({ path: '/nasa-power', query: Object.fromEntries(q) });
+      const series = { PRECTOTCORR: {}, T2M_MAX: {}, T2M_MIN: {}, WS2M: {} };
+      const start = Number(q.get('start').slice(0, 4)); const end = Number(q.get('end').slice(0, 4));
+      for (let t = Date.UTC(start, 0, 1); t <= Date.UTC(end, 11, 31); t += 86400000) {
+        const d = new Date(t); const key = d.toISOString().slice(0, 10).replace(/-/g, '');
+        const n = d.getUTCDate() + d.getUTCMonth() * 31 + d.getUTCFullYear();
+        series.PRECTOTCORR[key] = n % 3 === 0 ? 4.2 : n % 17 === 0 ? 14 : 0; // rain on about a third of days
+        series.T2M_MAX[key] = 27; series.T2M_MIN[key] = 15; series.WS2M[key] = 3;
+      }
+      return reply(res, 200, { type: 'Feature', header: { title: 'Mock NASA POWER (test data)', fill_value: -999 }, properties: { parameter: series } });
+    }
     if (req.method === 'GET' && req.url === '/last-plan-input') { res.writeHead(200, { 'Content-Type': 'text/plain' }); return res.end(lastPlanInput); }
     let body; try { body = JSON.parse(raw); } catch { return reply(res, 400, { error: 'bad json' }); }
     calls.push({ path: req.url, headers: req.headers, body });
