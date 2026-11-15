@@ -35,7 +35,7 @@ export default async function TasksPage({ params, searchParams }) {
   );
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Shared checklist" size="display-2"
         lede={`${open} open ${open === 1 ? 'task' : 'tasks'}. Everyone on the event can add, assign and tick tasks.`}>
         <Link className="btn btn-sm btn-outline" href={mineOnly ? `/events/${event.id}/tasks` : `/events/${event.id}/tasks?mine=1`}>{mineOnly ? 'Show all tasks' : 'Show my tasks'}</Link>

@@ -39,7 +39,7 @@ export default async function CompareQuotesPage({ params, searchParams }) {
   const cats = Object.keys(groups).sort();
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Compare pricing" size="display-2"
         lede="Compare your planning amounts and published prices. Actual vendor quotes appear separately as they arrive." >
         <Link className="btn btn-sm btn-outline" href={showOld ? `/events/${event.id}/quotes` : `/events/${event.id}/quotes?all=1`}>{showOld ? 'Show current quotes only' : 'Include declined and expired'}</Link>

@@ -15,7 +15,7 @@ export default async function NewEventPage({ searchParams }) {
   const vendorId=UUID_RE.test(sp?.vendor||'')?sp.vendor:'';
   const type = EVENT_TYPES.includes(sp?.type) ? sp.type : 'Wedding';
   return (
-    <div className="page wrap-narrow">
+    <div className="page wrap-narrow ev">
       <PageHead
         back={{ href: '/dashboard', label: 'Your events' }}
         title="Tell us about the day."

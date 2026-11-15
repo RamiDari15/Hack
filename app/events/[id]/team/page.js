@@ -32,7 +32,7 @@ export default async function TeamPage({ params }) {
   const hidden = <input type="hidden" name="event_id" value={event.id} />;
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Planning team" size="display-2"
         lede="Invite a partner, friend or planner. They can shortlist, vote, comment, message vendors and own tasks. Only you send inquiries, accept quotes or confirm bookings." />
       <div className="event-layout">

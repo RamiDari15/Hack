@@ -13,7 +13,7 @@ export default async function DashboardPage({ searchParams }) {
 
   if (!supabase) {
     return (
-      <div className="page wrap-narrow">
+      <div className="page wrap-narrow ev">
         <PageHead title="Connect the database to start." />
         <p className="notice notice-warn">Supabase is not configured. Run npm run db:start, add the keys it prints to .env.local, then sign in to create events.</p>
       </div>
@@ -30,7 +30,7 @@ export default async function DashboardPage({ searchParams }) {
   const list = events ?? [];
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead title={`Hello, ${name}.`} lede={list.length ? `You have ${list.length} ${list.length === 1 ? 'event' : 'events'} on the go.` : undefined}>
         <Link className="btn" href="/events/new">New event</Link>
         <Link className="btn btn-outline" href="/planner">Open the planner</Link>
@@ -46,9 +46,9 @@ export default async function DashboardPage({ searchParams }) {
         </div>
       )}
 
-      <ReadyMadeEvents />
-
       {list.length > 0 && (
+        <section className="ev-section" aria-labelledby="events-h">
+        <h2 id="events-h" className="ev-section-title">Your events</h2>
         <ol role="list" className="event-list">
           {list.map((e) => (
             <li key={e.id}>
@@ -71,7 +71,10 @@ export default async function DashboardPage({ searchParams }) {
             </li>
           ))}
         </ol>
+        </section>
       )}
+
+      <ReadyMadeEvents />
     </div>
   );
 }

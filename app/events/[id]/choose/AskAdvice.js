@@ -31,7 +31,7 @@ export default function AskAdvice({ eventId, category, names }) {
         {state.status === 'error' && <p className="notice notice-error" role="alert">{state.error}</p>}
         {a && (
           <div className="stack">
-            <div className="row"><span className="badge badge-warn">AI suggestion</span>{a.pick && names[a.pick] && <span className="badge badge-ok">Suggested: {names[a.pick]}</span>}</div>
+            <div className="row"><span className="badge badge-text">AI suggestion</span>{a.pick && names[a.pick] && <span className="badge badge-ok">Suggested: {names[a.pick]}</span>}</div>
             <p className="small">{a.summary}</p>
             {a.vendors.length > 0 && (
               <ul role="list" className="stack-sm">

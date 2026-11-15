@@ -46,11 +46,12 @@ export default async function EventPage({ params, searchParams }) {
   const meta = [formatDate(event.event_date), event.location, event.guest_count ? `${event.guest_count} guests` : null].filter(Boolean).join(', ');
 
   return (
-    <div className="page wrap">
-      <PageHead back={{ href: '/dashboard', label: 'Your events' }} title={event.title} lede={meta}>
-        <span className="badge badge-plain">{event.event_type}</span>
-        {event.style && <span className="badge badge-plain">{event.style}</span>}
-        <Link className="btn btn-sm btn-bulb" href={`/events/${event.id}/sponsors`}>Contact sponsors</Link>
+    <div className="page wrap ev">
+      <PageHead back={{ href: '/dashboard', label: 'Your events' }} title={event.title} lede={[meta, event.event_type, event.style].filter(Boolean).join(' · ')}>
+        <Link className="btn btn-sm" href={`/vendors?event=${id}&location=${encodeURIComponent((event.location||'').split(',')[0])}`}>＋ Add vendors</Link>
+        <Link className="btn btn-sm btn-outline" href={`/events/${event.id}/sponsors`}>Contact sponsors</Link>
+        <a className="btn btn-sm btn-outline" href={`/api/events/${id}/export?type=budget`} download>Export budget CSV</a>
+        {event.owner_id===user.id&&<DuplicateEvent eventId={id}/>}
       </PageHead>
       {sp?.created && <p className="notice notice-ok">Your event is saved. Get an AI plan or start finding vendors.</p>}
 
@@ -61,7 +62,6 @@ export default async function EventPage({ params, searchParams }) {
         <div><dt>Planned vendor costs</dt><dd className="num">{moneyCents(plannedCents)}</dd></div>
       </dl>
 
-      <div className="event-utilities row"><Link className="btn btn-sm btn-outline" href={`/vendors?event=${id}&location=${encodeURIComponent((event.location||'').split(',')[0])}`}>＋ Add vendors</Link><a className="btn btn-sm btn-outline" href={`/api/events/${id}/export?type=budget`} download>Export budget CSV</a>{event.owner_id===user.id&&<DuplicateEvent eventId={id}/>}</div>
       <Link className="walk-entry" href={`/events/${id}/walk`}>
         <span><b>Walk through your event</b><span>Step around a 3D room with one stop per vendor you need. Add or remove vendors as you go.</span></span>
         <i>Open the walk</i>
@@ -126,7 +126,7 @@ export default async function EventPage({ params, searchParams }) {
               <ul role="list" className="booking-list">
                 {saved.map((r) => (
                   <li key={r.id}>
-                    <div className="stack-sm" style={{ flex: '1 1 320px' }}>
+                    <div className="stack-sm ev-grow">
                       <a href={r.url} target="_blank" rel="noopener noreferrer nofollow" className="title">{r.title}<span className="sr-only"> (opens in a new tab)</span></a>
                       <p className="fine">{r.host}</p>
                       {r.snippet && <p className="small muted">{r.snippet}</p>}
@@ -147,8 +147,8 @@ export default async function EventPage({ params, searchParams }) {
 
         <aside className="stack-lg">
           <WeatherRisk event={event} weather={weather} isOwner={event.owner_id === user.id} />
-          <nav className="panel stack-sm event-tools" aria-label="Event tools">
-            <h2 className="label">Event tools</h2>
+          <nav className="panel event-tools" aria-label="Event tools">
+            <h2 className="ev-panel-title">Event tools</h2>
             <Link href={`/events/${event.id}/shortlist`}>Shortlist and compare <span className="fine">vote together</span></Link>
             <Link href={`/events/${event.id}/package`}>Package and trade-offs <span className="fine">total vs. budget</span></Link>
             <Link href={`/events/${event.id}/website`}>Event website <span className="fine">{event.website_enabled ? 'Live' : 'Not published'}</span></Link>
@@ -164,17 +164,17 @@ export default async function EventPage({ params, searchParams }) {
           </nav>
           <details className="panel disclosure" id="edit-details" open={sp?.edit === '1' || undefined}>
             <summary>Edit details</summary>
-            <div style={{ marginTop: 'var(--s-5)' }}>
+            <div className="disclosure-body">
               <EventForm compact action={updateEvent} eventId={event.id} submitLabel="Save changes" initial={{
                 title: event.title, eventType: event.event_type, eventDate: event.event_date ?? '', location: event.location ?? '',
                 guests: event.guest_count ?? '', budget: event.budget_cents == null ? '' : String(event.budget_cents / 100), style: event.style ?? '', notes: event.notes ?? '',
               }} />
             </div>
           </details>
-          {event.notes && <div className="panel panel-quiet stack-sm"><h2 className="label">Notes</h2><p className="small" style={{ whiteSpace: 'pre-wrap' }}>{event.notes}</p></div>}
+          {event.notes && <div className="panel panel-quiet stack-sm"><h2 className="ev-panel-title">Notes</h2><p className="small" style={{ whiteSpace: 'pre-wrap' }}>{event.notes}</p></div>}
           <details className="panel disclosure">
             <summary>Delete event</summary>
-            <form action={deleteEvent} className="stack" style={{ marginTop: 'var(--s-4)' }}>
+            <form action={deleteEvent} className="stack disclosure-body">
               <input type="hidden" name="id" value={event.id} />
               <label className="check-row"><input type="checkbox" name="confirm" value="yes" required /> <span>I understand this deletes the event, its vendor inquiries and its AI plan.</span></label>
               {sp?.error === 'confirm' && <p className="notice notice-error" role="alert">Tick the box to confirm.</p>}

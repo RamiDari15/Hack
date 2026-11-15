@@ -28,7 +28,7 @@ export default async function RegistryPage({ params }) {
   const list = items ?? [];
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Registry" size="display-2"
         lede="Optional. List gifts with links to any store. Guests claim them from their RSVP page so nobody doubles up." />
 
@@ -56,7 +56,7 @@ export default async function RegistryPage({ params }) {
                     const taken = cl.reduce((n, c) => n + c.quantity, 0);
                     return (
                       <li key={it.id}>
-                        <div className="stack-sm" style={{ flex: '1 1 260px' }}>
+                        <div className="stack-sm ev-grow">
                           <p className="title">{it.url ? <a href={it.url} target="_blank" rel="noopener noreferrer nofollow">{it.title}<span className="sr-only"> (opens in a new tab)</span></a> : it.title}</p>
                           <p className="fine">{[it.price_note, it.quantity > 1 ? `${it.quantity} wanted` : null, it.note].filter(Boolean).join('. ')}</p>
                           {cl.length > 0 && <p className="fine">Claimed by {cl.map((c) => `${c.event_guests?.name ?? 'a guest'}${c.quantity > 1 ? ` (${c.quantity})` : ''}`).join(', ')}</p>}

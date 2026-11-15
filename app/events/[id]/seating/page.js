@@ -45,7 +45,7 @@ export default async function SeatingPage({ params }) {
 
   if (!event.guest_list_enabled && !(guests ?? []).length) {
     return (
-      <div className="page wrap">
+      <div className="page wrap ev">
         <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Seating chart" size="display-2" lede="Seat guests who RSVP at tables." />
         <div className="panel empty"><h3>Start with the guest list</h3><p className="muted small">The seating chart uses your guests and their RSVPs.</p><Link className="btn btn-sm" href={`/events/${event.id}/guests`}>Set up the guest list</Link></div>
       </div>
@@ -53,7 +53,7 @@ export default async function SeatingPage({ params }) {
   }
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Seating chart" size="display-2"
         lede={`${people} people to seat, ${totalSeats} seats at ${(tables ?? []).length} tables. Guests who said no are left out; parties that haven’t replied count at full size.`} />
       {totalSeats > 0 && people > totalSeats && <p className="notice notice-warn">You need {people - totalSeats} more seats.</p>}
@@ -91,7 +91,7 @@ export default async function SeatingPage({ params }) {
               <h2 id="tb-h" className="title">Add tables</h2>
               <ActionForm action={addTables}>
                 {hidden}
-                <div className="row">
+                <div className="field-pair">
                   <div className="field"><label htmlFor="tb-count">How many</label><input id="tb-count" name="count" inputMode="numeric" defaultValue="1" /></div>
                   <div className="field"><label htmlFor="tb-seats">Seats each</label><input id="tb-seats" name="seats" inputMode="numeric" defaultValue="8" /></div>
                 </div>

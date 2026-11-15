@@ -6,6 +6,7 @@ import './styles/chrome.css';
 import './styles/home.css';
 import './styles/pages.css';
 import './styles/walk.css';
+import './styles/events.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Reveal from '@/components/ui/Reveal';

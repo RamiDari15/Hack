@@ -82,7 +82,7 @@ export default async function ChooseVendorsPage({ params, searchParams }) {
   };
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Choose your vendors" size="display-2"
         lede={`One category at a time, ranked for ${meta || 'your event'}.`} />
 
@@ -104,8 +104,8 @@ export default async function ChooseVendorsPage({ params, searchParams }) {
 
       <section className="stack-lg" aria-labelledby="step-h">
         <div className="panel panel-quiet stack-sm">
-          <p className="label">Step {index + 1} of {steps.length}</p>
           <h2 id="step-h" className="display-3">{step.category}</h2>
+          <p className="fine">Step {index + 1} of {steps.length}</p>
           {step.highCents != null
             ? <p className="small">Your AI ballpark for {step.category.toLowerCase()} is <b className="num">{moneyCents(step.lowCents)}–{moneyCents(step.highCents)}</b>{step.notes ? ` (${step.notes})` : ''}. Vendors are ranked against it.</p>
             : <p className="small">Build a plan first and vendors are ranked against your budget for each category. <Link href={`/planner?event=${event.id}`}>Build a plan</Link></p>}
@@ -121,7 +121,7 @@ export default async function ChooseVendorsPage({ params, searchParams }) {
             {more.length > 0 && (
               <details className="panel disclosure">
                 <summary>More {step.category.toLowerCase()} options ({more.length})</summary>
-                <div className="match-grid" style={{ marginTop: 'var(--s-5)' }}>{more.map((v, i) => card(v, i, false))}</div>
+                <div className="match-grid disclosure-body">{more.map((v, i) => card(v, i, false))}</div>
               </details>
             )}
           </>

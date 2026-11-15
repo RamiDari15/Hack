@@ -12,7 +12,7 @@ export default function WeatherRisk({ event, weather, isOwner }) {
     <section className="panel stack weather" aria-labelledby="wx-h">
       <div className="panel-head">
         <h2 id="wx-h">Weather risk</h2>
-        <span className="badge badge-plain">Data: NASA POWER</span>
+        <span className="fine">Data: NASA POWER</span>
       </div>
       {w && !stale ? (
         <>

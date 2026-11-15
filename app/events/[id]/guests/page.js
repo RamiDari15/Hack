@@ -49,7 +49,7 @@ export default async function GuestsPage({ params }) {
 
   if (!event.guest_list_enabled) {
     return (
-      <div className="page wrap">
+      <div className="page wrap ev">
         <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Guest list" size="display-2"
           lede="Optional. Turn it on to collect RSVPs and meal choices through a private link for each guest." />
         <section className="panel stack measure">
@@ -69,10 +69,11 @@ export default async function GuestsPage({ params }) {
   const inviteText = (g) => `Hi ${g.name},\n\nYou're invited to ${event.title}${event.event_date ? ` on ${formatDate(event.event_date)}` : ''}${event.location ? ` in ${event.location}` : ''}.\n\nPlease let us know if you can come: ${origin}/rsvp/${g.rsvp_token}\n`;
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Guest list" size="display-2"
-        lede="Each guest gets a private RSVP link. Share it yourself; Vendora does not email guests." />
-      <p><a className="btn btn-sm btn-outline" href={`/api/events/${id}/export?type=guests`} download>Export CSV</a></p>
+        lede="Each guest gets a private RSVP link. Share it yourself; Vendora does not email guests.">
+        <a className="btn btn-sm btn-outline" href={`/api/events/${id}/export?type=guests`} download>Export CSV</a>
+      </PageHead>
 
       <dl className="stat-strip">
         <div><dt>Coming</dt><dd className="num">{coming}</dd></div>
@@ -107,7 +108,7 @@ export default async function GuestsPage({ params }) {
                   const link = `${origin}/rsvp/${g.rsvp_token}`;
                   return (
                     <li key={g.id} className="guest-row">
-                      <div className="stack-sm" style={{ flex: '1 1 260px' }}>
+                      <div className="stack-sm ev-grow">
                         <p className="title">{g.name} <span className="fine">party of {g.party_size}</span></p>
                         <p className="fine">
                           {g.status === 'yes' || g.status === 'maybe' ? `${g.attending} attending` : null}
