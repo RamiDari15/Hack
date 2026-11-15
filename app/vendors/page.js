@@ -10,14 +10,19 @@ export default async function VendorsPage({ searchParams }) {
   const sp = await searchParams;
   const category = isCategory(sp?.category) ? sp.category : '';
   const location = typeof sp?.location === 'string' ? sp.location.slice(0, 80) : '';
+  const nearAnnArbor = /^ann\s+arbor(?:,?\s+(?:mi|michigan))?$/i.test(location.trim());
   const date = typeof sp?.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(sp.date) ? sp.date : '';
-  const { mode, vendors, error } = await listVendors({ category, location });
+  const page = Math.min(10000, Math.max(1, Number.parseInt(sp?.page, 10) || 1));
+  const pageSize = 24;
+  const { vendors, error, total } = await listVendors({ category, location, page, pageSize });
   const qs = (c) => { const p = new URLSearchParams(); if (c) p.set('category', c); if (location) p.set('location', location); if (date) p.set('date', date); const s = p.toString(); return s ? `/vendors?${s}` : '/vendors'; };
-  const count = `${vendors.length} ${mode === 'sample' ? 'sample listings' : vendors.length === 1 ? 'verified vendor' : 'verified vendors'}`;
+  const count = `${total} ${total === 1 ? 'vendor' : 'vendors'}`;
+  const pageUrl = (n) => { const p = new URLSearchParams(); if (category) p.set('category', category); if (location) p.set('location', location); if (date) p.set('date', date); p.set('page', String(n)); return `/vendors?${p}`; };
 
   return (
     <div className="page wrap">
-      <PageHead title={category || 'Find the people who make it.'} lede={`${count}${location ? ` near ${location}` : ''}. Only reviewed businesses appear here.`} />
+      <PageHead title={category || 'Find the people who make it.'} lede={`${count}${nearAnnArbor ? ' within 25 miles of Ann Arbor' : location ? ` near ${location}` : ''}. Browse businesses across the United States.`} />
+      <p className="small"><Link href="/vendors?location=Ann%20Arbor">Browse the Ann Arbor area · 25-mile radius</Link></p>
 
       <form method="get" className="filterbar" aria-label="Filter vendors">
         <div className="field"><label htmlFor="f-cat">Category</label>
@@ -32,20 +37,25 @@ export default async function VendorsPage({ searchParams }) {
       </nav>
 
       <div className="stack notices">
-        {mode === 'sample' && <p className="notice">The database is not connected, so these are sample listings for layout only. They are not real vendors, prices or reviews.</p>}
-        {date && <p className="notice">Availability on {date} is confirmed by each vendor when you request a quote. Calendars are not connected yet.</p>}
+        <p className="notice">Public business listings link to their sources. Ratings, reviews and schedules are simulated for preview.</p>
+        {date && <p className="notice">Your event date is {date}. Schedules are simulated; contact the business to confirm actual availability. This date does not filter actual availability.</p>}
         {error && <p className="notice notice-error" role="alert">{error}</p>}
       </div>
 
       {vendors.length === 0 && !error ? (
         <div className="empty">
-          <h2>No {mode === 'sample' ? 'sample' : 'verified'} vendors match yet.</h2>
+          <h2>No vendors match yet.</h2>
           <p className="muted small">Try another category or location, or search the wider web. Web results are marked for you to confirm.</p>
           <div className="row"><Link className="btn btn-outline" href="/vendors">Clear filters</Link><Link className="btn btn-outline" href="/discover">Search the web</Link></div>
         </div>
       ) : (
         <ul role="list" className="vendor-grid">{vendors.map((v, i) => <li key={v.id}><VendorCard vendor={v} index={i} /></li>)}</ul>
       )}
+      {total > pageSize && <nav className="between pagination" aria-label="Vendor pages">
+        {page > 1 ? <Link className="btn btn-outline" href={pageUrl(page - 1)}>Previous page</Link> : <span />}
+        <span className="small">Page {page} of {Math.ceil(total / pageSize)} · {total} vendors</span>
+        {page * pageSize < total ? <Link className="btn btn-outline" href={pageUrl(page + 1)}>Next page</Link> : <span />}
+      </nav>}
     </div>
   );
 }

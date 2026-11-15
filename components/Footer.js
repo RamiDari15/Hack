@@ -23,7 +23,7 @@ export default function Footer() {
       </div>
       <div className="wrap footer-base fine">
         <span>© {new Date().getFullYear()} Vendora</span>
-        <span>Sample content is labeled where it appears. Nothing is booked, paid or sent without your confirmation.</span>
+        <span>Public listings link to their sources. Nothing is booked, paid or sent without your confirmation.</span>
       </div>
     </footer>
   );

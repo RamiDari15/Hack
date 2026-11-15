@@ -7,7 +7,7 @@ export const metadata = { title: 'Web search' };
 
 export default async function DiscoverPage() {
   const { user, supabase } = await getSessionUser();
-  const { vendors, mode } = await listVendors();
+  const { vendors, mode } = await listVendors({ verifiedOnly: true });
   let events = [];
   if (supabase && user) {
     const { data } = await supabase.from('events').select('id, title').order('created_at', { ascending: false }).limit(30);

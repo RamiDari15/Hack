@@ -1,10 +1,10 @@
 import { PGlite } from '@electric-sql/pglite';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 const db = new PGlite();
 const A='00000000-0000-0000-0000-00000000000a', B='00000000-0000-0000-0000-00000000000b', ADM='00000000-0000-0000-0000-0000000000ad', C='00000000-0000-0000-0000-00000000000c';
 const EMAIL = { [A]: 'a@x.test', [B]: 'b@x.test', [ADM]: 'adm@x.test', [C]: 'c@x.test' };
 await db.exec(`
-create role anon; create role authenticated;
+create role anon; create role authenticated; create role service_role;
 create schema auth;
 create table auth.users (id uuid primary key, email text, raw_user_meta_data jsonb default '{}');
 create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
@@ -17,7 +17,7 @@ grant execute on function auth.jwt() to anon, authenticated;
 alter default privileges in schema public grant all on tables to anon, authenticated;
 alter default privileges in schema public grant execute on functions to anon, authenticated;
 `);
-await db.exec(['20261114000000_init.sql','20261115000000_saved_results.sql','20261115000100_quote_status.sql','20261115020000_marketplace.sql','20261115030000_booking_guard_service.sql'].map((f) => readFileSync(new URL('../migrations/' + f, import.meta.url), 'utf8')).join('\n'));
+await db.exec(readdirSync(new URL('../migrations/', import.meta.url)).filter((f) => f.endsWith('.sql')).sort().map((f) => readFileSync(new URL('../migrations/' + f, import.meta.url), 'utf8')).join('\n'));
 await db.exec(`insert into auth.users(id,email) values ('${A}','a@x.test'),('${B}','b@x.test'),('${ADM}','adm@x.test'),('${C}','c@x.test');
 update public.profiles set roles='{customer,admin}' where id='${ADM}';`);
 let pass=0, fail=0;
@@ -115,5 +115,31 @@ r = await as(A, `insert into public.vendors(owner_id,name,category) values ('${A
 r = await as(ADM, `update public.vendors set verification_status='rejected', review_note='Add a business registration number.' where id='${v2}' returning id`);
 r = await as(A, `update public.vendors set review_note='ok' where id='${v2}' returning review_note`); check('vendor cannot clear the admin note', r.rows?.[0]?.review_note === 'Add a business registration number.', r);
 r = await as(A, `update public.vendors set business_id='MI-123' where id='${v2}' returning verification_status`); check('rejected vendor who edits goes back to pending', r.rows?.[0]?.verification_status === 'pending', r);
+
+// Research directory: no made-up verification and no ownership for imported businesses.
+await db.exec(`select set_config('request.jwt.claim.sub', '', false); select set_config('request.jwt.claims', '{"role":"service_role"}', false);`);
+const directoryVendor = (await db.query(`insert into public.vendors(name,category,directory_listed,source_url,calendar_is_demo)
+  values ('Public research business','Venues',true,'https://example.com/source',true) returning id`)).rows[0].id;
+const calendarId = (await db.query(`insert into public.vendor_calendar_entries(vendor_id,starts_at,ends_at,status,title,is_demo)
+  values ('${directoryVendor}','2027-01-01T00:00Z','2027-01-02T00:00Z','booked','Demo event',true) returning id`)).rows[0].id;
+await db.exec(`insert into public.vendor_packages(vendor_id,title) values ('${directoryVendor}','Published package');`);
+r = await as(null, `select owner_id,verification_status from public.vendors where id='${directoryVendor}'`);
+check('public directory is visible without claiming vendor verification', r.rows?.[0]?.owner_id === null && r.rows[0].verification_status === 'pending', r);
+r = await as(null, `select id from public.vendor_packages where vendor_id='${directoryVendor}'`); check('published directory packages are readable', r.rows?.length === 1, r);
+r = await as(null, `select is_demo from public.vendor_calendar_entries where id='${calendarId}'`); check('anon reads clearly marked directory demo calendar', r.rows?.[0]?.is_demo === true, r);
+r = await as(null, `insert into public.vendor_calendar_entries(vendor_id,starts_at,ends_at,status,title) values ('${directoryVendor}',now(),now()+interval '1 day','booked','Forged')`); check('anon cannot write a calendar entry', !!r.error, r);
+r = await as(A, `update public.vendor_calendar_entries set title='Hijacked' where id='${calendarId}' returning id`); check('non-owner cannot change directory calendar', !r.rows?.length, r);
+r = await as(A, `update public.vendors set owner_id='${A}' where id='${directoryVendor}' returning id`); check('user cannot claim an imported business by updating owner', !r.rows?.length, r);
+r = await as(A, `insert into public.vendors(owner_id,name,category,directory_listed,source_url,calendar_is_demo) values ('${A}','Self-promoted','Venues',true,'https://example.com/forged',true) returning id,directory_listed,source_url,calendar_is_demo`);
+check('owner cannot self-publish as a researched listing', r.rows?.[0]?.directory_listed === false && r.rows[0].source_url === null && r.rows[0].calendar_is_demo === false, r);
+const selfVendor = r.rows?.[0]?.id;
+r = await as(A, `insert into public.vendor_calendar_entries(vendor_id,starts_at,ends_at,status,title) values ('${selfVendor}',now(),now()+interval '1 day','blocked','Maintenance') returning id`); check('owner can write their own calendar', !!r.rows?.[0], r);
+r = await as(B, `select id from public.vendor_calendar_entries where vendor_id='${selfVendor}'`); check('pending private vendor calendar stays private', r.rows?.length === 0, r);
+r = await as(B, `insert into public.event_vendors(event_id,vendor_id) values ('${eid}','${directoryVendor}')`); check('public directory does not enable false in-app bookings', !!r.error, r);
+await db.exec(`select set_config('request.jwt.claim.sub', '', false); update public.vendors set latitude=42.2808,longitude=-83.7430 where id in ('${directoryVendor}','${selfVendor}');`);
+r = await as(null, `select id from public.vendors_within_radius(42.2808,-83.7430,25)`); check('radius search finds local public listing while preserving RLS for pending vendors', r.rows?.length === 1 && r.rows[0].id === directoryVendor, r);
+await db.exec(`update public.vendors set latitude=43.5 where id='${directoryVendor}';`);
+r = await as(null, `select id from public.vendors_within_radius(42.2808,-83.7430,25)`); check('radius search excludes public listings beyond 25 miles', r.rows?.length === 0, r);
+r = await as(null, `select id from public.vendors_within_radius(42.2808,-83.7430,-25)`); check('negative search radius yields no listings', r.rows?.length === 0, r);
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail) process.exit(1);

@@ -34,9 +34,35 @@
 .vendor-card:hover .ph { transform: translateY(-3px); }
 .vendor-card:hover .title { text-decoration: underline; }
 .vendor-card-body { display: grid; gap: var(--s-2); }
+.vendor-photo, .portfolio-cover { position: relative; overflow: hidden; border-radius: var(--r-panel); background: var(--haze); }
+.vendor-photo { aspect-ratio: 4 / 3; }
+.portfolio-cover { aspect-ratio: 16 / 9; }
+.vendor-photo img, .portfolio-cover img { object-fit: cover; }
+.portfolio-thumbnails { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+.pagination { flex-wrap: wrap; gap: var(--s-4); border-top: 1px solid var(--line); padding-top: var(--s-5); }
+.vendor-calendar { padding: var(--s-5); background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-panel); }
+.calendar-grid { width: 100%; table-layout: fixed; border-collapse: collapse; }
+.calendar-grid th { padding: var(--s-2) 0; font-size: var(--t-xs); color: var(--muted); }
+.calendar-grid td { padding: 3px; vertical-align: top; }
+.calendar-day { width: 100%; min-height: 54px; border: 1px solid var(--line); border-radius: 8px; background: transparent; display: flex; align-items: center; justify-content: center; gap: 4px; color: var(--ink); }
+.calendar-day[aria-pressed='true'] { outline: 2px solid var(--ink); outline-offset: 1px; }
+.calendar-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.calendar-booked { color: #8a2c36; background: #f8e4e7; }
+.calendar-tentative { color: #795307; background: #f6edcf; }
+.calendar-blocked { color: #46516a; background: #e7ebf3; }
+.calendar-legend > span { padding: 4px 8px; border-radius: 6px; }
+.calendar-agenda { list-style: none; display: grid; gap: var(--s-3); }
+.calendar-agenda li { border-top: 1px solid var(--line); padding-top: var(--s-3); gap: var(--s-3); }
+.demo-rating { color: var(--ink); }
+.demo-rating > span { color: #865c08; }
+.demo-review-details summary { cursor: pointer; padding-block: var(--s-3); }
+.demo-review-list { list-style: none; display: grid; gap: var(--s-4); }
+.demo-review-list > li { border-top: 1px solid var(--line); padding-top: var(--s-4); }
+@media (max-width: 480px) { .vendor-calendar { padding: var(--s-3); } .calendar-day { min-height: 42px; gap: 2px; } .calendar-grid td { padding: 1px; } }
 @media (max-width: 760px) { .filterbar { grid-template-columns: 1fr 1fr; } .filterbar .field:first-child { grid-column: 1 / -1; } }
 
 .profile-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: var(--s-8); align-items: start; }
+.listing-status { margin-top: calc(-1 * var(--s-5)); color: var(--muted); }
 .profile-aside { position: sticky; top: calc(68px + var(--s-5)); display: grid; gap: var(--s-3); }
 @media (max-width: 900px) { .profile-layout { grid-template-columns: 1fr; } .profile-aside { position: static; } }
 
