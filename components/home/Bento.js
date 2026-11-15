@@ -4,11 +4,11 @@ import Link from 'next/link';
 const TILES = [
   { size: 'xl', tone: 'sun', title: 'A planner that listens', body: 'It reads every detail you give it: setting, hours, style, priorities and budget, and sizes the plan to fit.', href: '/planner', art: 'chart' },
   { size: 'md', tone: 'pink', title: 'One inbox', body: 'Every vendor conversation in one place, with unread counts.', href: '/inbox', art: 'chat' },
-  { size: 'md', tone: 'paper', title: 'Shortlist and vote', body: 'Co-hosts weigh in before anyone books.', href: '/dashboard', art: 'heart' },
-  { size: 'sm', tone: 'ink', title: 'Guest list & RSVPs', href: '/dashboard', art: 'people' },
-  { size: 'sm', tone: 'paper', title: 'Registry', href: '/dashboard', art: 'gift' },
-  { size: 'sm', tone: 'pink', title: 'Day-of timeline', href: '/dashboard', art: 'clock' },
-  { size: 'sm', tone: 'sun', title: 'Your event website', href: '/dashboard', art: 'globe' },
+  { size: 'md', tone: 'paper', title: 'Shortlist and vote', body: 'Co-hosts weigh in before anyone books.', href: '/tools/shortlist', art: 'heart' },
+  { size: 'sm', tone: 'ink', title: 'Guest list & RSVPs', href: '/tools/guests', art: 'people' },
+  { size: 'sm', tone: 'paper', title: 'Registry', href: '/tools/registry', art: 'gift' },
+  { size: 'sm', tone: 'pink', title: 'Day-of timeline', href: '/tools/timeline', art: 'clock' },
+  { size: 'sm', tone: 'sun', title: 'Your event website', href: '/tools/website', art: 'globe' },
 ];
 
 const ART = {

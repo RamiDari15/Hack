@@ -23,14 +23,14 @@ export default async function PackagePage({ params }) {
   if (!supabase) redirect('/dashboard');
   if (!user) redirect(`/sign-in?next=/events/${id}/package`);
   const [{ data: event }, { data: plans }] = await Promise.all([
-    supabase.from('events').select('id, owner_id, title, location, guest_count, budget_cents').eq('id', id).maybeSingle(),
+    supabase.from('events').select('id, owner_id, title, location, guest_count, budget_cents, starter_plan').eq('id', id).maybeSingle(),
     supabase.from('ai_requests').select('output').eq('event_id', id).eq('kind', 'plan').order('created_at', { ascending: false }).limit(1),
   ]);
   if (!event) notFound();
   const isOwner = event.owner_id === user.id;
   const { items } = await loadShortlist(supabase, id, event);
   const picks = Object.fromEntries(items.filter((i) => i.inPackage).map((i) => [i.category, i]));
-  const estimates = plans?.[0]?.output?.categories ?? [];
+  const estimates = (plans?.[0]?.output ?? event.starter_plan)?.categories ?? [];
 
   const names = [...new Set([...estimates.map((c) => c.name), ...Object.keys(picks)])];
   const rows = names.map((name) => {
@@ -76,7 +76,7 @@ export default async function PackagePage({ params }) {
                     <tr key={r.name}>
                       <td>{r.name}</td>
                       <td>{r.kind === 'pick' || r.kind === 'unpriced' ? <Link href={`/vendors/${r.item.vendorId}`}>{r.item.name}</Link> : r.pending ? r.pending.name : CATEGORIES.includes(r.name) ? <Link href={`/events/${event.id}/choose?step=${encodeURIComponent(r.name)}`} className="fine">Choose one</Link> : <span className="fine">—</span>}</td>
-                      <td>{r.kind === 'pick' ? <span className="badge badge-ok">{r.source}</span> : r.kind === 'estimate' ? <span className="badge badge-warn">{r.pending ? 'No price yet, using the AI estimate' : 'AI estimate'}</span> : <span className="badge badge-plain">No price yet</span>}</td>
+                      <td>{r.kind === 'pick' ? <span className="badge badge-ok">{r.source}</span> : r.kind === 'estimate' ? <span className="badge badge-warn">{r.pending ? 'No price yet, using the AI estimate' : (plans?.length?'AI estimate':'Planning range')}</span> : <span className="badge badge-plain">No price yet</span>}</td>
                       <td className="num">
                         {r.kind === 'pick' ? moneyCents(r.fixedCents) : r.kind === 'estimate' ? `${moneyCents(r.lowCents)}–${moneyCents(r.highCents)}` : '—'}
                         {isOwner && (r.kind === 'unpriced' || r.pending || (r.kind === 'pick' && r.source === 'Your planned amount')) && (

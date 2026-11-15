@@ -53,6 +53,7 @@ export async function setPackagePick(_prev, fd) {
     const raw = str(fd.get('planned'), 12).replace(/[$,\s]/g, '');
     if (raw && !/^\d+(\.\d{1,2})?$/.test(raw)) return { error: 'Enter an amount in dollars.' };
     patch.planned_cents = raw ? Math.round(Number(raw) * 100) : null;
+    patch.pricing_selection = null;
   }
   const { data, error } = await s.supabase.from('event_shortlist').update(patch).eq('id', sid).select('id');
   if (error || !data?.length) return { error: 'Only the event owner can change the package.' };
@@ -128,12 +129,13 @@ export async function deleteTask(fd) {
 export async function importPlanTasks(_prev, fd) {
   const s = await session(fd);
   if (s.error) return { error: s.error };
-  const [{ data: plans }, { data: existing }] = await Promise.all([
+  const [{ data: plans }, { data: existing }, {data:event}] = await Promise.all([
     s.supabase.from('ai_requests').select('output').eq('event_id', s.eid).eq('kind', 'plan').order('created_at', { ascending: false }).limit(1),
     s.supabase.from('event_tasks').select('title').eq('event_id', s.eid),
+    s.supabase.from('events').select('starter_plan').eq('id',s.eid).maybeSingle(),
   ]);
   const have = new Set((existing ?? []).map((t) => t.title.toLowerCase()));
-  const rows = (plans?.[0]?.output?.checklist ?? [])
+  const rows = ((plans?.[0]?.output??event?.starter_plan)?.checklist ?? [])
     .filter((c) => c?.task && !have.has(String(c.task).toLowerCase()))
     .slice(0, 30)
     .map((c) => ({ event_id: s.eid, title: str(String(c.task), 200), due_note: str(String(c.when ?? ''), 80) || null, created_by: s.user.id, source: 'ai' }));

@@ -1,0 +1,191 @@
+[
+  {
+    "key": "golden-garden",
+    "title": "Golden-hour garden party",
+    "category": "Garden",
+    "icon": "\u273f",
+    "tone": "sun",
+    "summary": "A long-table dinner, soft florals and a candlelit evening that feels relaxed from the first welcome.",
+    "palette": [
+      "#80936b",
+      "#f4dfaa",
+      "#e7b9a3"
+    ],
+    "event_type": "Wedding",
+    "guests": 72,
+    "budget": 26000,
+    "tasks": [
+      "Choose a covered backup space",
+      "Build a seasonal family-style menu",
+      "Plan lighting for sunset"
+    ]
+  },
+  {
+    "key": "campus-creators",
+    "title": "A night for the creators",
+    "category": "Community",
+    "icon": "\u2726",
+    "tone": "pink",
+    "summary": "Mini talks, local food stations and a hands-on creative corner keep people moving and meeting.",
+    "palette": [
+      "#ff5c8a",
+      "#ffc83d",
+      "#293b87"
+    ],
+    "event_type": "Community gathering",
+    "guests": 120,
+    "budget": 12000,
+    "tasks": [
+      "Set a short stage run-of-show",
+      "Plan clear dietary signage",
+      "Leave space for an interactive installation"
+    ]
+  },
+  {
+    "key": "riverside-birthday",
+    "title": "Riverside birthday supper",
+    "category": "Celebrations",
+    "icon": "\u2600",
+    "tone": "paper",
+    "summary": "An intimate supper with colorful tables, a great playlist and a dessert moment worth gathering around.",
+    "palette": [
+      "#e46b43",
+      "#f0ba52",
+      "#f6dfcd"
+    ],
+    "event_type": "Birthday",
+    "guests": 32,
+    "budget": 5000,
+    "tasks": [
+      "Book a shared table layout",
+      "Build a personal photo display",
+      "Schedule a birthday toast"
+    ]
+  },
+  {
+    "key": "botanical-tables",
+    "title": "Botanical tables, big impact",
+    "category": "Details",
+    "icon": "\u2767",
+    "tone": "paper",
+    "summary": "Mix small vessels, greenery and handwritten place cards for a table that leaves room for conversation.",
+    "palette": [
+      "#57705a",
+      "#eee4cb",
+      "#a77554"
+    ],
+    "event_type": "Dinner party",
+    "guests": 24,
+    "budget": 3500,
+    "tasks": [
+      "Choose reusable vessels",
+      "Measure the center of each table",
+      "Keep arrangements below eye level"
+    ]
+  },
+  {
+    "key": "tasting-stations",
+    "title": "A tasting trail",
+    "category": "Food & drink",
+    "icon": "\u25d2",
+    "tone": "sun",
+    "summary": "Small stations turn dinner into an experience: something fresh, something comforting and a sweet finish.",
+    "palette": [
+      "#c9503c",
+      "#f0c56a",
+      "#7e955e"
+    ],
+    "event_type": "Corporate event",
+    "guests": 80,
+    "budget": 15000,
+    "tasks": [
+      "Mark allergens at each station",
+      "Space stations to avoid queues",
+      "Add a substantial vegetarian option"
+    ]
+  },
+  {
+    "key": "cozy-winter",
+    "title": "The cozy winter gathering",
+    "category": "Seasonal",
+    "icon": "\u2727",
+    "tone": "pink",
+    "summary": "Warm lighting, velvet touches, hot drinks and a short acoustic set for a welcoming winter evening.",
+    "palette": [
+      "#742d42",
+      "#d2a85c",
+      "#244d43"
+    ],
+    "event_type": "Holiday party",
+    "guests": 60,
+    "budget": 9000,
+    "tasks": [
+      "Arrange a coat check",
+      "Plan a warm welcome drink",
+      "Check accessibility in winter weather"
+    ]
+  },
+  {
+    "key": "graduation-weekend",
+    "title": "Graduation, all together",
+    "category": "Celebrations",
+    "icon": "\u2605",
+    "tone": "sun",
+    "summary": "Keep the day easy with drop-in food, a memory wall and a few thoughtful moments for the graduate.",
+    "palette": [
+      "#293b87",
+      "#f3c843",
+      "#fcf2e2"
+    ],
+    "event_type": "Graduation",
+    "guests": 75,
+    "budget": 6500,
+    "tasks": [
+      "Set an arrival window",
+      "Create a photo and memory station",
+      "Have a rain plan for the lawn"
+    ]
+  },
+  {
+    "key": "after-dark",
+    "title": "A little after-dark magic",
+    "category": "Entertainment",
+    "icon": "\u263e",
+    "tone": "ink",
+    "summary": "A lounge corner, warm pools of light and a playlist that moves naturally from dinner to dancing.",
+    "palette": [
+      "#292033",
+      "#d6a552",
+      "#bf6987"
+    ],
+    "event_type": "Anniversary",
+    "guests": 50,
+    "budget": 8000,
+    "tasks": [
+      "Confirm sound limits",
+      "Plan safe outdoor paths",
+      "Pick a final song and transport time"
+    ]
+  },
+  {
+    "key": "brunch-and-blooms",
+    "title": "Brunch & blooms",
+    "category": "Food & drink",
+    "icon": "\u2740",
+    "tone": "paper",
+    "summary": "A bright daytime celebration with a relaxed menu, a flower bar and plenty of time to catch up.",
+    "palette": [
+      "#f5c4b5",
+      "#ffdd86",
+      "#93a58a"
+    ],
+    "event_type": "Bridal shower",
+    "guests": 30,
+    "budget": 4000,
+    "tasks": [
+      "Offer coffee and a zero-proof drink",
+      "Choose simple make-ahead dishes",
+      "Set up a take-home flower station"
+    ]
+  }
+]

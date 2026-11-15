@@ -22,13 +22,13 @@ export default async function ChooseVendorsPage({ params, searchParams }) {
   if (!user) redirect(`/sign-in?next=/events/${id}/choose`);
 
   const [{ data: event }, { data: plans }, { data: bookings }, { data: shortlisted }] = await Promise.all([
-    supabase.from('events').select('id, owner_id, title, event_type, event_date, location, guest_count, budget_cents').eq('id', id).maybeSingle(),
+    supabase.from('events').select('id, owner_id, title, event_type, event_date, location, guest_count, budget_cents, starter_plan').eq('id', id).maybeSingle(),
     supabase.from('ai_requests').select('output').eq('event_id', id).eq('kind', 'plan').order('created_at', { ascending: false }).limit(1),
     supabase.from('event_vendors').select('id, status, vendor_id, vendors(category)').eq('event_id', id),
     supabase.from('event_shortlist').select('vendor_id').eq('event_id', id),
   ]);
   if (!event) notFound();
-  const plan = plans?.[0]?.output ?? null;
+  const plan = plans?.[0]?.output ?? event.starter_plan ?? null;
   const steps = walkthroughSteps(event, plan);
   const isOwner = event.owner_id === user.id;
   const byCategory = {};
@@ -127,7 +127,7 @@ export default async function ChooseVendorsPage({ params, searchParams }) {
           </>
         ) : (
           <div className="panel empty"><h3>No {step.category.toLowerCase()} vendors near this event yet</h3><p className="muted small">Try the web search, then confirm details with the business.</p>
-            <Link className="btn btn-sm btn-outline" href={`/discover?q=${encodeURIComponent(`${step.category} near ${event.location ?? ''}`)}`}>Search the web</Link></div>
+            <Link className="btn btn-sm btn-outline" href={`/ideas?q=${encodeURIComponent(`${step.category} near ${event.location ?? ''}`)}`}>Explore ideas</Link></div>
         )}
 
         <div className="between choose-nav">

@@ -53,7 +53,7 @@ export default async function SponsorsPage({ params }) {
     <div className="page wrap">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Contact sponsors" size="display-2"
         lede="Make a short list of businesses that fit your crowd, draft a proposal, then email them from your own inbox.">
-        <Link className="btn btn-sm btn-outline" href={`/discover?q=${encodeURIComponent(ideaQuery)}`}>Find sponsor ideas on the web</Link>
+        <Link className="btn btn-sm btn-outline" href={`/ideas?q=${encodeURIComponent(ideaQuery)}`}>Find sponsor ideas on the web</Link>
       </PageHead>
       <p className="notice">Vendora never contacts sponsors for you. The Email button opens your own email app with the draft, and you decide whether to send it.</p>
 

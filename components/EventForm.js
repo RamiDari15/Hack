@@ -21,6 +21,9 @@ export default function EventForm({ action, initial = {}, submitLabel = 'Create 
   const e = state?.errors;
   return (
     <form action={formAction} className={`event-form${compact ? ' event-form-compact' : ''}`} noValidate>
+      {initial.after && <input type="hidden" name="after" value={initial.after}/>}
+      {initial.ideaKey && <input type="hidden" name="idea_key" value={initial.ideaKey}/>}
+      {initial.vendorId && <input type="hidden" name="vendor_id" value={initial.vendorId}/>}
       {eventId && <input type="hidden" name="id" value={eventId} />}
       <Field name="title" label="Event name" errors={e} wide>{(a) => <input id="title" name="title" defaultValue={v.title ?? ''} required maxLength={140} placeholder="Maya and Sam’s garden wedding" {...a} />}</Field>
       <Field name="event_type" label="Event type" errors={e}>{(a) => (

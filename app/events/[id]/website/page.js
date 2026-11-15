@@ -36,6 +36,7 @@ export default async function WebsiteSettingsPage({ params }) {
     <div className="page wrap">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Event website" size="display-2"
         lede="One page for guests: the date, place, schedule and registry. Guests reply with the personal RSVP link from their invitation." />
+      <p style={{marginBottom:24}}><Link className="btn" href={`/events/${id}/website/preview`}>Preview your event website →</Link></p>
       <div className="event-layout">
         <div className="stack-lg">
           <section className="panel stack" aria-labelledby="ws-h">

@@ -2,12 +2,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getVendor } from '@/lib/vendors';
 import { getSessionUser } from '@/lib/supabase/server';
-import { publishedRate } from '@/lib/vendor-pricing';
+import PublishedPricing from '@/components/PublishedPricing';
 import Placeholder from '@/components/ui/Placeholder';
 import { VerificationBadge } from '@/components/VendorCard';
 import RequestQuote from './RequestQuote';
-import ShortlistButton from '@/components/ShortlistButton';
-import { toggleSavedVendor } from '@/app/actions/inbox';
+import SaveVendorButton from '@/components/SaveVendorButton';
+import VendorEventActions from '@/components/VendorEventActions';
 import Image from 'next/image';
 import VendorCalendar from '@/components/VendorCalendar';
 import VendorReviews from '@/components/VendorReviews';
@@ -19,8 +19,9 @@ export async function generateMetadata({ params }) {
   return { title: v ? v.name : 'Vendor' };
 }
 
-export default async function VendorProfile({ params }) {
+export default async function VendorProfile({ params, searchParams }) {
   const { id } = await params;
+  const sp = await searchParams;
   const v = await getVendor(id);
   if (!v) notFound();
   const { supabase, user } = await getSessionUser();
@@ -28,10 +29,10 @@ export default async function VendorProfile({ params }) {
   let saved = false;
   if (supabase && user) {
     const [{ data }, { data: s }] = await Promise.all([
-      supabase.from('events').select('id, title').order('created_at', { ascending: false }).limit(30),
+      supabase.from('events').select('id, title, guest_count').order('created_at', { ascending: false }).limit(30),
       supabase.from('saved_vendors').select('vendor_id').eq('vendor_id', v.id).maybeSingle(),
     ]);
-    events = data ?? [];
+    events = [...(data ?? [])].sort((a,b)=>Number(b.id===sp?.event)-Number(a.id===sp?.event));
     saved = Boolean(s);
   }
 
@@ -41,10 +42,7 @@ export default async function VendorProfile({ params }) {
         <Link href={`/vendors?category=${encodeURIComponent(v.category)}`} className="back-link">{v.category}</Link>
         <h1 className="display-2" style={{ maxWidth: '18ch' }}>{v.name}</h1>
         <div className="row"><VerificationBadge vendor={v} /><span className="small muted">{v.city}{v.serviceRadiusMi ? `, travels up to ${v.serviceRadiusMi} mi` : ''}</span>
-          {user ? (
-            <form action={toggleSavedVendor}><input type="hidden" name="vendor_id" value={v.id} /><input type="hidden" name="save" value={saved ? 'no' : 'yes'} />
-              <button className={`btn btn-sm save-btn${saved ? ' is-saved' : ''}`} type="submit" aria-pressed={saved}><span aria-hidden="true">{saved ? '♥' : '♡'}</span> {saved ? 'Saved' : 'Save'}</button></form>
-          ) : <Link className="btn btn-sm save-btn" href={`/sign-in?next=/vendors/${v.id}`}><span aria-hidden="true">♡</span> Save</Link>}</div>
+          <SaveVendorButton vendorId={v.id} saved={saved} signedIn={Boolean(user)} /><a className="btn btn-sm" href="#vendor-plan-actions">Add to an event</a></div>
       </header>
       {v.directoryListed && <p className="listing-status fine"><a href={v.sourceUrl} target="_blank" rel="noopener noreferrer">Public business source ↗</a><span aria-hidden="true"> · </span>Not yet verified by Vendora</p>}
 
@@ -56,21 +54,19 @@ export default async function VendorProfile({ params }) {
             {v.sourceUrl && <p className="fine">Photos: <a href={v.sourceUrl} target="_blank" rel="noopener noreferrer">public business listing and its contributors ↗</a></p>}
           </section> : <Placeholder label={v.category} ratio="16 / 9" caption="Portfolio not uploaded yet" />}
           <section className="stack"><h2 className="display-3">About</h2><p className="lede">{v.description || 'This vendor has not written a description yet.'}</p></section>
-          <VendorPricing key={v.id} options={v.budgetOptions} category={v.category} directoryListed={v.directoryListed} />
-          <section className="stack"><h2 className="display-3">{v.directoryListed ? 'Published packages' : 'Packages'}</h2>
-            {v.packages?.length ? (
-              <dl>{v.packages.map((p) => (
-                <div className="kv" key={`${p.title}-${p.note}`}><dt>{p.title}{p.note && !v.directoryListed && <><br /><span className="fine">{p.note}</span></>}</dt><dd>{publishedRate(p) || 'Request a quote'}</dd></div>
-              ))}</dl>
-            ) : <p className="muted">{v.directoryListed ? 'No packages published. Contact the business for pricing.' : 'No packages listed. Request a quote.'}</p>}
-            {!!v.packages?.length && v.sourceUrl && <p className="fine"><a href={v.sourceUrl} target="_blank" rel="noopener noreferrer">View published package details ↗</a></p>}
-          </section>
+          <PublishedPricing packages={v.packages} vendorId={v.id} events={events} signedIn={Boolean(user)} category={v.category} sourceUrl={v.sourceUrl}/>
+          <VendorPricing key={v.id} options={v.budgetOptions} category={v.category} directoryListed={v.directoryListed} vendorId={v.id} events={events} signedIn={Boolean(user)} />
           <VendorCalendar entries={v.calendar} />
           <section className="stack"><h2 className="display-3">Setup requirements</h2><p className="muted">{v.setupRequirements || 'Not provided yet.'}</p></section>
           <section className="stack"><h2 className="display-3">Booking and cancellation</h2><p className="muted">{v.bookingPolicy || 'Not provided yet. The vendor’s policy is shown before you confirm any booking.'}</p></section>
           <VendorReviews googleReviewsUrl={v.googleReviewsUrl} sourceUrl={v.sourceUrl} />
         </div>
         <aside className="profile-aside">
+          <div className="panel stack" id="vendor-plan-actions">
+            <h2 className="title">Keep it with your plans</h2>
+            <VendorEventActions vendorId={v.id} events={events} signedIn={Boolean(user)} eventId={events.find(e=>e.id===sp?.event)?.id} />
+          </div>
+
           <div className="panel panel-pop stack">
             <h2 className="title">{v.directoryListed ? 'Contact the business' : 'Request a quote'}</h2>
             <p className="fine">{v.calendarIsDemo ? 'This sample calendar is for a fictional business. Confirm availability with the vendor.' : 'Check prices and dates with them directly.'}</p>
@@ -94,13 +90,6 @@ export default async function VendorProfile({ params }) {
               <RequestQuote vendorId={v.id} vendorName={v.name} events={events} />
             )}
           </div>
-          {user && events.length > 0 && (
-            <div className="panel stack-sm">
-              <h2 className="title">Compare before you decide</h2>
-              <p className="fine">Add to a shortlist to vote and compare with your co-hosts.</p>
-              <ShortlistButton vendorId={v.id} events={events} />
-            </div>
-          )}
         </aside>
       </div>
     </article>

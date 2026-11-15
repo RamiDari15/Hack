@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { getSessionUser } from '@/lib/supabase/server';
 import { UUID_RE, BOOKING_STATUS, formatDate, moneyCents } from '@/lib/format';
+import {loadShortlist,pickCost} from '@/lib/shortlist';
 import PageHead from '@/components/PageHead';
 
 export const metadata = { title: 'Compare quotes' };
@@ -19,12 +20,13 @@ export default async function CompareQuotesPage({ params, searchParams }) {
   if (!user) redirect(`/sign-in?next=/events/${id}/quotes`);
 
   const [{ data: event }, { data: bookings }, { data: plans }] = await Promise.all([
-    supabase.from('events').select('id, title, guest_count, budget_cents').eq('id', id).maybeSingle(),
+    supabase.from('events').select('id, title, guest_count, budget_cents, starter_plan').eq('id', id).maybeSingle(),
     supabase.from('event_vendors').select('id, status, vendors(id, name, category, city, verification_status), quotes(id, amount_cents, description, valid_until, status, created_at)').eq('event_id', id),
     supabase.from('ai_requests').select('output').eq('event_id', id).eq('kind', 'plan').order('created_at', { ascending: false }).limit(1),
   ]);
   if (!event) notFound();
-  const estimate = Object.fromEntries((plans?.[0]?.output?.categories ?? []).map((c) => [c.name, c]));
+  const estimate = Object.fromEntries(((plans?.[0]?.output ?? event.starter_plan)?.categories ?? []).map((c) => [c.name, c]));
+  const {items}=await loadShortlist(supabase,id,event);
   const showOld = sp?.all === '1';
 
   // Latest quote per booking (or all of them when asked), grouped by category.
@@ -38,11 +40,12 @@ export default async function CompareQuotesPage({ params, searchParams }) {
 
   return (
     <div className="page wrap">
-      <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Compare quotes" size="display-2"
-        lede="Every quote side by side, by category, against your AI ballpark." >
+      <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Compare pricing" size="display-2"
+        lede="Compare your planning amounts and published prices. Actual vendor quotes appear separately as they arrive." >
         <Link className="btn btn-sm btn-outline" href={showOld ? `/events/${event.id}/quotes` : `/events/${event.id}/quotes?all=1`}>{showOld ? 'Show current quotes only' : 'Include declined and expired'}</Link>
       </PageHead>
 
+      {items.length>0&&<section className="panel stack"><h2 className="title">Your shortlist, side by side</h2><div className="table-wrap"><table className="table"><thead><tr><th>Business</th><th>Category</th><th>Selected option</th><th>Planning amount</th><th>Next step</th></tr></thead><tbody>{items.map(i=>{const cost=pickCost(i,event.guest_count);return <tr key={i.id}><td><Link href={`/vendors/${i.vendorId}?event=${id}`}>{i.name}</Link></td><td>{i.category}</td><td>{i.pricingSelection?.title||'To discuss'}</td><td className="num">{cost?moneyCents(cost.cents):'Request pricing'}<span className="fine block">{cost?.source}</span></td><td><Link href={`/vendors/${i.vendorId}?event=${id}`}>Review options →</Link></td></tr>;})}</tbody></table></div></section>}
       {cats.length ? cats.map((cat) => {
         const qs = groups[cat].sort((a, b) => a.amount_cents - b.amount_cents);
         const est = estimate[cat];

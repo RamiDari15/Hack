@@ -7,7 +7,7 @@ import AcctMenu from './AcctMenu';
 export const NAV = [
   { href: '/vendors', label: 'Vendors' },
   { href: '/planner', label: 'Planner' },
-  { href: '/discover', label: 'Web search' },
+  { href: '/ideas', label: 'Ideas' },
   { href: '/how-it-works', label: 'How it works' },
 ];
 

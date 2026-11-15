@@ -31,7 +31,7 @@ export default async function ShortlistPage({ params, searchParams }) {
         lede="Save 3 or 4 businesses per category, vote and comment together, then compare them side by side.">
         <Link className="btn btn-sm btn-outline" href={`/events/${event.id}/choose`}>Add from the vendor walkthrough</Link>
         <Link className="btn btn-sm" href={`/events/${event.id}/package`}>See the package total</Link>
-      </PageHead>
+      <a className="btn btn-sm btn-outline" href={`/api/events/${id}/export?type=vendors`} download>Export CSV</a></PageHead>
       {sp?.compare === 'few' && <p className="notice notice-error" role="alert">Pick 2 to 4 vendors to compare.</p>}
 
       {items.length ? (
@@ -58,7 +58,8 @@ export default async function ShortlistPage({ params, searchParams }) {
                     <span className={`badge ${it.verified ? 'badge-ok' : 'badge-plain'}`}>{it.verified ? 'Verified' : 'Public listing'}</span>
                     {it.booking && <span className="badge badge-info">Contacted</span>}
                   </div>
-                  <h3 id={`sv-${it.id}`} className="title"><Link href={`/vendors/${it.vendorId}`}>{it.name}</Link></h3>
+                  <h3 id={`sv-${it.id}`} className="title"><Link href={`/vendors/${it.vendorId}?event=${id}`}>{it.name}</Link></h3>
+                  {it.pricingSelection&&<p className="fine">{it.pricingSelection.title} · {it.pricingSelection.quantity} {it.pricingSelection.unit}{it.pricingSelection.quantity===1?'':'s'} · {moneyCents(it.pricingSelection.max_cents)} planned</p>}
                   <p className="fine">{[it.city, it.distanceMi != null ? `${it.distanceMi} mi from Ann Arbor` : null, it.lowest ? `published from ${moneyCents(it.lowest.cents)}${it.lowest.unit !== 'event' ? `/${it.lowest.unit}` : ''}` : 'no published price', it.quote ? `quote ${moneyCents(it.quote.amount_cents)}` : null].filter(Boolean).join(' · ')}</p>
                   <p className="fine">Added by {it.addedBy}</p>
                   <label className="check-row small"><input type="checkbox" name="ids" value={it.id} form="compare-form" /><span>Compare</span></label>

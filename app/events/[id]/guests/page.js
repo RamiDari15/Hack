@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import { getSessionUser } from '@/lib/supabase/server';
@@ -71,6 +72,7 @@ export default async function GuestsPage({ params }) {
     <div className="page wrap">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Guest list" size="display-2"
         lede="Each guest gets a private RSVP link. Share it yourself; Vendora does not email guests." />
+      <p><a className="btn btn-sm btn-outline" href={`/api/events/${id}/export?type=guests`} download>Export CSV</a></p>
 
       <dl className="stat-strip">
         <div><dt>Coming</dt><dd className="num">{coming}</dd></div>

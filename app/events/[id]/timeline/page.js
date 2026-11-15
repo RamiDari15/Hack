@@ -39,6 +39,7 @@ export default async function TimelinePage({ params }) {
     <div className="page wrap">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Day-of timeline" size="display-2"
         lede={[formatDate(event.event_date), event.location].filter(Boolean).join(', ') || 'When each vendor arrives, sets up and leaves.'} />
+      <p><a className="btn btn-sm btn-outline" href={`/api/events/${id}/export?type=timeline`} download>Export CSV</a></p>
 
       <div className="event-layout">
         <div className="stack-lg">

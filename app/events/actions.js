@@ -1,5 +1,6 @@
 'use server';
 
+import ideas from '@/data/workspaces/ideas.json';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { after } from 'next/server';
@@ -47,10 +48,23 @@ export async function createEvent(_prev, formData) {
   const { errors, values, row } = parseEvent(formData);
   if (Object.keys(errors).length) return { errors, values };
 
-  const { data, error } = await supabase.from('events').insert({ ...row, owner_id: user.id }).select('id').single();
-  if (error) return { error: 'Could not save the event. Try again.', values };
+  const vendorId=str(formData.get('vendor_id'),36);
+  let eventId;
+  if(UUID_RE.test(vendorId)){
+    const {data,error}=await supabase.rpc('plan_vendor',{p_vendor:vendorId,p_event:null,p_details:row,p_pricing:null});
+    if(error)return {error:'Could not create the event and add that vendor. Try again.',values};
+    eventId=data.event_id;
+  }else{
+    const {data,error}=await supabase.from('events').insert({...row,owner_id:user.id}).select('id').single();
+    if(error)return {error:'Could not save the event. Try again.',values};
+    eventId=data.id;
+  }
+  const idea=ideas.find(i=>i.key===formData.get('idea_key'));
+  if(idea)await supabase.from('event_ideas').insert({event_id:eventId,idea_key:idea.key,title:idea.title,note:idea.summary,added_by:user.id});
+  const after=str(formData.get('after'),20);
+  const suffix=['shortlist','guests','registry','timeline','website','package','board','team','ideas','notes'].includes(after)?`/${after}`:vendorId?'/shortlist':'';
   revalidatePath('/dashboard');
-  redirect(`/events/${data.id}?created=1`);
+  redirect(`/events/${eventId}${suffix}?created=1`);
 }
 
 export async function updateEvent(_prev, formData) {

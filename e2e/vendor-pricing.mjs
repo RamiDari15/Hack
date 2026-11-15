@@ -1,5 +1,6 @@
+import {csvCell,csvDocument} from '../lib/csv.js';
 import assert from 'node:assert/strict';
-import { readBudgetOption, budgetTotal, budgetRate, publishedRate } from '../lib/vendor-pricing.js';
+import { readBudgetOption, budgetTotal, budgetRate, publishedRate, pricingContext, planningSelection, publishedOption } from '../lib/vendor-pricing.js';
 
 const option = { kind: 'budget_option', title: 'Signature', min_cents: 5000, max_cents: 7500,
   currency: 'USD', unit: 'person', minimum_quantity: 1, includes: ['Food allowance'] };
@@ -21,4 +22,18 @@ assert.equal(publishedRate({ note: 'Published range: 4500–4500 USD. Per event.
 assert.equal(publishedRate({ note: 'Published starting price: 500 USD. Per person.' }), 'From $500 / person');
 assert.equal(publishedRate({ note: 'Contact for pricing.' }), null);
 assert.equal(publishedRate({ priceCents: 10000 }), '$100');
-console.log('PASS: price ranges, billing units, minimum hours, invalid quantities, and published rates');
+
+assert.equal(pricingContext('Hair & makeup','person',100).quantity,4);
+assert.equal(pricingContext('Catering','person',72).quantity,72);
+assert.equal(pricingContext('Photography','hour',120).quantity,4);
+assert.equal(planningSelection(option,4).max_cents,30000);
+assert.equal(planningSelection(option,0),null);
+
+assert.equal(publishedOption({title:'Published',priceCents:null,note:'Published range: 40–60 USD. Per person.'}).unit,'person');
+assert.equal(publishedOption({title:'Unknown',priceCents:null,note:'Contact us'}),null);
+assert.equal(planningSelection(publishedOption({title:'Coverage',priceCents:120000}),1).max_cents,120000);
+
+assert.equal(csvCell('=1+1'),'"\'=1+1"');
+assert.equal(csvCell('Avery, Brooks'),'"Avery, Brooks"');
+assert.ok(csvDocument(['Name'],[['Taylor "T" Reed']]).includes('"Taylor ""T"" Reed"'));
+console.log('PASS: pricing sources, service quantities, planning selections and safe CSV exports');

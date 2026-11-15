@@ -1,3 +1,4 @@
+import ReadyMadeEvents from '@/components/ReadyMadeEvents';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getSessionUser } from '@/lib/supabase/server';
@@ -44,6 +45,8 @@ export default async function DashboardPage({ searchParams }) {
           <Link className="btn" href="/events/new">Create your first event</Link>
         </div>
       )}
+
+      <ReadyMadeEvents />
 
       {list.length > 0 && (
         <ol role="list" className="event-list">

@@ -1,3 +1,4 @@
+import DuplicateEvent from '@/components/DuplicateEvent';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { getSessionUser } from '@/lib/supabase/server';
@@ -19,7 +20,7 @@ export default async function EventPage({ params, searchParams }) {
   if (!supabase) redirect('/dashboard');
   if (!user) redirect(`/sign-in?next=/events/${id}`);
 
-  const [{ data: event }, { data: bookings }, { data: plans }, { data: saved }, { data: sponsors }, { count: timelineCount }, { count: guestCount }, { count: giftCount }, { data: weather }] = await Promise.all([
+  const [{ data: event }, { data: bookings }, { data: plans }, { data: saved }, { data: sponsors }, { count: timelineCount }, { count: guestCount }, { count: giftCount }, { data: weather }, {data:shortlist}, {data:eventIdeas}] = await Promise.all([
     supabase.from('events').select('*').eq('id', id).maybeSingle(),
     supabase.from('event_vendors')
       .select('id, status, hold_expires_at, created_at, vendors(id, name, category, city), quotes(id, amount_cents, description, valid_until, status, created_at)')
@@ -32,13 +33,16 @@ export default async function EventPage({ params, searchParams }) {
     supabase.from('event_guests').select('id', { count: 'exact', head: true }).eq('event_id', id),
     supabase.from('event_registry_items').select('id', { count: 'exact', head: true }).eq('event_id', id),
     supabase.from('event_weather').select('*').eq('event_id', id).maybeSingle(),
+    supabase.from('event_shortlist').select('id,vendor_id,in_package,planned_cents,pricing_selection,vendors(name,category,city)').eq('event_id',id).order('in_package',{ascending:false}),
+    supabase.from('event_ideas').select('idea_key,title,note').eq('event_id',id),
   ]);
   if (!event) notFound();
 
-  const plan = plans?.[0]?.output ?? null;
+  const plan = plans?.[0]?.output ?? event.starter_plan ?? null;
   const rows = bookings ?? [];
   const quotes = rows.flatMap((b) => (b.quotes ?? []).filter((q) => q.status !== 'declined' && q.status !== 'expired').map((q) => ({ ...q, vendor: b.vendors })));
   const committedCents = quotes.filter((q) => q.status === 'accepted').reduce((s, q) => s + q.amount_cents, 0);
+  const plannedCents=(shortlist||[]).filter(v=>v.in_package).reduce((n,v)=>n+(v.planned_cents||0),0);
   const meta = [formatDate(event.event_date), event.location, event.guest_count ? `${event.guest_count} guests` : null].filter(Boolean).join(', ');
 
   return (
@@ -53,11 +57,12 @@ export default async function EventPage({ params, searchParams }) {
       <dl className="stat-strip">
         <div><dt>Budget</dt><dd className="num">{moneyCents(event.budget_cents)}</dd></div>
         <div><dt>Accepted quotes</dt><dd className="num">{moneyCents(committedCents)}</dd></div>
-        <div><dt>Vendors contacted</dt><dd className="num">{rows.length}</dd></div>
-        <div><dt>Quotes received</dt><dd className="num">{quotes.length}</dd></div>
+        <div><dt>Shortlisted vendors</dt><dd className="num">{shortlist?.length||0}</dd></div>
+        <div><dt>Planned vendor costs</dt><dd className="num">{moneyCents(plannedCents)}</dd></div>
       </dl>
 
-      <PlanGuide event={event} plan={plan} bookings={rows} quotes={quotes} sponsors={sponsors ?? []} timelineCount={timelineCount ?? 0} guestCount={guestCount ?? 0} giftCount={giftCount ?? 0} />
+      <div className="event-utilities row"><Link className="btn btn-sm btn-outline" href={`/vendors?event=${id}&location=${encodeURIComponent((event.location||'').split(',')[0])}`}>＋ Add vendors</Link><a className="btn btn-sm btn-outline" href={`/api/events/${id}/export?type=budget`} download>Export budget CSV</a>{event.owner_id===user.id&&<DuplicateEvent eventId={id}/>}</div>
+      <PlanGuide event={event} plan={plan} bookings={rows} quotes={quotes} sponsors={sponsors ?? []} timelineCount={timelineCount ?? 0} guestCount={guestCount ?? 0} giftCount={giftCount ?? 0} shortlistCount={shortlist?.length||0} />
 
       <div className="event-layout">
         <div className="stack-lg">
@@ -102,16 +107,17 @@ export default async function EventPage({ params, searchParams }) {
                 })}
               </ul>
             ) : (
-              <div className="empty"><h3>No vendors yet</h3><p className="muted small">Find someone you like and ask for a quote.</p></div>
+              shortlist?.length?<div className="stack"><ul role="list" className="booking-list">{shortlist.slice(0,8).map(v=><li key={v.id}><div><Link className="title" href={`/vendors/${v.vendor_id}?event=${id}`}>{v.vendors?.name}</Link><p className="fine">{v.vendors?.category} · {v.vendors?.city}</p></div><div className="stack-sm"><span className="badge">{v.in_package?'In your package':'Considering'}</span>{v.planned_cents!=null&&<span className="fine num">{moneyCents(v.planned_cents)} planned</span>}</div></li>)}</ul><div className="row"><Link className="btn btn-sm" href={`/events/${id}/shortlist`}>Open full shortlist</Link><Link className="btn btn-sm btn-outline" href={`/events/${id}/package`}>See package costs</Link></div></div>:<div className="empty"><h3>Find your first vendor</h3><p className="muted small">Save businesses to this event before you contact them.</p><Link className="btn btn-sm" href={`/vendors?event=${id}`}>Browse vendors for this event</Link></div>
             )}
           </section>
 
           <section className="panel stack" aria-labelledby="saved-h">
             <div className="panel-head">
-              <h2 id="saved-h">Saved from the web</h2>
-              <Link className="btn btn-sm btn-outline" href="/discover">Search the web</Link>
+              <h2 id="saved-h">Ideas & inspiration</h2>
+              <Link className="btn btn-sm btn-outline" href="/ideas">Explore ideas</Link>
             </div>
             <p className="fine measure">Ideas from the web. Check details with each business.</p>
+            {!!eventIdeas?.length&&<ul role="list" className="booking-list">{eventIdeas.map(i=><li key={i.idea_key}><div><Link className="title" href={`/events/${id}/ideas`}>{i.title}</Link><p className="fine">{i.note}</p></div><Link className="btn btn-sm btn-outline" href={`/events/${id}/board`}>Style board</Link></li>)}</ul>}
             {saved?.length ? (
               <ul role="list" className="booking-list">
                 {saved.map((r) => (

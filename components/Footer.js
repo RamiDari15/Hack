@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Wordmark } from './Header';
 
 const LINKS = [
-  ['/events/new', 'Start an event'], ['/vendors', 'Find vendors'], ['/planner', 'Planner'], ['/discover', 'Web search'],
+  ['/events/new', 'Start an event'], ['/vendors', 'Find vendors'], ['/planner', 'Planner'], ['/ideas', 'Ideas'],
   ['/how-it-works', 'How it works'], ['/vendors/join', 'Join as a vendor'], ['/sponsorships', 'Sponsorships'],
   ['/support', 'Support'], ['/privacy', 'Privacy'], ['/terms', 'Terms'],
 ];

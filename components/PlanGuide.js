@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 // Step-by-step guide for planning one event. Each step is marked done from the event's real data,
 // and the first unfinished step is highlighted as the next thing to do.
-export default function PlanGuide({ event, plan, bookings, quotes, sponsors, timelineCount = 0, guestCount = 0, giftCount = 0 }) {
+export default function PlanGuide({ event, plan, bookings, quotes, sponsors, timelineCount = 0, guestCount = 0, giftCount = 0, shortlistCount = 0 }) {
   const confirmed = bookings.find((b) => b.status === 'confirmed');
   const quoted = bookings.find((b) => (b.quotes ?? []).some((q) => q.status === 'sent'));
   const steps = [
@@ -21,7 +21,7 @@ export default function PlanGuide({ event, plan, bookings, quotes, sponsors, tim
     {
       key: 'vendors', title: 'Choose vendors',
       text: 'Walk through each category with vendors ranked for your budget, date and location.',
-      done: bookings.length > 0,
+      done: bookings.length > 0 || shortlistCount > 0,
       cta: { href: `/events/${event.id}/choose`, label: 'Choose vendors' },
     },
     {

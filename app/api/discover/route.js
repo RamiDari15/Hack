@@ -32,7 +32,7 @@ const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, '').t
 export async function POST(request) {
   const apiKey = process.env.OPENAI_API_KEY;
   const model = process.env.OPENAI_MODEL;
-  if (!apiKey || !model) return jsonError('Web search is not configured yet. Add OPENAI_API_KEY and OPENAI_MODEL.', 503);
+  if (!apiKey || !model) return jsonError('Idea search is not configured yet. Please explore the collections or try again shortly.', 503);
 
   const gate = await requireUserWithinLimit();
   if (gate.error) return gate.error;
@@ -60,11 +60,11 @@ export async function POST(request) {
       }),
     }, 60_000);
   } catch {
-    return jsonError('Web search took too long. Try again.', 504);
+    return jsonError('Idea search took too long. Try again.', 504);
   }
   if (!res.ok) {
     console.error('OpenAI web search error', res.status, (await res.text()).slice(0, 500));
-    return jsonError('Web search is unavailable right now.', 502);
+    return jsonError('Idea search is unavailable right now.', 502);
   }
 
   const out = await res.json();
@@ -76,12 +76,12 @@ export async function POST(request) {
     if (o.type === 'message') for (const c of o.content ?? []) for (const a of c.annotations ?? []) { if (a.type === 'url_citation') { const h = hostOf(a.url); if (h) seen.add(h); } }
   }
   const parts = items.filter((o) => o.type === 'message').flatMap((o) => o.content ?? []);
-  if (parts.some((c) => c.type === 'refusal')) return jsonError('Web search could not help with that request. Try different words.', 422);
+  if (parts.some((c) => c.type === 'refusal')) return jsonError('Idea search could not help with that request. Try different words.', 422);
   const text = parts.filter((c) => c.type === 'output_text').map((c) => c.text).join('');
-  if (!text) return jsonError('Web search returned nothing readable. Try again.', 502);
+  if (!text) return jsonError('Idea search returned nothing readable. Try again.', 502);
 
   let parsed;
-  try { parsed = JSON.parse(text); } catch { return jsonError('Web search returned an unreadable answer. Try again.', 502); }
+  try { parsed = JSON.parse(text); } catch { return jsonError('Idea search returned an unreadable answer. Try again.', 502); }
 
   const urls = new Set();
   const results = (Array.isArray(parsed?.results) ? parsed.results : [])

@@ -1,0 +1,1773 @@
+[
+  {
+    "key": "garden-wedding-v1",
+    "title": "Maya & Jordan\u2019s garden wedding",
+    "event_type": "Wedding",
+    "event_date": "2027-06-12",
+    "guest_count": 72,
+    "budget_cents": 2600000,
+    "location": "Ann Arbor, MI",
+    "style": "Garden, candlelight & warm neutrals",
+    "latitude": 42.2808,
+    "longitude": -83.743,
+    "idea": "golden-garden",
+    "categories": [
+      "Venues",
+      "Catering",
+      "Photography",
+      "Florists",
+      "Music & DJ",
+      "Cake & desserts",
+      "Hair & makeup"
+    ],
+    "plan": {
+      "origin": "starter_template",
+      "summary": "A thoughtful starting plan for maya & jordan\u2019s garden wedding: 72 guests in Ann Arbor, with a $26,000 target. Vendor choices are a research shortlist, with budget room kept for the details.",
+      "categories": [
+        {
+          "name": "Venues",
+          "low": 4800,
+          "high": 6000,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Catering",
+          "low": 4400,
+          "high": 5500,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Photography",
+          "low": 2560,
+          "high": 3200,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Florists",
+          "low": 1360,
+          "high": 1700,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Music & DJ",
+          "low": 1440,
+          "high": 1800,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Cake & desserts",
+          "low": 560,
+          "high": 700,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Hair & makeup",
+          "low": 680,
+          "high": 850,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Taxes & service fees",
+          "low": 936,
+          "high": 1560,
+          "notes": "Keep this separate from business pricing."
+        },
+        {
+          "name": "Delivery & setup",
+          "low": 390,
+          "high": 650,
+          "notes": "Keep this separate from business pricing."
+        },
+        {
+          "name": "Contingency",
+          "low": 780,
+          "high": 1300,
+          "notes": "Keep this separate from business pricing."
+        }
+      ],
+      "assumptions": [
+        "Planning allocations, not business quotes.",
+        "Venue availability and final pricing still need confirmation."
+      ],
+      "missing_items": [
+        "Weather backup",
+        "Accessible routes",
+        "Dietary and meal counts",
+        "Transport at the end of the evening"
+      ],
+      "cost_saving_ideas": [
+        "Prioritize two signature moments instead of adding more suppliers.",
+        "Reuse ceremony or welcome florals at dinner."
+      ],
+      "checklist": [
+        {
+          "task": "Check venue accessibility and parking",
+          "when": "This week"
+        },
+        {
+          "task": "Confirm an indoor weather backup",
+          "when": "Before invitations"
+        },
+        {
+          "task": "Compare catering menus and dietary options",
+          "when": "One month before"
+        },
+        {
+          "task": "Choose the photography coverage",
+          "when": "The week before"
+        },
+        {
+          "task": "Review transport and arrival times",
+          "when": "This week"
+        },
+        {
+          "task": "Finalize table layout",
+          "when": "Before invitations"
+        },
+        {
+          "task": "Send RSVP reminders",
+          "when": "One month before"
+        },
+        {
+          "task": "Confirm the run-of-show",
+          "when": "The week before"
+        },
+        {
+          "task": "Check final headcount and meals",
+          "when": "This week"
+        },
+        {
+          "task": "Pack the day-of essentials kit",
+          "when": "Before invitations"
+        }
+      ]
+    },
+    "tasks": [
+      "Check venue accessibility and parking",
+      "Confirm an indoor weather backup",
+      "Compare catering menus and dietary options",
+      "Choose the photography coverage",
+      "Review transport and arrival times",
+      "Finalize table layout",
+      "Send RSVP reminders",
+      "Confirm the run-of-show",
+      "Check final headcount and meals",
+      "Pack the day-of essentials kit"
+    ],
+    "timeline": [
+      [
+        "12:00",
+        "13:00",
+        "Venue access & setup",
+        "Check furniture placement, power and the accessible route."
+      ],
+      [
+        "13:00",
+        "14:30",
+        "Decor and floral setup",
+        "Keep clear paths and low table arrangements."
+      ],
+      [
+        "14:30",
+        "15:15",
+        "Sound and lighting check",
+        "Test microphones and the first playlist."
+      ],
+      [
+        "15:30",
+        "16:00",
+        "Host walkthrough",
+        "Check signage, seating, dietary notes and the rain plan."
+      ],
+      [
+        "16:00",
+        "16:45",
+        "Guests arrive",
+        "Welcome drinks and a relaxed arrival window."
+      ],
+      [
+        "16:45",
+        "17:15",
+        "Welcome & opening moment",
+        "A short toast and a clear explanation of the evening."
+      ],
+      [
+        "17:30",
+        "18:45",
+        "Dinner & conversation",
+        "Allow time for dietary meals and unhurried service."
+      ],
+      [
+        "19:00",
+        "19:30",
+        "Dessert & celebration",
+        "Gather for the cake, toast or shared moment."
+      ],
+      [
+        "19:30",
+        "21:30",
+        "Music, photos & activities",
+        "Keep a quieter lounge space available."
+      ],
+      [
+        "21:30",
+        "22:00",
+        "Final song & departures",
+        "Confirm transport and help guests find their way."
+      ],
+      [
+        "22:00",
+        "23:00",
+        "Pack-down & venue handover",
+        "Check rentals, lost property and cleanup."
+      ]
+    ],
+    "guests": [
+      {
+        "name": "Avery Brooks",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": "Gluten-free meal requested"
+      },
+      {
+        "name": "Jordan Ellis",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Morgan Chen",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Taylor Reed",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Riley Bennett",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Casey Morgan",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Alex Rivera",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Jamie Patel",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Cameron Lewis",
+        "party_size": 2,
+        "status": "no",
+        "attending": 0,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Quinn Parker",
+        "party_size": 2,
+        "status": "invited",
+        "attending": null,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Drew Sullivan",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Reese Campbell",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Samira Hassan",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Noah Mitchell",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": "Gluten-free meal requested"
+      },
+      {
+        "name": "Olivia Torres",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Liam Foster",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Emma Wilson",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Ethan Hayes",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Sophia Kim",
+        "party_size": 2,
+        "status": "no",
+        "attending": 0,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Lucas Anderson",
+        "party_size": 2,
+        "status": "invited",
+        "attending": null,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Isabella Martinez",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Mason Walker",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Mia Thompson",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Logan Davis",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Amelia Scott",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Elijah Carter",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Charlotte Adams",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": "Gluten-free meal requested"
+      },
+      {
+        "name": "James Murphy",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Harper Nelson",
+        "party_size": 2,
+        "status": "no",
+        "attending": 0,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Benjamin Clark",
+        "party_size": 2,
+        "status": "invited",
+        "attending": null,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Evelyn Wright",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Henry Baker",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Aria Phillips",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Daniel Cooper",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Grace Collins",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Sebastian Ross",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      }
+    ],
+    "gifts": [
+      {
+        "title": "Everyday dinnerware set",
+        "price_note": "$90\u2013$140",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Linen tablecloth",
+        "price_note": "$45\u2013$75",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Serving platter",
+        "price_note": "$35\u2013$60",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Coffee grinder",
+        "price_note": "$70\u2013$110",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Weekend picnic basket",
+        "price_note": "$60\u2013$100",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Set of glass tumblers",
+        "price_note": "$25\u2013$45",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Herb garden kit",
+        "price_note": "$30\u2013$50",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Cozy throw blanket",
+        "price_note": "$50\u2013$85",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      }
+    ],
+    "notes": [
+      {
+        "title": "Venue questions to ask",
+        "body": "Ask about step-free access, parking, an indoor rain backup and when setup can begin. Keep the answers with the shortlist before choosing a final venue."
+      },
+      {
+        "title": "Catering inquiry draft",
+        "body": "We are planning maya & jordan\u2019s garden wedding for 72 guests in Ann Arbor. Please share menu choices, dietary accommodations, staffing, service fees and your cancellation terms."
+      },
+      {
+        "title": "Photography brief",
+        "body": "Prioritize warm, candid moments, a few relaxed group portraits and the room before guests arrive. Confirm coverage hours and delivery expectations."
+      },
+      {
+        "title": "Day-of handover",
+        "body": "Keep a contact list, arrival windows, dietary counts and the final timeline together. Assign one person to coordinate the day so the hosts can enjoy it."
+      }
+    ]
+  },
+  {
+    "key": "creators-night-v1",
+    "title": "Campus Creators Night",
+    "event_type": "Community gathering",
+    "event_date": "2027-03-20",
+    "guest_count": 120,
+    "budget_cents": 1200000,
+    "location": "Ann Arbor, MI",
+    "style": "Bold color, local food & creative energy",
+    "latitude": 42.2808,
+    "longitude": -83.743,
+    "idea": "campus-creators",
+    "categories": [
+      "Venues",
+      "Catering",
+      "Photography",
+      "Music & DJ",
+      "Photo booth",
+      "Decor & styling",
+      "Entertainment"
+    ],
+    "plan": {
+      "origin": "starter_template",
+      "summary": "A thoughtful starting plan for campus creators night: 120 guests in Ann Arbor, with a $12,000 target. Vendor choices are a research shortlist, with budget room kept for the details.",
+      "categories": [
+        {
+          "name": "Venues",
+          "low": 1760,
+          "high": 2200,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Catering",
+          "low": 2880,
+          "high": 3600,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Photography",
+          "low": 1040,
+          "high": 1300,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Music & DJ",
+          "low": 880,
+          "high": 1100,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Photo booth",
+          "low": 640,
+          "high": 800,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Decor & styling",
+          "low": 520,
+          "high": 650,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Entertainment",
+          "low": 640,
+          "high": 800,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Taxes & service fees",
+          "low": 432,
+          "high": 720,
+          "notes": "Keep this separate from business pricing."
+        },
+        {
+          "name": "Delivery & setup",
+          "low": 180,
+          "high": 300,
+          "notes": "Keep this separate from business pricing."
+        },
+        {
+          "name": "Contingency",
+          "low": 360,
+          "high": 600,
+          "notes": "Keep this separate from business pricing."
+        }
+      ],
+      "assumptions": [
+        "Planning allocations, not business quotes.",
+        "Venue availability and final pricing still need confirmation."
+      ],
+      "missing_items": [
+        "Weather backup",
+        "Accessible routes",
+        "Dietary and meal counts",
+        "Transport at the end of the evening"
+      ],
+      "cost_saving_ideas": [
+        "Prioritize two signature moments instead of adding more suppliers.",
+        "Reuse ceremony or welcome florals at dinner."
+      ],
+      "checklist": [
+        {
+          "task": "Check venue accessibility and parking",
+          "when": "This week"
+        },
+        {
+          "task": "Confirm an indoor weather backup",
+          "when": "Before invitations"
+        },
+        {
+          "task": "Compare catering menus and dietary options",
+          "when": "One month before"
+        },
+        {
+          "task": "Choose the photography coverage",
+          "when": "The week before"
+        },
+        {
+          "task": "Review transport and arrival times",
+          "when": "This week"
+        },
+        {
+          "task": "Finalize table layout",
+          "when": "Before invitations"
+        },
+        {
+          "task": "Send RSVP reminders",
+          "when": "One month before"
+        },
+        {
+          "task": "Confirm the run-of-show",
+          "when": "The week before"
+        },
+        {
+          "task": "Check final headcount and meals",
+          "when": "This week"
+        },
+        {
+          "task": "Pack the day-of essentials kit",
+          "when": "Before invitations"
+        }
+      ]
+    },
+    "tasks": [
+      "Check venue accessibility and parking",
+      "Confirm an indoor weather backup",
+      "Compare catering menus and dietary options",
+      "Choose the photography coverage",
+      "Review transport and arrival times",
+      "Finalize table layout",
+      "Send RSVP reminders",
+      "Confirm the run-of-show",
+      "Check final headcount and meals",
+      "Pack the day-of essentials kit"
+    ],
+    "timeline": [
+      [
+        "12:00",
+        "13:00",
+        "Venue access & setup",
+        "Check furniture placement, power and the accessible route."
+      ],
+      [
+        "13:00",
+        "14:30",
+        "Decor and floral setup",
+        "Keep clear paths and low table arrangements."
+      ],
+      [
+        "14:30",
+        "15:15",
+        "Sound and lighting check",
+        "Test microphones and the first playlist."
+      ],
+      [
+        "15:30",
+        "16:00",
+        "Host walkthrough",
+        "Check signage, seating, dietary notes and the rain plan."
+      ],
+      [
+        "16:00",
+        "16:45",
+        "Guests arrive",
+        "Welcome drinks and a relaxed arrival window."
+      ],
+      [
+        "16:45",
+        "17:15",
+        "Welcome & opening moment",
+        "A short toast and a clear explanation of the evening."
+      ],
+      [
+        "17:30",
+        "18:45",
+        "Dinner & conversation",
+        "Allow time for dietary meals and unhurried service."
+      ],
+      [
+        "19:00",
+        "19:30",
+        "Dessert & celebration",
+        "Gather for the cake, toast or shared moment."
+      ],
+      [
+        "19:30",
+        "21:30",
+        "Music, photos & activities",
+        "Keep a quieter lounge space available."
+      ],
+      [
+        "21:30",
+        "22:00",
+        "Final song & departures",
+        "Confirm transport and help guests find their way."
+      ],
+      [
+        "22:00",
+        "23:00",
+        "Pack-down & venue handover",
+        "Check rentals, lost property and cleanup."
+      ]
+    ],
+    "guests": [
+      {
+        "name": "Avery Brooks",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": "Gluten-free meal requested"
+      },
+      {
+        "name": "Jordan Ellis",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Morgan Chen",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Taylor Reed",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Riley Bennett",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Casey Morgan",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Alex Rivera",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Jamie Patel",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Cameron Lewis",
+        "party_size": 2,
+        "status": "no",
+        "attending": 0,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Quinn Parker",
+        "party_size": 2,
+        "status": "invited",
+        "attending": null,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Drew Sullivan",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Reese Campbell",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Samira Hassan",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Noah Mitchell",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": "Gluten-free meal requested"
+      },
+      {
+        "name": "Olivia Torres",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Liam Foster",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Emma Wilson",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Ethan Hayes",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Sophia Kim",
+        "party_size": 2,
+        "status": "no",
+        "attending": 0,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Lucas Anderson",
+        "party_size": 2,
+        "status": "invited",
+        "attending": null,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Isabella Martinez",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Mason Walker",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Mia Thompson",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Logan Davis",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Amelia Scott",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Elijah Carter",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Charlotte Adams",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": "Gluten-free meal requested"
+      },
+      {
+        "name": "James Murphy",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Harper Nelson",
+        "party_size": 2,
+        "status": "no",
+        "attending": 0,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Benjamin Clark",
+        "party_size": 2,
+        "status": "invited",
+        "attending": null,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Evelyn Wright",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Henry Baker",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Aria Phillips",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Daniel Cooper",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Grace Collins",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Sebastian Ross",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Nora Evans",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Owen Hughes",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Zoe Turner",
+        "party_size": 2,
+        "status": "no",
+        "attending": 0,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Leo Richardson",
+        "party_size": 2,
+        "status": "invited",
+        "attending": null,
+        "meal": "Seasonal chicken",
+        "dietary": "Gluten-free meal requested"
+      },
+      {
+        "name": "Lila James",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Gabriel Wood",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Maya Green",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Julian Diaz",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Chloe Harris",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Miles Edwards",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Layla Stewart",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Adrian Price",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Hazel Flores",
+        "party_size": 2,
+        "status": "no",
+        "attending": 0,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Nathan Ward",
+        "party_size": 2,
+        "status": "invited",
+        "attending": null,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Ella Bryant",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Isaac Russell",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Violet Bell",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": "Gluten-free meal requested"
+      },
+      {
+        "name": "Caleb Sanders",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Stella Coleman",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Aaron Jenkins",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Lucy Powell",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Adam Perry",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Penelope Long",
+        "party_size": 2,
+        "status": "no",
+        "attending": 0,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Eli Howard",
+        "party_size": 2,
+        "status": "invited",
+        "attending": null,
+        "meal": "Plant-based",
+        "dietary": ""
+      }
+    ],
+    "gifts": [
+      {
+        "title": "Community art supply kit",
+        "price_note": "$90\u2013$140",
+        "quantity": 1,
+        "note": "Community wishlist idea; no purchase or contribution has been made."
+      },
+      {
+        "title": "Reusable event cups",
+        "price_note": "$45\u2013$75",
+        "quantity": 1,
+        "note": "Community wishlist idea; no purchase or contribution has been made."
+      },
+      {
+        "title": "Local artist print credit",
+        "price_note": "$35\u2013$60",
+        "quantity": 1,
+        "note": "Community wishlist idea; no purchase or contribution has been made."
+      },
+      {
+        "title": "Workshop materials bundle",
+        "price_note": "$70\u2013$110",
+        "quantity": 1,
+        "note": "Community wishlist idea; no purchase or contribution has been made."
+      },
+      {
+        "title": "Student showcase frames",
+        "price_note": "$60\u2013$100",
+        "quantity": 1,
+        "note": "Community wishlist idea; no purchase or contribution has been made."
+      },
+      {
+        "title": "Community garden supplies",
+        "price_note": "$25\u2013$45",
+        "quantity": 1,
+        "note": "Community wishlist idea; no purchase or contribution has been made."
+      },
+      {
+        "title": "Creative project notebooks",
+        "price_note": "$30\u2013$50",
+        "quantity": 1,
+        "note": "Community wishlist idea; no purchase or contribution has been made."
+      },
+      {
+        "title": "Shared studio essentials",
+        "price_note": "$50\u2013$85",
+        "quantity": 1,
+        "note": "Community wishlist idea; no purchase or contribution has been made."
+      }
+    ],
+    "notes": [
+      {
+        "title": "Venue questions to ask",
+        "body": "Ask about step-free access, parking, an indoor rain backup and when setup can begin. Keep the answers with the shortlist before choosing a final venue."
+      },
+      {
+        "title": "Catering inquiry draft",
+        "body": "We are planning campus creators night for 120 guests in Ann Arbor. Please share menu choices, dietary accommodations, staffing, service fees and your cancellation terms."
+      },
+      {
+        "title": "Photography brief",
+        "body": "Prioritize warm, candid moments, a few relaxed group portraits and the room before guests arrive. Confirm coverage hours and delivery expectations."
+      },
+      {
+        "title": "Day-of handover",
+        "body": "Keep a contact list, arrival windows, dietary counts and the final timeline together. Assign one person to coordinate the day so the hosts can enjoy it."
+      }
+    ]
+  },
+  {
+    "key": "riverside-birthday-v1",
+    "title": "Riverside 30th birthday",
+    "event_type": "Birthday",
+    "event_date": "2027-08-21",
+    "guest_count": 32,
+    "budget_cents": 500000,
+    "location": "Ann Arbor, MI",
+    "style": "Terracotta, sunset & supper by the river",
+    "latitude": 42.2808,
+    "longitude": -83.743,
+    "idea": "riverside-birthday",
+    "categories": [
+      "Venues",
+      "Catering",
+      "Photography",
+      "Florists",
+      "Cake & desserts",
+      "Decor & styling"
+    ],
+    "plan": {
+      "origin": "starter_template",
+      "summary": "A thoughtful starting plan for riverside 30th birthday: 32 guests in Ann Arbor, with a $5,000 target. Vendor choices are a research shortlist, with budget room kept for the details.",
+      "categories": [
+        {
+          "name": "Venues",
+          "low": 880,
+          "high": 1100,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Catering",
+          "low": 1120,
+          "high": 1400,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Photography",
+          "low": 520,
+          "high": 650,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Florists",
+          "low": 240,
+          "high": 300,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Cake & desserts",
+          "low": 280,
+          "high": 350,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Decor & styling",
+          "low": 280,
+          "high": 350,
+          "notes": "Starter allocation to refine with your chosen business."
+        },
+        {
+          "name": "Taxes & service fees",
+          "low": 180,
+          "high": 300,
+          "notes": "Keep this separate from business pricing."
+        },
+        {
+          "name": "Delivery & setup",
+          "low": 75,
+          "high": 125,
+          "notes": "Keep this separate from business pricing."
+        },
+        {
+          "name": "Contingency",
+          "low": 150,
+          "high": 250,
+          "notes": "Keep this separate from business pricing."
+        }
+      ],
+      "assumptions": [
+        "Planning allocations, not business quotes.",
+        "Venue availability and final pricing still need confirmation."
+      ],
+      "missing_items": [
+        "Weather backup",
+        "Accessible routes",
+        "Dietary and meal counts",
+        "Transport at the end of the evening"
+      ],
+      "cost_saving_ideas": [
+        "Prioritize two signature moments instead of adding more suppliers.",
+        "Reuse ceremony or welcome florals at dinner."
+      ],
+      "checklist": [
+        {
+          "task": "Check venue accessibility and parking",
+          "when": "This week"
+        },
+        {
+          "task": "Confirm an indoor weather backup",
+          "when": "Before invitations"
+        },
+        {
+          "task": "Compare catering menus and dietary options",
+          "when": "One month before"
+        },
+        {
+          "task": "Choose the photography coverage",
+          "when": "The week before"
+        },
+        {
+          "task": "Review transport and arrival times",
+          "when": "This week"
+        },
+        {
+          "task": "Finalize table layout",
+          "when": "Before invitations"
+        },
+        {
+          "task": "Send RSVP reminders",
+          "when": "One month before"
+        },
+        {
+          "task": "Confirm the run-of-show",
+          "when": "The week before"
+        },
+        {
+          "task": "Check final headcount and meals",
+          "when": "This week"
+        },
+        {
+          "task": "Pack the day-of essentials kit",
+          "when": "Before invitations"
+        }
+      ]
+    },
+    "tasks": [
+      "Check venue accessibility and parking",
+      "Confirm an indoor weather backup",
+      "Compare catering menus and dietary options",
+      "Choose the photography coverage",
+      "Review transport and arrival times",
+      "Finalize table layout",
+      "Send RSVP reminders",
+      "Confirm the run-of-show",
+      "Check final headcount and meals",
+      "Pack the day-of essentials kit"
+    ],
+    "timeline": [
+      [
+        "12:00",
+        "13:00",
+        "Venue access & setup",
+        "Check furniture placement, power and the accessible route."
+      ],
+      [
+        "13:00",
+        "14:30",
+        "Decor and floral setup",
+        "Keep clear paths and low table arrangements."
+      ],
+      [
+        "14:30",
+        "15:15",
+        "Sound and lighting check",
+        "Test microphones and the first playlist."
+      ],
+      [
+        "15:30",
+        "16:00",
+        "Host walkthrough",
+        "Check signage, seating, dietary notes and the rain plan."
+      ],
+      [
+        "16:00",
+        "16:45",
+        "Guests arrive",
+        "Welcome drinks and a relaxed arrival window."
+      ],
+      [
+        "16:45",
+        "17:15",
+        "Welcome & opening moment",
+        "A short toast and a clear explanation of the evening."
+      ],
+      [
+        "17:30",
+        "18:45",
+        "Dinner & conversation",
+        "Allow time for dietary meals and unhurried service."
+      ],
+      [
+        "19:00",
+        "19:30",
+        "Dessert & celebration",
+        "Gather for the cake, toast or shared moment."
+      ],
+      [
+        "19:30",
+        "21:30",
+        "Music, photos & activities",
+        "Keep a quieter lounge space available."
+      ],
+      [
+        "21:30",
+        "22:00",
+        "Final song & departures",
+        "Confirm transport and help guests find their way."
+      ],
+      [
+        "22:00",
+        "23:00",
+        "Pack-down & venue handover",
+        "Check rentals, lost property and cleanup."
+      ]
+    ],
+    "guests": [
+      {
+        "name": "Avery Brooks",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": "Gluten-free meal requested"
+      },
+      {
+        "name": "Jordan Ellis",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Morgan Chen",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Taylor Reed",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Riley Bennett",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Casey Morgan",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Alex Rivera",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Jamie Patel",
+        "party_size": 2,
+        "status": "maybe",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Cameron Lewis",
+        "party_size": 2,
+        "status": "no",
+        "attending": 0,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Quinn Parker",
+        "party_size": 2,
+        "status": "invited",
+        "attending": null,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Drew Sullivan",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": ""
+      },
+      {
+        "name": "Reese Campbell",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Samira Hassan",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      },
+      {
+        "name": "Noah Mitchell",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Garden vegetarian",
+        "dietary": "Gluten-free meal requested"
+      },
+      {
+        "name": "Olivia Torres",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Plant-based",
+        "dietary": ""
+      },
+      {
+        "name": "Liam Foster",
+        "party_size": 2,
+        "status": "yes",
+        "attending": 2,
+        "meal": "Seasonal chicken",
+        "dietary": ""
+      }
+    ],
+    "gifts": [
+      {
+        "title": "Everyday dinnerware set",
+        "price_note": "$90\u2013$140",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Linen tablecloth",
+        "price_note": "$45\u2013$75",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Serving platter",
+        "price_note": "$35\u2013$60",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Coffee grinder",
+        "price_note": "$70\u2013$110",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Weekend picnic basket",
+        "price_note": "$60\u2013$100",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Set of glass tumblers",
+        "price_note": "$25\u2013$45",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Herb garden kit",
+        "price_note": "$30\u2013$50",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      },
+      {
+        "title": "Cozy throw blanket",
+        "price_note": "$50\u2013$85",
+        "quantity": 1,
+        "note": "An example registry choice. Choose any equivalent you love."
+      }
+    ],
+    "notes": [
+      {
+        "title": "Venue questions to ask",
+        "body": "Ask about step-free access, parking, an indoor rain backup and when setup can begin. Keep the answers with the shortlist before choosing a final venue."
+      },
+      {
+        "title": "Catering inquiry draft",
+        "body": "We are planning riverside 30th birthday for 32 guests in Ann Arbor. Please share menu choices, dietary accommodations, staffing, service fees and your cancellation terms."
+      },
+      {
+        "title": "Photography brief",
+        "body": "Prioritize warm, candid moments, a few relaxed group portraits and the room before guests arrive. Confirm coverage hours and delivery expectations."
+      },
+      {
+        "title": "Day-of handover",
+        "body": "Keep a contact list, arrival windows, dietary counts and the final timeline together. Assign one person to coordinate the day so the hosts can enjoy it."
+      }
+    ]
+  }
+]

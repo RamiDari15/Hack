@@ -1,3 +1,4 @@
+import { getSessionUser } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { CATEGORIES, isCategory } from '@/lib/categories';
 import { listVendors } from '@/lib/vendors';
@@ -22,7 +23,14 @@ export default async function VendorsPage({ searchParams }) {
   const maxPrice = PRICE_CAPS.includes(Number(sp?.max)) ? Number(sp.max) : null;
   const sort = ['recommended', 'price', 'distance'].includes(sp?.sort) ? sp.sort : 'recommended';
   const { vendors, error, total, capped } = await listVendors({ category, location, page, pageSize, verifiedOnly, hasPhotos, radius, maxPriceCents: maxPrice == null ? null : maxPrice * 100, sort });
-  const current = { category, location, date, verified: verifiedOnly ? '1' : '', photos: hasPhotos ? '1' : '', radius: nearAnnArbor && radius !== 25 ? String(radius) : '', max: maxPrice ? String(maxPrice) : '', sort: sort === 'recommended' ? '' : sort };
+  const {supabase,user}=await getSessionUser();
+  const [{data:eventRows},{data:savedRows}]=supabase&&user?await Promise.all([
+    supabase.from('events').select('id,title,guest_count').order('created_at',{ascending:false}).limit(30),
+    supabase.from('saved_vendors').select('vendor_id'),
+  ]):[{data:[]},{data:[]}];
+  const events=eventRows||[],savedIds=new Set((savedRows||[]).map(r=>r.vendor_id));
+  const selectedEvent=events.find(e=>e.id===sp?.event);
+  const current = { event: selectedEvent?.id||'', category, location, date, verified: verifiedOnly ? '1' : '', photos: hasPhotos ? '1' : '', radius: nearAnnArbor && radius !== 25 ? String(radius) : '', max: maxPrice ? String(maxPrice) : '', sort: sort === 'recommended' ? '' : sort };
   const build = (over) => { const p = new URLSearchParams(); for (const [k, v] of Object.entries({ ...current, ...over })) if (v) p.set(k, v); const q = p.toString(); return q ? `/vendors?${q}` : '/vendors'; };
   const qs = (c) => build({ category: c, page: '' });
   const pageUrl = (n) => build({ page: String(n) });
@@ -32,9 +40,11 @@ export default async function VendorsPage({ searchParams }) {
   return (
     <div className="page wrap">
       <PageHead title={category || 'Find the people who make it.'} lede={`${count}${activeFilters.length ? `, ${activeFilters.join(', ')}` : ''}${nearAnnArbor ? ` within ${radius} miles of Ann Arbor` : location ? ` near ${location}` : ''}.`} />
+      {selectedEvent&&<p className="notice notice-sun">Planning for <Link href={`/events/${selectedEvent.id}`}>{selectedEvent.title}</Link>. Add any vendor to its shortlist.</p>}
       <p className="small"><Link href="/vendors?location=Ann%20Arbor">Browse the Ann Arbor area · 25-mile radius</Link></p>
 
       <form method="get" className="filterbar" aria-label="Filter vendors">
+        {selectedEvent&&<input type="hidden" name="event" value={selectedEvent.id}/>}
         <div className="field"><label htmlFor="f-cat">Category</label>
           <select id="f-cat" name="category" defaultValue={category}><option value="">All categories</option>{CATEGORIES.map((c) => <option key={c}>{c}</option>)}</select></div>
         <div className="field"><label htmlFor="f-loc">Location</label><input id="f-loc" name="location" defaultValue={location} placeholder="City" /></div>
@@ -73,10 +83,10 @@ export default async function VendorsPage({ searchParams }) {
         <div className="empty">
           <h2>No vendors match yet.</h2>
           <p className="muted small">Try another category or place, or search the web.</p>
-          <div className="row"><Link className="btn btn-outline" href="/vendors">Clear filters</Link><Link className="btn btn-outline" href="/discover">Search the web</Link></div>
+          <div className="row"><Link className="btn btn-outline" href="/vendors">Clear filters</Link><Link className="btn btn-outline" href="/ideas">Explore ideas</Link></div>
         </div>
       ) : (
-        <ul role="list" className="vendor-grid">{vendors.map((v, i) => <li key={v.id}><VendorCard vendor={v} index={i} showDistance={nearAnnArbor} /></li>)}</ul>
+        <ul role="list" className="vendor-grid">{vendors.map((v, i) => <li key={v.id}><VendorCard vendor={v} index={i} showDistance={nearAnnArbor} signedIn={Boolean(user)} events={events} saved={savedIds.has(v.id)} eventId={selectedEvent?.id} /></li>)}</ul>
       )}
       {total > pageSize && <nav className="between pagination" aria-label="Vendor pages">
         {page > 1 ? <Link className="btn btn-outline" href={pageUrl(page - 1)}>Previous page</Link> : <span />}

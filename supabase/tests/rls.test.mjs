@@ -317,5 +317,41 @@ r = await as(C, `insert into public.user_todos(title, event_id) values ('For the
 r = await as(A, `update public.user_todos set done=true where id='${td}' returning done_at is not null stamped`); check('finishing stamps the time', r.rows?.[0]?.stamped === true, r);
 r = await as(A, `update public.user_todos set user_id='${B}' where id='${td}'`); check('to-do owner cannot be changed', !!r.error, r);
 r = await as(A, `update public.user_todos set done_at=now() - interval '9 years' where id='${td}'`); check('done time cannot be forged', !!r.error, r);
+// Ready-made events are private, complete, idempotent, and use normal user permissions.
+await db.exec(`reset role; select set_config('request.jwt.claim.sub','',false); select set_config('request.jwt.claims','{"role":"service_role"}',false);
+insert into public.vendors(id,name,category,city,directory_listed,source_url,portfolio_photos) values
+('e1000000-0000-4000-8000-000000000001','Workspace venue one','Venues','Ann Arbor, MI',true,'https://example.test/venue','["https://example.test/venue.jpg"]'),
+('e1000000-0000-4000-8000-000000000002','Workspace venue two','Venues','Ann Arbor, MI',true,'https://example.test/venue-2','["https://example.test/venue-2.jpg"]'),
+('e1000000-0000-4000-8000-000000000003','Workspace catering','Catering','Ann Arbor, MI',true,'https://example.test/food','["https://example.test/food.jpg"]');`);
+const templates=JSON.parse(readFileSync(new URL('../../data/workspaces/events.json',import.meta.url),'utf8'));
+await as(A,'select 1');
+r=await db.query('select public.create_event_workspace($1::jsonb) result',[JSON.stringify(templates)]);
+const workspaces=r.rows[0]?.result||[]; const weid=workspaces[0]?.id;
+check('creates three complete private event workspaces',workspaces.length===3&&workspaces.every(e=>e.created),r);
+r=await db.query(`select count(*)::int n from public.event_guests where event_id='${weid}'`);check('workspace has all 36 guest households',r.rows[0]?.n===36,r);
+r=await db.query(`select count(*)::int n from public.event_notes where event_id='${weid}'`);check('workspace has private planning notes',r.rows[0]?.n===4,r);
+r=await db.query(`select count(*)::int n from public.event_timeline_items where event_id='${weid}'`);check('workspace has a complete day-of timeline',r.rows[0]?.n===11,r);
+r=await db.query(`select count(*)::int n from public.event_registry_items where event_id='${weid}'`);check('workspace registry is populated',r.rows[0]?.n===8,r);
+r=await db.query(`select count(*)::int n from public.event_shortlist where event_id='${weid}' and in_package`);check('one selected vendor per available category',r.rows[0]?.n===2,r);
+r=await db.query(`select count(*)::int n from public.event_tables where event_id='${weid}'`);check('workspace has seating tables',r.rows[0]?.n===9,r);
+r=await db.query(`select count(*)::int n from public.style_board_items where event_id='${weid}'`);check('workspace has inspiration photos',r.rows[0]?.n===2,r);
+await db.exec(`update public.events set title='My customized celebration' where id='${weid}'`);
+r=await db.query('select public.create_event_workspace($1::jsonb) result',[JSON.stringify(templates)]);check('loading workspaces twice creates no duplicates',r.rows[0]?.result.every(e=>!e.created),r);
+r=await db.query(`select title from public.events where id='${weid}'`);check('reloading templates preserves user edits',r.rows[0]?.title==='My customized celebration',r);
+r=await as(B,`select id from public.event_notes where event_id='${weid}'`);check('another account cannot read workspace notes',r.rows?.length===0,r);
+r=await as(B,`select public.plan_vendor('e1000000-0000-4000-8000-000000000001','${weid}')`);check('cannot add vendors to another account’s event',!!r.error,r);
+r=await as(A,`select public.plan_vendor('e1000000-0000-4000-8000-000000000001',null,'{"title":"Quick-created event","event_type":"Birthday","guest_count":20}', '{"source":"planning_range","title":"Signature","unit":"event","quantity":1,"min_cents":70000,"max_cents":90000}') result`);
+const quick=r.rows?.[0]?.result;check('creates event and adds vendor atomically',!!quick?.event_id&&!!quick?.shortlist_id,r);
+r=await as(A,`select planned_cents,pricing_selection->>'title' title from public.event_shortlist where id='${quick?.shortlist_id}'`);check('selected pricing amount and tier persist',Number(r.rows?.[0]?.planned_cents)===90000&&r.rows?.[0]?.title==='Signature',r);
+r=await as(B,`insert into public.event_notes(event_id,user_id,title,body) values('${weid}','${B}','Intrusion','Not allowed')`);check('notes cannot be inserted into inaccessible events',!!r.error,r);
+r=await as(null,`select public.create_event_workspace('[]')`);check('anonymous callers cannot populate workspaces',!!r.error,r);
+
+r=await as(A,`select public.copy_event('${weid}') id`);const copied=r.rows?.[0]?.id;check('owner can duplicate a populated event plan',!!copied,r);
+r=await as(A,`select count(*)::int n from public.event_guests where event_id='${copied}' and status='invited' and responded_at is null`);check('copied guests have fresh RSVP states',r.rows?.[0]?.n===36,r);
+r=await as(A,`select count(*)::int n from public.event_guests a join public.event_guests b on a.rsvp_token=b.rsvp_token where a.event_id='${weid}' and b.event_id='${copied}'`);check('duplicating an event never reuses RSVP links',r.rows?.[0]?.n===0,r);
+r=await as(A,`select website_enabled,website_slug,workspace_key from public.events where id='${copied}'`);check('copied event is not published or a seeded workspace',r.rows?.[0]?.website_enabled===false&&r.rows[0].website_slug===null&&r.rows[0].workspace_key===null,r);
+r=await as(B,`select public.copy_event('${weid}')`);check('cannot duplicate another person’s event',!!r.error,r);
+r=await as(A,`select public.plan_vendor('e1000000-0000-4000-8000-000000000001',null,'{"title":"Must roll back","event_type":"Birthday"}','{"max_cents":1000}')`);check('malformed pricing fails instead of creating a partial event',!!r.error,r);
+r=await as(A,`select id from public.events where title='Must roll back'`);check('failed vendor addition leaves no empty event behind',r.rows?.length===0,r);
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail) process.exit(1);
