@@ -71,9 +71,23 @@
 
 .walk-entry { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-4); padding: var(--s-5) var(--s-6); border-radius: 24px; background: var(--ink); color: var(--cream); text-decoration: none; }
 .walk-entry b { font-size: clamp(1.2rem, 1rem + .6vw, 1.5rem); letter-spacing: -.02em; }
-.walk-entry span { color: #d9ccb6; font-size: var(--t-sm); }
+.walk-entry > span { display: grid; gap: 4px; max-width: 60ch; }
+.walk-entry > span > span { color: #d9ccb6; font-size: var(--t-sm); }
+button.walk-entry { width: 100%; border: 0; text-align: left; font: inherit; cursor: pointer; }
+.walk-entry:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
 .walk-entry i { font-style: normal; display: inline-grid; place-items: center; padding: 10px 18px; border-radius: 999px; background: var(--sun); color: var(--ink); font-weight: 700; }
 .walk-entry:hover i { background: var(--pink-2); }
+
+.walk-notes { font-size: var(--t-sm); color: var(--ink-2, #4a4036); margin: 0; }
+.walk-why { display: block; font-size: var(--t-xs); color: var(--ink-2, #4a4036); margin-top: 4px; line-height: 1.45; }
+.walk-list-recs li { align-items: flex-start; flex-wrap: wrap; }
+.walk-list-recs .walk-name { flex: 1 1 180px; }
+.plan .walk { grid-template-columns: 1fr; margin-top: 0; }
+.plan .walk-view { min-height: 460px; }
+.plan .walk-panel { max-height: none; }
+.walk-acts { display: flex; gap: 6px; flex-shrink: 0; }
+.walk-target { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); margin-top: var(--s-3); }
+.walk-target select { min-width: 0; flex: 1; }
 
 @media (max-width: 960px) {
   .walk { grid-template-columns: 1fr; }

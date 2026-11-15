@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { addPlanItems, savePlanVendor, shortlistPlanVendor } from '@/app/actions/plan';
+import PlanWalk from '@/components/walk/PlanWalk';
 
 // An AI plan as a working tool: facts up top, the budget bars, then lists you can act on.
 // Every action needs a click; nothing is added to an event or a to-do list on its own.
@@ -47,6 +48,7 @@ export default function PlanView({ plan, planId = null, eventId = null, events =
   const edit = (key, patch) => setSteps((s) => s.map((x) => (x.key === key ? { ...x, ...patch } : x)));
   const picked = steps.filter((s) => s.on && !s.done && s.title.trim());
 
+  const [walking, setWalking] = useState(false);
   const [addedMissing, setAddedMissing] = useState({});
   const [addedSave, setAddedSave] = useState({});
 
@@ -88,6 +90,21 @@ export default function PlanView({ plan, planId = null, eventId = null, events =
         </div>
         {plan.budget_fit && <BudgetFit fit={plan.budget_fit} />}
       </section>
+
+      {plan.categories.length > 1 && (walking ? (
+        <section className="stack-sm" aria-labelledby="walk-h">
+          <div className="between">
+            <h3 id="walk-h" className="plan-h3">Walk through this plan</h3>
+            <button type="button" className="as-link small" onClick={() => setWalking(false)}>Close the walk</button>
+          </div>
+          <PlanWalk plan={plan} events={events} eventId={destEvent ?? eventId} signedIn={signedIn} />
+        </section>
+      ) : (
+        <button type="button" className="walk-entry" onClick={() => setWalking(true)}>
+          <span><b>Walk through this plan</b><span>Step around a 3D room, one stop per budget line, and shortlist who the plan suggests.</span></span>
+          <i>Open the walk</i>
+        </button>
+      ))}
 
       {signedIn && (
         <div className="plan-dest" role="group" aria-label="Where to add things">

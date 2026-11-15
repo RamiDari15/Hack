@@ -100,7 +100,7 @@ export default function WalkScene({ stops, active, onSelect, reduce = false }) {
         plinth.position.y = 0.14; plinth.castShadow = true; plinth.receiveShadow = true; g.add(plinth);
         const ring = new THREE.Mesh(new THREE.TorusGeometry(1.62, 0.05, 10, 64), new THREE.MeshStandardMaterial({ color: PALETTE.ink, emissive: PALETTE.sun, emissiveIntensity: 0 }));
         ring.rotation.x = Math.PI / 2; ring.position.y = 0.06; g.add(ring);
-        const prop = models.build(s.category);
+        const prop = models.build(s.model ?? s.category);
         prop.position.y = 0.28;
         g.add(prop);
         const hit = new THREE.Mesh(hitGeo, hitMat);
@@ -243,7 +243,7 @@ export default function WalkScene({ stops, active, onSelect, reduce = false }) {
     return () => { disposed = true; cleanup(); };
     // Rebuild only when the set of stops changes, not when a vendor is added.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stops.map((s) => s.category).join('|'), reduce]);
+  }, [stops.map((s) => `${s.category}:${s.model ?? ''}`).join('|'), reduce]);
 
   useEffect(() => { api.current?.aim(active); }, [active]);
   useEffect(() => { api.current?.wake(); }, [stops]);

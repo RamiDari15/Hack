@@ -62,6 +62,10 @@ export default async function EventPage({ params, searchParams }) {
       </dl>
 
       <div className="event-utilities row"><Link className="btn btn-sm btn-outline" href={`/vendors?event=${id}&location=${encodeURIComponent((event.location||'').split(',')[0])}`}>＋ Add vendors</Link><a className="btn btn-sm btn-outline" href={`/api/events/${id}/export?type=budget`} download>Export budget CSV</a>{event.owner_id===user.id&&<DuplicateEvent eventId={id}/>}</div>
+      <Link className="walk-entry" href={`/events/${id}/walk`}>
+        <span><b>Walk through your event</b><span>Step around a 3D room with one stop per vendor you need. Add or remove vendors as you go.</span></span>
+        <i>Open the walk</i>
+      </Link>
       <PlanGuide event={event} plan={plan} bookings={rows} quotes={quotes} sponsors={sponsors ?? []} timelineCount={timelineCount ?? 0} guestCount={guestCount ?? 0} giftCount={giftCount ?? 0} shortlistCount={shortlist?.length||0} />
 
       <div className="event-layout">
