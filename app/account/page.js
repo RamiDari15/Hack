@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSessionUser } from '@/lib/supabase/server';
 import PageHead from '@/components/PageHead';
@@ -21,6 +22,7 @@ export default async function AccountPage() {
           <label className="check-row"><input type="checkbox" name="email_alerts" defaultChecked={profile?.email_alerts ?? true} /><span>Email me when a quote, message or booking update arrives.</span></label>
           <div className="row"><button className="btn" type="submit">Save</button></div>
         </ActionForm>
+        <p className="small"><Link href="/account/password">Change password</Link></p>
       </section>
     </div>
   );

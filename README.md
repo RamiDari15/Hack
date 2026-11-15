@@ -49,7 +49,7 @@ Create a project, then run `npx supabase link` and `npx supabase db push` to app
 | `/vendors/join` | Public | Requirements, verification, fees (not set yet) |
 | `/discover` | Public page, search needs sign-in | OpenAI web search (built-in `web_search` tool), shown apart from verified listings. Signed-in users can save a result to one of their events |
 | `/sponsorships` | Public | Preview only |
-| `/sign-in` | Public | Email magic link, Google, SSOJet (as enabled) |
+| `/sign-in` | Public | Email and password (sign in, create account, forgot password), Google, SSOJet (as enabled). `/account/password` sets a new password |
 | `/dashboard` | Signed in | The user's events from the database |
 | `/events/new`, `/events/[id]` | Signed in | Create, edit, delete an event; budget (AI estimate vs vendor quotes), vendors and their status, web results saved to the event (marked external), suggested checklist |
 | `/planner` | Signed in | AI planner. Structured estimate, saved to an event when one is chosen |
@@ -67,7 +67,7 @@ Create a project, then run `npx supabase link` and `npx supabase db push` to app
 - Events, saved web results, and AI estimates are private to the event owner. Inquiries can only go to verified vendors and start as `inquiry`. Quotes are written by the vendor. Messages are limited to the two parties.
 
 ## Verified vs not verified (2026-11-15)
-- **Real Supabase software, run locally** (Auth, Postgres 17, PostgREST, email inbox): sign-up and sign-in by magic link, creating and saving an event, saving a web result, signing out and back in with everything still there, a second user getting a 404 on the first user's event, and vendor quotes labeled apart from AI estimates. 19 of 19 browser checks and 8 of 8 direct API checks pass. `supabase db lint` reports no errors.
+- **Real Supabase software, run locally** (Auth, Postgres 17, PostgREST, email inbox): sign-up and sign-in with email and password, creating and saving an event, saving a web result, signing out and back in with everything still there, a second user getting a 404 on the first user's event, and vendor quotes labeled apart from AI estimates. 19 of 19 browser checks and 8 of 8 direct API checks pass. `supabase db lint` reports no errors.
 - **OpenAI was a stand-in** (`e2e/mock-providers.mjs`), because no keys were available. The stand-ins reject any request that doesn't match the shape each provider documents, so the request format is checked, but no real model or search answered. Web search keeps a result only if its site appears in the search call's sources, so the model can't invent a link.
 - **Not tested:** a hosted Supabase project, Google and SSOJet sign-in, real email delivery, and live OpenAI calls.
 
@@ -107,7 +107,7 @@ docker exec -i supabase_db_vendora psql -U postgres -c "update public.profiles s
 
 ## Demo data
 
-`npx supabase db reset` rebuilds the local database and loads `supabase/seed.sql`: fictional vendors (all named "Sample"), an organizer with two events, and a booking in every status. Sign in with any of these addresses; the magic link arrives in the local inbox at http://127.0.0.1:55324.
+`npx supabase db reset` rebuilds the local database and loads `supabase/seed.sql`: fictional vendors (all named "Sample"), an organizer with two events, and a booking in every status. Sign in with any of these addresses and the local demo password `vendora-demo`. Password reset emails arrive in the local inbox at http://127.0.0.1:55324.
 
 | Email | Role |
 |---|---|

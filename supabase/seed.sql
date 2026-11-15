@@ -1,6 +1,7 @@
 -- Demo data for the local database. Loaded by `npx supabase db reset`.
 -- Everything here is fictional and labeled "Sample". Prices are sample prices for the demo, not real offers.
--- Sign in with any of these addresses; the magic link arrives in the local inbox at http://127.0.0.1:55324.
+-- Sign in with any of these addresses and the demo password vendora-demo (local demo accounts only, never use it on a hosted project).
+-- Password reset emails arrive in the local inbox at http://127.0.0.1:55324.
 --   maya@demo.test      organizer (owns the events)
 --   admin@demo.test     admin (vendor review)
 --   lanterns@demo.test  vendor owner: Sample Lantern Hall, Sample Orchard Barn
@@ -16,7 +17,7 @@ begin
     confirmation_token, recovery_token, email_change_token_new, email_change, email_change_token_current,
     phone_change, phone_change_token, reauthentication_token,
     raw_app_meta_data, raw_user_meta_data, created_at, updated_at, is_sso_user, is_anonymous)
-  values ('00000000-0000-0000-0000-000000000000', uid, 'authenticated', 'authenticated', mail, '', now(),
+  values ('00000000-0000-0000-0000-000000000000', uid, 'authenticated', 'authenticated', mail, extensions.crypt('vendora-demo', extensions.gen_salt('bf')), now(),
     '', '', '', '', '', '', '', '',
     '{"provider":"email","providers":["email"]}', jsonb_build_object('full_name', full_name), now(), now(), false, false)
   on conflict (id) do nothing;

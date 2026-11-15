@@ -2,12 +2,13 @@
 // Reads the sample wedding, makes changes on one SQL-seeded test event (deleted at the end).
 // Email alerts are checked in the local Mailpit inbox; nothing leaves the machine.
 // Usage: APP_URL=http://localhost:3100 node e2e/event-tools.mjs
-// Real: Supabase Auth (magic link via the local Mailpit inbox), Postgres, RLS, PostgREST.
+// Real: Supabase Auth (email and password), Postgres, RLS, PostgREST.
 // OpenAI is real only if the app was started with real keys and no *_BASE_URL overrides.
 import { createRequire } from 'node:module';
 // Playwright is not a project dependency; run with NODE_PATH pointing at a global install.
 const { chromium } = createRequire(import.meta.url)('playwright');
 import { execFileSync } from 'node:child_process';
+import { signInWith } from './auth.mjs';
 
 const APP = process.env.APP_URL || 'http://localhost:3100';
 const MAIL = process.env.MAILPIT_URL || 'http://127.0.0.1:55324';
@@ -20,30 +21,7 @@ const X = `stranger-${stamp}@example.test`;
 const results = [];
 const ok = (name, cond, info = '') => { results.push({ name, pass: !!cond, info }); console.log(cond ? 'PASS' : 'FAIL', name, cond ? '' : info); };
 
-async function latestLink(email, after) {
-  for (let i = 0; i < 40; i++) {
-    const list = await (await fetch(`${MAIL}/api/v1/search?query=${encodeURIComponent(`to:"${email}"`)}`)).json();
-    const msg = (list.messages || []).find((m) => new Date(m.Created).getTime() >= after);
-    if (msg) {
-      const full = await (await fetch(`${MAIL}/api/v1/message/${msg.ID}`)).json();
-      const m = (full.Text || full.HTML || '').match(/https?:\/\/[^\s"'<>)]+verify[^\s"'<>)]+/);
-      if (m) return m[0].replace(/&amp;/g, '&');
-    }
-    await new Promise((r) => setTimeout(r, 500));
-  }
-  throw new Error(`no email for ${email}`);
-}
-
-async function signIn(page, email, next = '/dashboard') {
-  const t = Date.now() - 1000;
-  await page.goto(`${APP}/sign-in?next=${encodeURIComponent(next)}`);
-  await page.fill('#email', email);
-  await page.click('main button[type=submit]');
-  await page.getByText(`Check ${email}`).waitFor({ timeout: 15000 });
-  const link = await latestLink(email, t);
-  await page.goto(link);
-  await page.waitForURL((u) => u.pathname === next, { timeout: 20000 });
-}
+const signIn = (page, email, next = '/dashboard') => signInWith(page, APP, email, next);
 
 // Test-only seeding through psql in the local database container (never against a hosted project).
 const DB_CONTAINER = process.env.DB_CONTAINER || 'supabase_db_vendora';

@@ -22,14 +22,14 @@ export default async function SignInPage({ searchParams }) {
       <div className="auth-panel">
         <div className="stack-lg auth-box">
           <div className="stack">
-            <h1 className="display-2">Sign in</h1>
-            <p className="muted">One account for planning events and, later, for running a vendor business. New here? The same link creates your account.</p>
+            <h1 className="display-2">{sp?.mode === 'sign-up' ? 'Create your account' : 'Sign in'}</h1>
+            <p className="muted">One account for planning events and, later, for running a vendor business. Use your email and a password.</p>
           </div>
           {!isSupabaseConfigured && (
             <p className="notice notice-warn" role="status">Sign-in is not connected yet. Add the Supabase URL and anon key to .env.local, then restart the app.</p>
           )}
           {sp?.error && <p className="notice notice-error" role="alert">{String(sp.error).slice(0, 200)}</p>}
-          <SignInForm next={next} providers={authProviders} enabled={isSupabaseConfigured} />
+          <SignInForm next={next} providers={authProviders} enabled={isSupabaseConfigured} initialMode={sp?.mode === 'sign-up' ? 'sign-up' : 'sign-in'} />
           <p className="fine">By continuing you agree to the <Link href="/terms">terms</Link> and <Link href="/privacy">privacy policy</Link> (drafts, pending review).</p>
         </div>
       </div>

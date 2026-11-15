@@ -4,7 +4,7 @@
 1. `git pull`, then `npx supabase start` (Docker running).
 2. `npx supabase db reset`, then `python3 scripts/import-vendors.py --apply`.
 3. `.env.local` has the Supabase URL and anon key, `SUPABASE_SERVICE_ROLE_KEY` (from `npx supabase status`, for email alerts), `OPENAI_API_KEY` and `OPENAI_MODEL=gpt-4.1-mini`.
-4. `npm run dev -- --port 3100`. Open http://localhost:3100 and, in a second tab, the sign-in inbox at http://127.0.0.1:55324.
+4. `npm run dev -- --port 3100`. Open http://localhost:3100. Demo accounts sign in with the password `vendora-demo`. Emails (alerts, password resets) land in the local inbox at http://127.0.0.1:55324.
 5. Run one planner request and one web search beforehand, so you know the key works.
 6. On the wedding page, press **Check weather history** once, so the NASA POWER panel is filled (needs internet access to power.larc.nasa.gov).
 
@@ -69,6 +69,6 @@ Line: "Every event is a pile of vendors and guesses. Vendora puts them in one pl
 **Web search** → "outdoor wedding venues with string lights near Ann Arbor". Results are labeled **External, confirm** and kept apart from verified vendors. Save one to the event.
 
 ## If something goes wrong
-- Sign-in link not arriving: open the inbox tab at http://127.0.0.1:55324.
+- Can't sign in: demo accounts use `vendora-demo`; if it fails, rerun step 2 (the reset sets the passwords). Emails only land in the local inbox at http://127.0.0.1:55324, never in a real mailbox.
 - Planner says it is not configured: `.env.local` is missing the key or model; restart the dev server after editing it.
 - Data looks wrong: rerun step 2 of "Before you present".
