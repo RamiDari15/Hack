@@ -107,7 +107,7 @@ try {
   await po.selectOption('#rq-event', eventId);
   await po.check('input[name=confirm]');
   await po.click('button:has-text("Send inquiry")');
-  await po.getByText('Inquiry sent.').waitFor({ timeout: 15000 });
+  await po.getByText('Your conversation is ready.').waitFor({ timeout: 15000 });
   ok('organizer sends an inquiry', true);
 
   // 4. Vendor answers: message and quote

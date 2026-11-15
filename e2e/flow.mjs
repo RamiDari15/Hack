@@ -124,7 +124,7 @@ try {
     await pa.selectOption('#rq-event', eventId);
     await pa.check('input[name=confirm]');
     await pa.click('button:has-text("Send inquiry")');
-    await pa.getByText('Inquiry sent.').waitFor({ timeout: 15000 });
+    await pa.getByText('Your conversation is ready.').waitFor({ timeout: 15000 });
     await sql(`insert into public.quotes (event_vendor_id, amount_cents, description) select id, 580000, 'E2E quote' from public.event_vendors where event_id = '${eventId}' and vendor_id = '${vid}';`);
     await pa.goto(eventUrl);
     const quoteRow = pa.locator('.table tr', { hasText: 'Vendor quote' });
