@@ -17,7 +17,9 @@ export default function SignInForm({ next, nextAfterSignUp = next, providers, en
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [state, setState] = useState({ status: 'idle', message: '' });
-  const fail = (message) => setState({ status: 'error', message });
+  const fail = (message) => setState({ status: 'error', message: /rate limit/i.test(message)
+    ? 'Too many emails were sent from this sign-in service in the last hour, so it paused new ones. Wait a bit and try again, or sign in if you already have an account.'
+    : message });
 
   async function go(supabase, to = next) {
     // Vendor door: make sure the account has the vendor role (customers keep theirs).
