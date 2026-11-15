@@ -78,3 +78,16 @@ docker exec -i supabase_db_vendora psql -U postgres -c "update public.profiles s
 ```
 
 `node e2e/marketplace.mjs` runs the whole flow through the UI (23 checks).
+
+## Demo data
+
+`npx supabase db reset` rebuilds the local database and loads `supabase/seed.sql`: fictional vendors (all named "Sample"), an organizer with two events, and a booking in every status. Sign in with any of these addresses; the magic link arrives in the local inbox at http://127.0.0.1:54324.
+
+| Email | Role |
+|---|---|
+| `maya@demo.test` | Organizer with the sample wedding and graduation |
+| `admin@demo.test` | Admin: vendor review at `/admin` |
+| `kitchen@demo.test` | Vendor with a quote waiting and a message thread |
+| `studio@demo.test` | Vendor with a hold and a new inquiry |
+| `lanterns@demo.test` | Vendor with a confirmed booking |
+| `newvendor@demo.test` | Vendor with one application in review and one sent back |

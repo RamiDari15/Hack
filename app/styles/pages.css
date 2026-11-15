@@ -23,7 +23,7 @@
   position: relative; padding: var(--s-4); font-family: var(--f-display); font-weight: 800; font-variation-settings: 'opsz' 72;
   font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem); line-height: .95; color: var(--on-dusk);
 }
-.ph-cap { position: absolute; right: var(--s-3); bottom: var(--s-3); font-size: var(--t-xs); color: var(--on-dusk-muted); }
+.ph-cap { position: absolute; right: var(--s-3); top: var(--s-3); font-size: var(--t-xs); color: var(--on-dusk-muted); }
 
 /* ---------- Vendors ---------- */
 .filterbar { display: grid; grid-template-columns: 1.2fr 1fr 1fr auto; gap: var(--s-4); align-items: end; }

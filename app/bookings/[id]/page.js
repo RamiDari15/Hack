@@ -114,6 +114,7 @@ export default async function BookingPage({ params }) {
             {isVendor && open && b.status !== 'hold' && (
               <ActionForm action={sendQuote} resetOnOk>
                 <input type="hidden" name="booking_id" value={id} />
+                {quotes?.length > 0 && <h3 className="title">Send a revised quote</h3>}
                 <div className="field"><label htmlFor="q-amount">Quote amount (USD)</label><input id="q-amount" name="amount" inputMode="decimal" required placeholder="4800" /></div>
                 <div className="field"><label htmlFor="q-desc">What it includes</label><textarea id="q-desc" name="description" maxLength={2000} /></div>
                 <div className="field"><label htmlFor="q-valid">Valid until</label><input id="q-valid" name="valid_until" type="date" /></div>
