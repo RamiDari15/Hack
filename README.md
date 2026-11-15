@@ -81,7 +81,7 @@ docker exec -i supabase_db_vendora psql -U postgres -c "update public.profiles s
 
 ## Demo data
 
-`npx supabase db reset` rebuilds the local database and loads `supabase/seed.sql`: fictional vendors (all named "Sample"), an organizer with two events, and a booking in every status. Sign in with any of these addresses; the magic link arrives in the local inbox at http://127.0.0.1:54324.
+`npx supabase db reset` rebuilds the local database and loads `supabase/seed.sql`: fictional vendors (all named "Sample"), an organizer with two events, and a booking in every status. Sign in with any of these addresses; the magic link arrives in the local inbox at http://127.0.0.1:55324.
 
 | Email | Role |
 |---|---|

@@ -1,6 +1,6 @@
 -- Demo data for the local database. Loaded by `npx supabase db reset`.
 -- Everything here is fictional and labeled "Sample". Prices are sample prices for the demo, not real offers.
--- Sign in with any of these addresses; the magic link arrives in the local inbox at http://127.0.0.1:54324.
+-- Sign in with any of these addresses; the magic link arrives in the local inbox at http://127.0.0.1:55324.
 --   maya@demo.test      organizer (owns the events)
 --   admin@demo.test     admin (vendor review)
 --   lanterns@demo.test  vendor owner: Sample Lantern Hall, Sample Orchard Barn
