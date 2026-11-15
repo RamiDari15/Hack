@@ -138,36 +138,8 @@ html.scrolled .site-header { border-bottom-color: var(--line); background: color
   transform-origin: 0 50%; transform: scaleX(var(--progress, 0));
 }
 
-/* Custom cursor (fine pointers, motion allowed). The native cursor stays for text fields. */
-html.has-cursor.cursor-on, html.has-cursor.cursor-on a, html.has-cursor.cursor-on button, html.has-cursor.cursor-on summary, html.has-cursor.cursor-on label, html.has-cursor.cursor-on select { cursor: none; }
-.cursor-dot, .cursor-ring { position: fixed; left: 0; top: 0; z-index: 300; pointer-events: none; opacity: 0; transition: opacity .2s; }
-html.cursor-on .cursor-dot, html.cursor-on .cursor-ring { opacity: 1; }
-.cursor-dot { width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--ink); }
-.cursor-ring {
-  width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%; border: 1.5px solid var(--ink);
-  display: grid; place-items: center; font-size: .72rem; font-weight: 800; color: var(--ink);
-  transition: width .25s var(--ease), height .25s var(--ease), margin .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), opacity .2s;
-}
-.cursor-ring span { opacity: 0; transition: opacity .2s; }
-.cursor-ring.is-link { width: 58px; height: 58px; margin: -29px 0 0 -29px; background: color-mix(in srgb, var(--sun) 55%, transparent); border-color: var(--ink); }
-.cursor-ring.has-label { width: 84px; height: 84px; margin: -42px 0 0 -42px; background: var(--ink); color: var(--sun); border-color: var(--cream); }
-.cursor-ring.has-label span { opacity: 1; }
-.cursor-ring.is-text { opacity: 0 !important; }
-.cursor-ring.is-down { width: 30px; height: 30px; margin: -15px 0 0 -15px; }
-html.cursor-on .cursor-ring.is-text ~ .cursor-dot { width: 2px; height: 22px; margin: -11px 0 0 -1px; border-radius: 2px; }
-
 /* Magnetic buttons ease back when released */
 .btn { transition: transform var(--d-fast) var(--ease), box-shadow var(--d-fast) var(--ease), background var(--d-fast) var(--ease), color var(--d-fast) var(--ease), border-color var(--d-fast) var(--ease), translate .35s var(--ease-spring); }
-html.cursor-on .cursor-ring.has-label ~ .cursor-dot { opacity: 0; }
 
-/* Cursor v2: ink with a cream halo so it reads on cream, sun, pink and the dark sections alike (no blend modes,
-   which turned it blue over yellow). States change scale, not size, so nothing re-lays out. */
-.cursor-dot { background: var(--ink); width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; box-shadow: 0 0 0 2px var(--cream); }
-.cursor-ring { width: 40px; height: 40px; margin: -20px 0 0 -20px; border: 1.5px solid var(--ink); box-shadow: 0 0 0 1.5px rgba(251, 244, 230, .85), inset 0 0 0 1.5px rgba(251, 244, 230, .85); }
-.cursor-ring, .cursor-ring.is-link, .cursor-ring.has-label, .cursor-ring.is-down { width: 40px; height: 40px; margin: -20px 0 0 -20px; }
-.cursor-ring { transition: scale .25s var(--ease), background .2s var(--ease), border-color .2s var(--ease), opacity .2s; }
-.cursor-ring.is-link { scale: 1.3; background: color-mix(in srgb, var(--sun) 70%, transparent); }
-.cursor-ring.has-label { scale: 2; background: var(--ink); color: var(--sun); border-color: var(--sun); font-size: .4rem; }
-.cursor-ring.is-down { scale: .8; }
-html.cursor-on .cursor-ring.is-link ~ .cursor-dot { opacity: 0; }
+
 html:has(.mobile-panel:not([hidden])) .site-header { background: var(--cream); border-bottom-color: var(--line); }
