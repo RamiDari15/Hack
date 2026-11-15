@@ -48,18 +48,18 @@ a:hover { text-decoration-color: var(--pink); }
 /* Type: Bricolage Grotesque, set tight and heavy; Instrument Serif italic for the odd emphasised word. */
 .display-hero, .display-1, .display-2, .display-3 {
   font-family: var(--f-display);
-  font-weight: 800;
-  font-variation-settings: 'opsz' 96, 'wdth' 100;
-  letter-spacing: -.035em;
+  font-weight: 700;
+  
+  letter-spacing: -.025em;
   line-height: .92;
   text-wrap: balance;
 }
-.display-hero { font-size: var(--d-hero); line-height: .86; letter-spacing: -.05em; }
-.display-1 { font-size: var(--d-1); letter-spacing: -.045em; }
+.display-hero { font-size: var(--d-hero); line-height: .86; letter-spacing: -.025em; }
+.display-1 { font-size: var(--d-1); letter-spacing: -.025em; }
 .display-2 { font-size: var(--d-2); }
 .display-3 { font-size: var(--d-3); line-height: 1.02; letter-spacing: -.025em; }
 .display-hero em, .display-1 em, .display-2 em, .display-3 em, .accent {
-  font-family: var(--f-accent); font-style: italic; font-weight: 400; letter-spacing: -.01em; color: var(--pink-deep);
+  font-family: var(--f-accent); font-weight: 400; letter-spacing: -.01em; color: var(--pink-deep);
 }
 .lede { font-size: var(--t-md); line-height: 1.5; max-width: 52ch; color: var(--ink-2); }
 .muted { color: var(--muted); }

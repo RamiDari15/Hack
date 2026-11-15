@@ -44,9 +44,9 @@
 
   --focus: var(--pink-deep);
 
-  --f-display: var(--font-display), 'Helvetica Neue', Arial, sans-serif;
-  --f-ui: var(--font-ui), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --f-accent: var(--font-accent), Georgia, 'Times New Roman', serif;
+  --f-display: var(--font-sans), 'Helvetica Neue', Arial, sans-serif;
+  --f-ui: var(--font-sans), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-accent: var(--f-display);
 
   --t-xs: .8125rem;
   --t-sm: .9375rem;

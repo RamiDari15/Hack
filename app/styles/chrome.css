@@ -11,10 +11,10 @@ html.scrolled .site-header { border-bottom-color: var(--line); background: color
 .wordmark-link { text-decoration: none; }
 .wordmark {
   display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--f-display); font-weight: 800; font-variation-settings: 'opsz' 72;
-  font-size: 1.7rem; line-height: 1; letter-spacing: -.045em; color: var(--ink);
+  font-family: var(--f-display); font-weight: 700;
+  font-size: 1.7rem; line-height: 1; letter-spacing: -.025em; color: var(--ink);
 }
-.wordmark-lg { font-size: clamp(3rem, 2rem + 6vw, 7rem); letter-spacing: -.06em; }
+.wordmark-lg { font-size: clamp(3rem, 2rem + 6vw, 7rem); letter-spacing: -.025em; }
 .wordmark-bulb {
   position: relative; width: .62em; height: .62em; border-radius: 50%; background: var(--sun);
   border: .08em solid var(--ink); transform: translateY(-.02em);
@@ -50,7 +50,7 @@ html.scrolled .site-header { border-bottom-color: var(--line); background: color
 .acct { position: relative; }
 .acct > summary {
   list-style: none; cursor: pointer; display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
-  background: var(--pink-2); border: 2px solid var(--ink); font-weight: 800; font-family: var(--f-display); font-size: 1rem;
+  background: var(--pink-2); border: 2px solid var(--ink); font-weight: 700; font-family: var(--f-display); font-size: 1rem;
   transition: transform var(--d-fast) var(--ease-spring);
 }
 .acct > summary::-webkit-details-marker { display: none; }
@@ -87,7 +87,7 @@ html.scrolled .site-header { border-bottom-color: var(--line); background: color
 .mobile-panel ul { list-style: none; display: grid; gap: var(--s-1); }
 .mobile-panel a:not(.btn) {
   display: block; padding: var(--s-1) 0; text-decoration: none;
-  font-family: var(--f-display); font-weight: 800; font-variation-settings: 'opsz' 72; font-size: 2.6rem; line-height: 1.05; letter-spacing: -.04em;
+  font-family: var(--f-display); font-weight: 700; font-size: 2.6rem; line-height: 1.05; letter-spacing: -.025em;
 }
 .mobile-panel a:not(.btn):hover { color: var(--pink-deep); }
 .mobile-actions { display: grid; gap: var(--s-3); margin-top: auto; }

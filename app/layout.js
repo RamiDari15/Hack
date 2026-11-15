@@ -1,4 +1,4 @@
-import { Bricolage_Grotesque, Instrument_Sans, Instrument_Serif } from 'next/font/google';
+import { Schibsted_Grotesk } from 'next/font/google';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/ui.css';
@@ -10,9 +10,8 @@ import Footer from '@/components/Footer';
 import Reveal from '@/components/ui/Reveal';
 import Fx from '@/components/ui/Fx';
 
-const display = Bricolage_Grotesque({ subsets: ['latin'], axes: ['opsz', 'wdth'], variable: '--font-display', display: 'swap' });
-const ui = Instrument_Sans({ subsets: ['latin'], variable: '--font-ui', display: 'swap' });
-const accent = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['italic', 'normal'], variable: '--font-accent', display: 'swap' });
+// One newsroom grotesk for headlines and text, so the page reads as designed, not generated.
+const sans = Schibsted_Grotesk({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
@@ -24,7 +23,7 @@ export const viewport = { themeColor: '#fbf4e6', width: 'device-width', initialS
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${display.variable} ${ui.variable} ${accent.variable}`}>
+    <html lang="en" className={sans.variable}>
       <body>
         <a className="skip-link" href="#main">Skip to content</a>
         <Header />
