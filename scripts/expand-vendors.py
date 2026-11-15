@@ -1,4 +1,4 @@
-"""Expand the saved research directory to 750, with 100 within 25 mi of Ann Arbor."""
+"""Maintain at least 750 listings, with 100 within 25 mi of Ann Arbor."""
 import concurrent.futures
 import importlib.util
 import json
@@ -70,12 +70,11 @@ def checked_profile(item, local=False):
 def main():
     output = ROOT / 'data/vendors/public-businesses.json'
     records = json.loads(output.read_text())
-    if len(records) > 750:
-        raise SystemExit('Directory exceeds target; refusing to remove existing records.')
     seen_urls, seen_names = {r['source_url'] for r in records}, {key(r) for r in records}
     local_count = sum(distance(r) is not None and distance(r) <= 25 for r in records)
-    if len(records) == 750 and local_count >= 100:
-        print(f'Directory already contains 750 businesses and {local_count} within 25 miles of Ann Arbor.', flush=True)
+    target = max(750, len(records) + max(0, 100-local_count))
+    if len(records) >= 750 and local_count >= 100:
+        print(f'Directory already contains {len(records)} businesses and {local_count} within 25 miles of Ann Arbor.', flush=True)
         return
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         groups = list(pool.map(candidate, [(slug, page) for page in range(1, 5) for slug in c.CATEGORIES]))
@@ -113,12 +112,12 @@ def main():
         for r in batch:
             if r and r['source_url'] not in seen_urls and key(r) not in seen_names:
                 records.append(r); seen_urls.add(r['source_url']); seen_names.add(key(r))
-                if len(records) == 750:
+                if len(records) == target:
                     break
         print(f'Total businesses accepted: {len(records)}', flush=True)
-        if len(records) >= 750:
+        if len(records) >= target:
             break
-    if len(records) != 750:
+    if len(records) < target:
         raise SystemExit(f'Only {len(records)} complete profiles; primary dataset unchanged.')
     output.write_text(json.dumps(records, indent=2, ensure_ascii=False) + '\n')
     print(f'Saved {len(records)} businesses, including {local_count} within 25 miles of Ann Arbor.', flush=True)

@@ -11,6 +11,7 @@ from collections import Counter
 from datetime import datetime, timedelta
 import json
 import random
+import re
 from pathlib import Path
 import subprocess
 import uuid
@@ -86,12 +87,18 @@ def main():
     parser.add_argument('--apply', action='store_true', help='Write to the local Vendora database')
     parser.add_argument('--reviews-only', action='store_true', help='Refresh only the synthetic review field')
     parser.add_argument('--new-only', action='store_true', help='Insert only new source profiles, preserving existing calendars and reviews')
+    parser.add_argument('--sql-output', help='Write the reviewed import SQL to a file without connecting to a database')
     args = parser.parse_args()
     records = json.loads((ROOT / 'data/vendors/public-businesses.json').read_text())
     if len(records) < 500 or len({r['source_url'] for r in records}) != len(records):
         raise SystemExit('Expected at least 500 distinct sourced businesses.')
     if any(not r['photos'] or not r['name'] or not r['city'] for r in records):
         raise SystemExit('Every business needs a name, city, source and portfolio photo.')
+    categories = re.findall(r"'([^']+)'", (ROOT / 'lib/categories.js').read_text().split('export const EVENT_TYPES')[0])
+    counts = Counter(r['category'] for r in records)
+    missing = {category: counts[category] for category in categories if counts[category] < 20}
+    if missing:
+        raise SystemExit(f'Every category must contain at least 20 sourced businesses: {missing}')
     today = datetime.now(ZoneInfo('America/Detroit')).date()
     sql = ['begin;']
     existing = set()
@@ -132,6 +139,10 @@ def main():
     print(json.dumps({'vendors': len(records), 'photos': sum(len(r['photos']) for r in records),
                       'published_packages': sum(len(r['offers']) for r in records),
                       'categories': dict(Counter(r['category'] for r in records))}, indent=2))
+    if args.sql_output:
+        Path(args.sql_output).write_text('\n'.join(sql) + '\n')
+        print('Wrote import SQL; no database changes made.')
+        return
     if not args.apply:
         print('Dry run only. Use --apply to import into the local Vendora container.')
         return
