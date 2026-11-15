@@ -7,6 +7,7 @@ import Placeholder from '@/components/ui/Placeholder';
 import { VerificationBadge } from '@/components/VendorCard';
 import RequestQuote from './RequestQuote';
 import ShortlistButton from '@/components/ShortlistButton';
+import { toggleSavedVendor } from '@/app/actions/inbox';
 import Image from 'next/image';
 import VendorCalendar from '@/components/VendorCalendar';
 import VendorReviews from '@/components/VendorReviews';
@@ -24,17 +25,26 @@ export default async function VendorProfile({ params }) {
   if (!v) notFound();
   const { supabase, user } = await getSessionUser();
   let events = [];
-  if (supabase && user && !v.directoryListed) {
-    const { data } = await supabase.from('events').select('id, title').order('created_at', { ascending: false }).limit(30);
+  let saved = false;
+  if (supabase && user) {
+    const [{ data }, { data: s }] = await Promise.all([
+      supabase.from('events').select('id, title').order('created_at', { ascending: false }).limit(30),
+      supabase.from('saved_vendors').select('vendor_id').eq('vendor_id', v.id).maybeSingle(),
+    ]);
     events = data ?? [];
+    saved = Boolean(s);
   }
 
   return (
     <article className="page wrap">
       <header className="page-head">
         <Link href={`/vendors?category=${encodeURIComponent(v.category)}`} className="back-link">{v.category}</Link>
-        <h1 className="display-1">{v.name}</h1>
-        <div className="row"><VerificationBadge vendor={v} /><span className="small muted">{v.city}{v.serviceRadiusMi ? `, travels up to ${v.serviceRadiusMi} mi` : ''}</span></div>
+        <h1 className="display-2" style={{ maxWidth: '18ch' }}>{v.name}</h1>
+        <div className="row"><VerificationBadge vendor={v} /><span className="small muted">{v.city}{v.serviceRadiusMi ? `, travels up to ${v.serviceRadiusMi} mi` : ''}</span>
+          {user ? (
+            <form action={toggleSavedVendor}><input type="hidden" name="vendor_id" value={v.id} /><input type="hidden" name="save" value={saved ? 'no' : 'yes'} />
+              <button className={`btn btn-sm save-btn${saved ? ' is-saved' : ''}`} type="submit" aria-pressed={saved}><span aria-hidden="true">{saved ? '♥' : '♡'}</span> {saved ? 'Saved' : 'Save'}</button></form>
+          ) : <Link className="btn btn-sm save-btn" href={`/sign-in?next=/vendors/${v.id}`}><span aria-hidden="true">♡</span> Save</Link>}</div>
       </header>
       {v.directoryListed && <p className="listing-status fine"><a href={v.sourceUrl} target="_blank" rel="noopener noreferrer">Public business source ↗</a><span aria-hidden="true"> · </span>Not yet verified by Vendora</p>}
 
@@ -61,9 +71,9 @@ export default async function VendorProfile({ params }) {
           <VendorReviews googleReviewsUrl={v.googleReviewsUrl} sourceUrl={v.sourceUrl} />
         </div>
         <aside className="profile-aside">
-          <div className="panel stack">
+          <div className="panel panel-pop stack">
             <h2 className="title">{v.directoryListed ? 'Contact the business' : 'Request a quote'}</h2>
-            <p className="fine">{v.calendarIsDemo ? 'This sample calendar is for a fictional business. Confirm availability with the vendor.' : 'Confirm current prices, policies and availability directly with the business.'}</p>
+            <p className="fine">{v.calendarIsDemo ? 'This sample calendar is for a fictional business. Confirm availability with the vendor.' : 'Check prices and dates with them directly.'}</p>
             {v.directoryListed ? (
               <div className="stack">
                 {v.address && <p className="small">{v.address}</p>}
@@ -72,7 +82,7 @@ export default async function VendorProfile({ params }) {
                 {v.instagramUrl && <a className="btn btn-outline" href={v.instagramUrl} target="_blank" rel="noopener noreferrer">Instagram ↗</a>}
                 <a className="btn btn-outline" href={v.googleMapsUrl} target="_blank" rel="noopener noreferrer">Find on Google Maps ↗</a>
                 <a className="btn btn-outline" href={v.sourceUrl} target="_blank" rel="noopener noreferrer">View source listing ↗</a>
-                <p className="fine">This business has not connected an inbox to Vendora. Contact links open the published destination.</p>
+                <p className="fine">They’re not on Vendora yet, so these links go straight to them.</p>
               </div>
             ) : !supabase ? (
               <p className="notice notice-warn">The database is not connected yet.</p>
@@ -87,7 +97,7 @@ export default async function VendorProfile({ params }) {
           {user && events.length > 0 && (
             <div className="panel stack-sm">
               <h2 className="title">Compare before you decide</h2>
-              <p className="fine">Save it to an event’s shortlist to vote, comment and compare side by side.</p>
+              <p className="fine">Add to a shortlist to vote and compare with your co-hosts.</p>
               <ShortlistButton vendorId={v.id} events={events} />
             </div>
           )}

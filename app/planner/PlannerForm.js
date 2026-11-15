@@ -99,7 +99,7 @@ export default function PlannerForm({ events, initialEventId, signedIn, configur
               <option value="">A new idea (not saved to an event)</option>
               {events.map((ev) => <option key={ev.id} value={ev.id}>{ev.title}</option>)}
             </select>
-            {selected && <span className="hint">Uses the saved details of “{selected.title}” and saves the estimate there. <Link href={`/events/${selected.id}`}>Edit those details</Link></span>}
+            {selected && <span className="hint">Uses “{selected.title}” and saves the plan to it. <Link href={`/events/${selected.id}`}>Edit those details</Link></span>}
           </div>
         )}
         {!eventId && (
@@ -111,11 +111,11 @@ export default function PlannerForm({ events, initialEventId, signedIn, configur
             <div className="field"><label htmlFor="guests">Guests</label><input id="guests" inputMode="numeric" value={manual.guests} onChange={(e) => setManual({ ...manual, guests: withCommas(e.target.value) })} placeholder="150" /></div>
             <div className="field" style={{ gridColumn: '1 / -1' }}><label htmlFor="budget">Total budget</label>
               <div className="input-affix"><span aria-hidden="true">$</span><input id="budget" inputMode="numeric" value={manual.budget} onChange={(e) => setManual({ ...manual, budget: withCommas(e.target.value) })} placeholder="25,000" aria-describedby="budget-hint" /></div>
-              <span id="budget-hint" className="hint">{perGuest ? `About ${money(perGuest)} per guest. The estimate is sized to this budget.` : 'Leave empty to see a typical range for your event.'}</span></div>
+              <span id="budget-hint" className="hint">{perGuest ? `About ${money(perGuest)} per guest.` : 'Leave empty to see a typical range for your event.'}</span></div>
           </fieldset>
         )}
         <fieldset className="plain-fieldset stack">
-          <legend className="label">{eventId ? 'Shape the estimate' : '2. The feel'}</legend>
+          <legend className="label">{eventId ? 'Shape the plan' : '2. The feel'}</legend>
           <div className="form-grid">
             <fieldset className="plain-fieldset stack-sm">
               <legend className="field-label">Setting</legend>
@@ -137,9 +137,9 @@ export default function PlannerForm({ events, initialEventId, signedIn, configur
             {EXAMPLES.map((x) => <button key={x} type="button" className="chip" onClick={() => setPrompt(x)}>{x}</button>)}
           </div>
         </div>
-        <p className="planner-using small"><b>The estimate will use:</b> {using.filter(Boolean).join(' · ') || 'your description'}{setting ? ` · ${setting}` : ''} · {hours} hours{style && !eventId ? ` · ${style}` : ''}{priorities.length ? ` · priorities: ${priorities.join(', ')}` : ''}</p>
+        <p className="planner-using small"><b>Planning for:</b> {using.filter(Boolean).join(' · ') || 'your description'}{setting ? ` · ${setting}` : ''} · {hours} hours{style && !eventId ? ` · ${style}` : ''}{priorities.length ? ` · priorities: ${priorities.join(', ')}` : ''}</p>
         <div className="between">
-          <button className="btn" type="submit" disabled={disabled || state.status === 'loading'}>{state.status === 'loading' ? 'Building your estimate…' : 'Build estimate'}</button>
+          <button className="btn" type="submit" disabled={disabled || state.status === 'loading'}>{state.status === 'loading' ? 'Building your plan…' : 'Build my plan'}</button>
           {!configured && <span className="fine">Sign-in is not connected yet, so the planner is off.</span>}
           {configured && !signedIn && <span className="fine"><Link href="/sign-in?next=/planner">Sign in</Link> to use the planner.</span>}
         </div>
@@ -147,7 +147,7 @@ export default function PlannerForm({ events, initialEventId, signedIn, configur
 
       <div id="planner-status" aria-live="polite" className="planner-result">
         {state.status === 'idle' && <PlannerEmpty />}
-        {state.status === 'loading' && <div className="skeleton" aria-busy="true"><span className="sr-only">Building your estimate</span><i /><i /><i /><i /></div>}
+        {state.status === 'loading' && <div className="skeleton" aria-busy="true"><span className="sr-only">Building your plan</span><i /><i /><i /><i /></div>}
         {state.status === 'error' && <p className="notice notice-error" role="alert">{state.error}</p>}
         {state.status === 'done' && state.plan && <PlanResult plan={state.plan} savedTo={state.savedTo} />}
       </div>
@@ -160,7 +160,7 @@ function PlannerEmpty() {
     <div className="empty">
       <p className="label">What you get</p>
       <ul className="dot-list">
-        <li>A budget split with low and high estimates per category</li>
+        <li>A budget split with a low and high ballpark per category</li>
         <li>Taxes, tips, delivery, setup, cleanup, and contingency as their own rows</li>
         <li>The assumptions behind every number</li>
         <li>Missing items, savings ideas, and a checklist</li>
@@ -174,9 +174,9 @@ function PlanResult({ plan, savedTo }) {
   const max = Math.max(1, ...plan.categories.map((c) => c.high));
   return (
     <article className="panel stack-lg">
-      <div className="between"><span className="badge badge-warn">AI estimate</span>{savedTo && <Link href={`/events/${savedTo}`}>Saved to your event</Link>}</div>
+      <div className="between"><span className="badge badge-warn">AI ballpark</span>{savedTo && <Link href={`/events/${savedTo}`}>Saved to your event</Link>}</div>
       <p className="title">{plan.summary}</p>
-      <div className="bars" role="table" aria-label="Estimated budget by category">
+      <div className="bars" role="table" aria-label="Budget ballpark by category">
         {plan.categories.map((c) => (
           <div className="bar-row" role="row" key={c.name}>
             <span role="cell">{c.name}</span>
@@ -188,7 +188,7 @@ function PlanResult({ plan, savedTo }) {
           </div>
         ))}
       </div>
-      <div className="kv"><span>Estimated total</span><b className="num">{money(totals.low)} – {money(totals.high)}</b></div>
+      <div className="kv"><span>Ballpark total</span><b className="num">{money(totals.low)} – {money(totals.high)}</b></div>
       {plan.budget_fit && <BudgetFit fit={plan.budget_fit} />}
       {plan.recommendations?.length > 0 && (
         <section className="stack-sm" aria-labelledby="recs-h">
@@ -213,7 +213,7 @@ function PlanResult({ plan, savedTo }) {
           <ol className="dot-list">{plan.checklist.map((c, i) => <li key={i}><b>{c.task}</b> <span className="fine">{c.when}</span></li>)}</ol>
         </div>
       </div>
-      <p className="fine">Generated by AI from your details and verified Vendora listings. Confirm every amount with a vendor quote.</p>
+      
     </article>
   );
 }
@@ -229,8 +229,8 @@ function BudgetFit({ fit }) {
   const tone = fit.high > fit.budget ? 'notice-warn' : fit.mid_share < 80 ? 'notice-info' : 'notice-ok';
   return (
     <div className={`notice ${tone} budget-fit`}>
-      <p className="small"><b>Against your {money(fit.budget)} budget:</b> the middle of this estimate is {money(mid)}, about {fit.mid_share}% of it{left >= 0 ? `, leaving ${money(left)}` : `, ${money(-left)} over`}.</p>
-      {fit.mid_share < 80 && <p className="fine">The estimate came in well under your budget. Ask again with priorities set, or tell the planner what you want to spend more on.</p>}
+      <p className="small"><b>Against your {money(fit.budget)} budget:</b> the middle of this plan is {money(mid)}, about {fit.mid_share}% of it{left >= 0 ? `, leaving ${money(left)}` : `, ${money(-left)} over`}.</p>
+      {fit.mid_share < 80 && <p className="fine">That’s well under your budget. Tell the planner where you’d like to splurge.</p>}
       {fit.high > fit.budget && <p className="fine">The high end goes over budget. See “Ways to save” below.</p>}
     </div>
   );

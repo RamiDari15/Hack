@@ -17,7 +17,7 @@ export default async function DiscoverPage({ searchParams }) {
   }
   return (
     <div className="page wrap">
-      <PageHead title="Search past our listings." lede="Look for venues, vendors and ideas across the web. Results come from an AI web search and sit apart from verified vendors, each with its source." />
+      <PageHead title="Search past our listings." lede="Find venues, vendors and ideas from across the web." />
       <DiscoverSearch signedIn={Boolean(user)} configured={Boolean(supabase)} verified={vendors.slice(0, 3).map((v) => ({ id: v.id, name: v.name, category: v.category, city: v.city, sample: v.sample }))} verifiedMode={mode} events={events} initialQuery={initialQuery} />
     </div>
   );

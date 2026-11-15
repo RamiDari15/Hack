@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import Placeholder from '@/components/ui/Placeholder';
-import Image from 'next/image';
+import VendorPhoto from '@/components/ui/VendorPhoto';
 import { moneyCents } from '@/lib/format';
 
 export function VerificationBadge({ vendor }) {
@@ -14,7 +13,7 @@ export default function VendorCard({ vendor, index = 0, showDistance = false }) 
   const from = priced.length ? Math.min(...priced) : null;
   return (
     <Link href={`/vendors/${vendor.id}`} className="vendor-card">
-      {vendor.photos?.[0] ? <div className="vendor-photo"><Image src={vendor.photos[0]} alt={`${vendor.name} portfolio`} fill sizes="(max-width: 760px) 100vw, 33vw" unoptimized /></div> : <Placeholder label={vendor.category} seed={index} />}
+      <VendorPhoto src={vendor.photos?.[0]} alt={`${vendor.name} portfolio`} label={vendor.category} seed={index} />
       <div className="vendor-card-body">
         <div className="between"><VerificationBadge vendor={vendor} /><span className="fine">{vendor.city}{showDistance && vendor.distanceMi != null ? `, ${vendor.distanceMi} mi` : ''}</span></div>
         <h3 className="title">{vendor.name}</h3>

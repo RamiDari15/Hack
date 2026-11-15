@@ -35,7 +35,7 @@ try {
   ok('priorities are limited to three', await p.getByRole('button', { name: 'Venue', exact: true }).isDisabled());
   const using = await p.locator('.planner-using').innerText();
   ok('form shows what the AI plan will use', /300 guests/.test(using) && /\$222,000/.test(using) && /outdoor/.test(using) && /Elegant, Garden/.test(using), using);
-  await p.getByRole('button', { name: 'Build estimate' }).click();
+  await p.getByRole('button', { name: 'Build my plan' }).click();
   ok('plan builds without typing a request', await seen(p.locator('.budget-fit'), 30000), await p.locator('.notice-error').textContent().catch(() => ''));
   ok('result shows how it fits the budget', /Against your \$222,000 budget/.test(await p.locator('.budget-fit').innerText()));
   const input = await (await fetch(`${MOCK}/last-plan-input`)).text();

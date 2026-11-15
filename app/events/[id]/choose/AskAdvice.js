@@ -44,7 +44,7 @@ export default function AskAdvice({ eventId, category, names }) {
                 <ul className="small">{a.questions.map((q) => <li key={q}>{q}</li>)}</ul>
               </div>
             )}
-            <p className="fine">Generated from Vendora data only. It is not a quote and does not confirm availability.</p>
+            
           </div>
         )}
       </div>

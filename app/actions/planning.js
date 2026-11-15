@@ -83,7 +83,7 @@ export async function applyRsvpHeadcount(_prev, fd) {
   const { error: e2 } = await s.supabase.from('events').update({ guest_count: expected }).eq('id', s.eid);
   if (e2) return { error: 'Only the event owner can change the guest count.' };
   refresh(s.eid, 'guests');
-  return { ok: true, message: `Event guest count set to ${expected}. Rebuild the estimate to update the budget.` };
+  return { ok: true, message: `Event guest count set to ${expected}. Rebuild the plan to update the budget.` };
 }
 
 // ---------------------------------------------------------------------------

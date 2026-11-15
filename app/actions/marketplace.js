@@ -162,7 +162,7 @@ export async function sendQuote(_prev, fd) {
   const { error } = await s.supabase.from('quotes').insert({ event_vendor_id: bid, amount_cents: cents, description: description || null, valid_until: validUntil || null });
   if (error) return { error: 'Could not send the quote. The booking may be closed.' };
   bookingPaths(bid);
-  return { ok: true, message: 'Quote sent. The customer sees it next to the AI estimate.' };
+  return { ok: true, message: 'Quote sent. They’ll see it next to their AI ballpark.' };
 }
 
 async function setBookingStatus(fd, status, extra = {}) {

@@ -56,12 +56,12 @@ try {
   await submit(p, P, PW);
   await p.waitForURL((u) => u.pathname === '/events/new', { timeout: 20000 });
   ok('sign-up returns to the page asked for', true);
-  ok('header shows the signed-in state', await seen(p.getByRole('link', { name: 'Account' }).first()));
+  ok('header shows the signed-in state', await seen(p.getByRole('link', { name: 'Your events' }).first()));
   const roles = sql(`select array_to_string(roles, ',') from public.profiles p join auth.users u on u.id = p.id where u.email = '${P}';`);
   ok('planner account has no vendor role', !roles.split(',').includes('vendor'), roles);
   await p.goto(`${APP}/sign-in`);
   ok('signed-in user skips the sign-in page', path(p) === '/dashboard');
-  await p.locator('form[action="/auth/sign-out"] button').first().click();
+  await p.locator('header details.acct summary').click(); await p.locator('header .acct-menu form button').click();
   await p.waitForURL(`${APP}/`);
   await p.goto(`${APP}/dashboard`);
   ok('sign-out ends the session', path(p) === '/sign-in');
@@ -78,7 +78,7 @@ try {
   ok('email is not case sensitive', true);
   await p.goto(`${APP}/sign-in?next=https://evil.example/steal`);
   ok('outside next links are ignored', path(p) === '/dashboard');
-  await p.locator('form[action="/auth/sign-out"] button').first().click();
+  await p.locator('header details.acct summary').click(); await p.locator('header .acct-menu form button').click();
   await p.waitForURL(`${APP}/`);
 
   // Forgot password through the local inbox
@@ -99,7 +99,7 @@ try {
     await p.fill('#new-password', PW2);
     await p.getByRole('button', { name: 'Save password' }).click();
     ok('new password saved', await seen(p.getByText('Password updated.')));
-    await p.locator('form[action="/auth/sign-out"] button').first().click();
+    await p.locator('header details.acct summary').click(); await p.locator('header .acct-menu form button').click();
     await p.waitForURL(`${APP}/`);
     await p.goto(`${APP}/sign-in`);
     await submit(p, P, PW);

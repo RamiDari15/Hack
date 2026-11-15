@@ -37,7 +37,7 @@ export default function EventForm({ action, initial = {}, submitLabel = 'Create 
         {state?.error && <p className="notice notice-error" role="alert">{state.error}</p>}
         {state?.ok && <p className="notice notice-ok">Saved.</p>}
       </div>
-      <div className="field-wide"><button className="btn" type="submit" disabled={pending}>{pending ? 'Saving…' : submitLabel}</button></div>
+      <div className="field-wide"><button className="btn btn-sun btn-lg" type="submit" disabled={pending}>{pending ? 'Saving…' : submitLabel}</button></div>
     </form>
   );
 }

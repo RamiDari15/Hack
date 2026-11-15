@@ -58,10 +58,10 @@ export default async function PackagePage({ params }) {
       <dl className="stat-strip">
         <div><dt>Budget</dt><dd className="num">{moneyCents(event.budget_cents)}</dd></div>
         <div><dt>Chosen vendors</dt><dd className="num">{moneyCents(chosenTotal)}</dd></div>
-        <div><dt>Still estimated</dt><dd className="num">{moneyCents(estLow)}–{moneyCents(estHigh)}</dd></div>
+        <div><dt>Still a ballpark</dt><dd className="num">{moneyCents(estLow)}–{moneyCents(estHigh)}</dd></div>
         <div><dt>Projected total</dt><dd className="num">{moneyCents(chosenTotal + estLow)}–{moneyCents(chosenTotal + estHigh)}</dd></div>
       </dl>
-      {event.budget_cents != null && chosenTotal + estLow > event.budget_cents && <p className="notice notice-warn">Even at the low end of the estimates, this package is over budget. Try the trade-offs below.</p>}
+      {event.budget_cents != null && chosenTotal + estLow > event.budget_cents && <p className="notice notice-warn">Even at the low end of the ballparks, this package is over budget. Try the trade-offs below.</p>}
 
       <div>
         <div className="stack-lg">
@@ -93,9 +93,9 @@ export default async function PackagePage({ params }) {
                 </tbody>
               </table>
             </div>
-            {!rows.length && <div className="empty"><h3>Nothing to total yet</h3><p className="muted small">Build an estimate, then pick vendors from your shortlist.</p></div>}
+            {!rows.length && <div className="empty"><h3>Nothing to total yet</h3><p className="muted small">Build a plan, then pick vendors from your shortlist.</p></div>}
             {missing.length > 0 && <p className="fine">Not chosen yet: {missing.join(', ')}. <Link href={`/events/${event.id}/choose`}>Choose vendors</Link> and shortlist them, then pick one per category.</p>}
-            <p className="fine">Chosen amounts use, in order: an accepted quote, the latest quote, your planned amount, or the business’s published price. A vendor without any of these needs a planned amount from you.</p>
+            <p className="fine">We use the best price we have: accepted quote first, then latest quote, your number, or their listed price.</p>
           </section>
         </div>
       </div>

@@ -1,67 +1,95 @@
-/* Vendora "Dusk" tokens. See DESIGN.md. */
+/* Vendora "Sunday" tokens: cream paper, sunflower yellow, peony pink, espresso ink. See DESIGN.md.
+   Legacy names (--dusk, --bulb, --on-dusk) are kept as aliases so every page picks up the new look. */
 :root {
-  --dusk: #2b2140;
-  --dusk-2: #3a2d55;
-  --dusk-3: #4a3b69;
-  --dusk-line: #54467a;
-  --on-dusk: #f4effa;
-  --on-dusk-muted: #c3b8d6;
+  /* Paper */
+  --cream: #fbf4e6;
+  --cream-2: #f5ead3;
+  --cream-3: #efe0c2;
+  --paper: #fffcf6;
 
-  --haze: #f3f0f7;
-  --haze-2: #e9e4f1;
-  --paper: #ffffff;
-  --ink: #22193a;
-  --ink-2: #3b3253;
-  --muted: #5f5673;
-  --line: #d9d2e6;
-  --line-strong: #a99dc0;
+  /* Ink */
+  --ink: #1f1915;
+  --ink-2: #463b33;
+  --muted: #6c5f55;
+  --line: #e7dbc4;
+  --line-strong: #c9b896;
 
-  --bulb: #ffc861;
-  --bulb-2: #ffdc96;
-  --bulb-deep: #c98a1c;
+  /* Accents */
+  --sun: #ffc83d;
+  --sun-2: #ffe08a;
+  --sun-soft: #fff1c7;
+  --sun-deep: #8a5d00;      /* text-safe on cream */
+  --pink: #ff5c8a;          /* fill only: never a text colour on cream, and never cream text on it */
+  --pink-2: #ff9bb8;
+  --pink-soft: #ffe1ea;
+  --pink-deep: #b8204f;     /* text-safe on cream */
 
-  --ok: #2f5d3a;     --ok-soft: #e1efe4;
-  --warn: #714600;   --warn-soft: #fbedd0;
-  --info: #2f4a6b;   --info-soft: #e2e9f3;
-  --danger: #8e2a2a; --danger-soft: #f7e1e1;
+  /* Legacy aliases */
+  --dusk: var(--ink);
+  --dusk-2: #2e2620;
+  --dusk-3: #3d332b;
+  --dusk-line: rgba(251, 244, 230, .18);
+  --on-dusk: var(--cream);          /* text on an ink fill */
+  --on-dusk-muted: #d9ccb6;
+  --haze: var(--cream-2);
+  --haze-2: var(--cream-3);
+  --bulb: var(--sun);
+  --bulb-2: var(--sun-2);
+  --bulb-deep: #c98a00;
 
-  --focus: var(--dusk);
+  --ok: #2d6a3e;     --ok-soft: #dff1e3;
+  --warn: #7a4a00;   --warn-soft: var(--sun-soft);
+  --info: #2f4f78;   --info-soft: #e3ecf7;
+  --danger: #a3213a; --danger-soft: #fde2e7;
 
-  --f-display: var(--font-display), 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --focus: var(--pink-deep);
+
+  --f-display: var(--font-display), 'Helvetica Neue', Arial, sans-serif;
   --f-ui: var(--font-ui), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-accent: var(--font-accent), Georgia, 'Times New Roman', serif;
 
-  /* UI scale (1.2) */
   --t-xs: .8125rem;
   --t-sm: .9375rem;
   --t-base: 1.0625rem;
   --t-md: 1.25rem;
   --t-lg: 1.5rem;
-  /* Display scale */
-  --d-3: clamp(1.75rem, 1.4rem + 1.2vw, 2.375rem);
-  --d-2: clamp(2.5rem, 1.6rem + 3vw, 4.25rem);
-  --d-1: clamp(3.25rem, 1.8rem + 5.6vw, 7rem);
-  --d-hero: clamp(5.5rem, 1.5rem + 13vw, 14.5rem);
+  --d-3: clamp(1.6rem, 1.3rem + 1.1vw, 2.25rem);
+  --d-2: clamp(2.3rem, 1.5rem + 2.8vw, 4rem);
+  --d-1: clamp(3rem, 1.6rem + 5.2vw, 6.5rem);
+  --d-hero: clamp(3.6rem, 1rem + 10.5vw, 11.5rem);
 
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
   --s-6: 32px; --s-7: 48px; --s-8: 72px; --s-9: 112px; --s-10: 160px;
   --gutter: clamp(16px, 4vw, 48px);
   --max: 1240px;
   --measure: 64ch;
+  --header-h: 72px;
 
-  --r-ticket: 4px;
-  --r-panel: 8px;
+  --r-ticket: 10px;
+  --r-panel: 22px;
   --r-pill: 999px;
-  --shadow-float: 0 24px 60px -24px rgba(34, 25, 58, .45);
+  --shadow-1: 0 1px 0 rgba(31, 25, 21, .04), 0 2px 6px -2px rgba(31, 25, 21, .08);
+  --shadow-2: 0 18px 40px -22px rgba(31, 25, 21, .35), 0 2px 6px -2px rgba(31, 25, 21, .06);
+  --shadow-float: 0 30px 70px -30px rgba(31, 25, 21, .45);
+  --shadow-pop: 6px 6px 0 var(--ink);
 
-  --ease: cubic-bezier(.2, .7, .2, 1);
-  --d-fast: 150ms;
-  --d-base: 280ms;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --d-fast: 160ms;
+  --d-base: 320ms;
 
   color-scheme: light;
 }
 
+/* "Pop" blocks: what used to be the dark night sections are now color-blocked blush and sun. */
 .on-dusk {
-  --focus: var(--bulb);
-  color: var(--on-dusk);
-  background: var(--dusk);
+  --focus: var(--ink);
+  --on-dusk: var(--ink);
+  --on-dusk-muted: var(--ink-2);
+  --dusk-line: color-mix(in srgb, var(--ink) 16%, transparent);
+  color: var(--ink);
+  background:
+    radial-gradient(60% 80% at 85% 10%, rgba(255, 200, 61, .55) 0%, rgba(255, 200, 61, 0) 60%),
+    radial-gradient(70% 90% at 0% 100%, rgba(255, 92, 138, .32) 0%, rgba(255, 92, 138, 0) 65%),
+    var(--pink-soft);
 }

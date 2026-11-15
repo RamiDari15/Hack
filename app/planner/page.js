@@ -17,8 +17,8 @@ export default async function PlannerPage({ searchParams }) {
 
   return (
     <div className="page wrap">
-      <PageHead title="Ask the planner." lede="Describe the event in plain words. You get a budget split, the assumptions behind it, what you might be missing, and a checklist." />
-      <p className="notice notice-warn">Every figure here is an AI estimate, not a price. Vendor quotes replace estimates once they arrive. Nothing is booked, paid or sent from this page.</p>
+      <PageHead title="Ask the planner." lede="Tell it about the day. You get a budget split, what you might be forgetting, and a to-do list." />
+      <p className="notice notice-warn">These are AI ballparks to plan with. Real quotes from vendors replace them.</p>
       <PlannerForm events={events} initialEventId={selected} signedIn={Boolean(user)} configured={Boolean(supabase)} />
     </div>
   );

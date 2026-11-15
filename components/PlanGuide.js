@@ -8,15 +8,15 @@ export default function PlanGuide({ event, plan, bookings, quotes, sponsors, tim
   const steps = [
     {
       key: 'details', title: 'Add the event details',
-      text: 'Date, location, guest count and budget shape every estimate and vendor search.',
+      text: 'Date, location, guest count and budget shape the plan and every vendor search.',
       done: Boolean(event.event_date && event.location && event.guest_count && event.budget_cents != null),
       cta: { href: `/events/${event.id}?edit=1#edit-details`, label: 'Edit details' },
     },
     {
-      key: 'estimate', title: 'Build a budget estimate',
+      key: 'estimate', title: 'Build your plan',
       text: 'The AI planner splits your budget using verified vendors and local published prices.',
       done: Boolean(plan),
-      cta: { href: `/planner?event=${event.id}`, label: plan ? 'Rebuild estimate' : 'Build an estimate' },
+      cta: { href: `/planner?event=${event.id}`, label: plan ? 'Rebuild plan' : 'Build a plan' },
     },
     {
       key: 'vendors', title: 'Choose vendors',
@@ -26,7 +26,7 @@ export default function PlanGuide({ event, plan, bookings, quotes, sponsors, tim
     },
     {
       key: 'quotes', title: 'Compare and accept quotes',
-      text: 'Quotes replace AI estimates in your budget as they arrive. Accept the ones that fit.',
+      text: 'Quotes replace AI ballparks as they arrive. Accept the ones that fit.',
       done: quotes.some((q) => q.status === 'accepted'),
       cta: { href: `/events/${event.id}/quotes`, label: quoted ? 'Compare quotes' : 'See quotes' },
     },
@@ -85,11 +85,11 @@ export default function PlanGuide({ event, plan, bookings, quotes, sponsors, tim
         <div className="stack-sm guide-ai">
           <div className="between"><h3 className="label">Tasks the planner generated for this event</h3><span className="badge badge-warn">AI suggestion</span></div>
           <ol className="num-list">{plan.checklist.map((c, i) => <li key={i}><div><b>{c.task}</b><p className="fine">{c.when}</p></div></li>)}</ol>
-          <p className="fine">Generated from your event details. Rebuild the estimate after changing details to refresh them.</p>
+          <p className="fine">Changed the details? Rebuild the AI plan to refresh these.</p>
         </div>
       )}
-      {plan && !plan.checklist?.length && <p className="fine">Rebuild the estimate to get tasks tailored to this event.</p>}
-      {!plan && <p className="fine">Build an estimate and the planner adds tasks tailored to this event here.</p>}
+      {plan && !plan.checklist?.length && <p className="fine">Rebuild the AI plan to get to-dos for this event.</p>}
+      {!plan && <p className="fine">Get an AI plan and your to-dos show up here.</p>}
       {!next && <p className="notice notice-ok">Every step is done. Keep an eye on vendor messages as the date gets closer.</p>}
     </section>
   );

@@ -51,11 +51,11 @@ try {
   // 3. Planner, saved to the event
   await pa.goto(`${APP}/planner?event=${eventId}`);
   await pa.fill('#prompt', 'Help me plan a 150-person outdoor wedding within a $25,000 budget.');
-  await pa.click('button:has-text("Build estimate")');
+  await pa.click('button:has-text("Build my plan")');
   await pa.getByText('Saved to your event').waitFor({ timeout: 90000 }).catch(() => {});
   const plannerError = await pa.locator('.notice-error').textContent().catch(() => null);
   ok('planner returns an estimate', await pa.getByText('Saved to your event').isVisible(), plannerError);
-  ok('planner output is labeled AI estimate', await pa.locator('.badge', { hasText: 'AI estimate' }).first().isVisible());
+  ok('planner output is labeled AI estimate', await pa.locator('.badge', { hasText: 'AI ballpark' }).first().isVisible());
 
   // 4. Web search, then save a result to the event
   await pa.goto(`${APP}/discover`);
@@ -77,7 +77,7 @@ try {
 
   // 6. Sign out, sign back in, confirm everything persisted
   await pa.goto(`${APP}/dashboard`);
-  await pa.locator('form[action="/auth/sign-out"] button').first().click();
+  await pa.locator('header details.acct summary').click(); await pa.locator('header .acct-menu form button').click();
   await pa.waitForURL(`${APP}/`);
   await pa.goto(`${APP}/dashboard`);
   ok('after sign-out, dashboard redirects to sign-in', pa.url().includes('/sign-in'));
@@ -96,7 +96,7 @@ try {
   await signIn(pa, A, '/dashboard');
   ok('event persisted after signing back in', await pa.getByText('E2E Garden Wedding').isVisible());
   await pa.goto(eventUrl);
-  ok('AI estimate persisted on event', await pa.locator('.table .badge', { hasText: 'AI estimate' }).first().isVisible());
+  ok('AI estimate persisted on event', await pa.locator('.table .badge', { hasText: 'AI ballpark' }).first().isVisible());
   ok('saved web result persisted, still marked external', await pa.locator('#saved-h').isVisible()
     && await pa.getByText(firstTitle).isVisible()
     && await pa.locator('section:has(#saved-h) .badge', { hasText: 'External, confirm' }).first().isVisible());
@@ -129,7 +129,7 @@ try {
     await pa.goto(eventUrl);
     const quoteRow = pa.locator('.table tr', { hasText: 'Vendor quote' });
     ok('vendor quote row labeled Vendor quote', await quoteRow.first().isVisible());
-    ok('remaining rows still labeled AI estimate', (await pa.locator('.table .badge', { hasText: 'AI estimate' }).count()) > 0);
+    ok('remaining rows still labeled AI estimate', (await pa.locator('.table .badge', { hasText: 'AI ballpark' }).count()) > 0);
     ok('quote amount shown', await quoteRow.first().getByText('$5,800').isVisible());
     ok('booking status moved to Quote received', await pa.locator('.booking-list .badge', { hasText: 'Quote received' }).first().isVisible());
   } else {

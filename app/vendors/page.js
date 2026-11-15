@@ -31,7 +31,7 @@ export default async function VendorsPage({ searchParams }) {
 
   return (
     <div className="page wrap">
-      <PageHead title={category || 'Find the people who make it.'} lede={`${count}${activeFilters.length ? `, ${activeFilters.join(', ')}` : ''}${nearAnnArbor ? ` within ${radius} miles of Ann Arbor` : location ? ` near ${location}` : ''}. Browse businesses across the United States.`} />
+      <PageHead title={category || 'Find the people who make it.'} lede={`${count}${activeFilters.length ? `, ${activeFilters.join(', ')}` : ''}${nearAnnArbor ? ` within ${radius} miles of Ann Arbor` : location ? ` near ${location}` : ''}.`} />
       <p className="small"><Link href="/vendors?location=Ann%20Arbor">Browse the Ann Arbor area · 25-mile radius</Link></p>
 
       <form method="get" className="filterbar" aria-label="Filter vendors">
@@ -54,7 +54,7 @@ export default async function VendorsPage({ searchParams }) {
               <label className="check-row"><input type="checkbox" name="photos" value="1" defaultChecked={hasPhotos} /><span>Has photos</span></label>
             </div>
           </div>
-          <p className="fine">Price filters use each business’s own published starting price (per event, person or hour as listed). Businesses with no published price are left out when a price limit is set.</p>
+          <p className="fine">Filters use each business’s published starting price. Places with no listed price are hidden.</p>
         </details>
       </form>
       <nav className="chips filter-chips" aria-label="Categories">
@@ -63,7 +63,7 @@ export default async function VendorsPage({ searchParams }) {
       </nav>
 
       <div className="stack notices">
-        <p className="notice">Verified vendors can take inquiries here. Public listings are real businesses we found online: they are not verified by Vendora, so contact them directly to check prices and availability.</p>
+        <p className="notice notice-sun">Verified vendors take inquiries right here. Listed businesses are ones we found online, so reach out to them directly.</p>
         {date && <p className="notice">Your event date is {date}. Availability is confirmed by each vendor, so this date does not filter the list.</p>}
         {error && <p className="notice notice-error" role="alert">{error}</p>}
         {capped && <p className="notice">Price filters looked at the first 600 matches. Narrow by category or location for a complete list.</p>}
@@ -72,7 +72,7 @@ export default async function VendorsPage({ searchParams }) {
       {vendors.length === 0 && !error ? (
         <div className="empty">
           <h2>No vendors match yet.</h2>
-          <p className="muted small">Try another category or location, or search the wider web. Web results are marked for you to confirm.</p>
+          <p className="muted small">Try another category or place, or search the web.</p>
           <div className="row"><Link className="btn btn-outline" href="/vendors">Clear filters</Link><Link className="btn btn-outline" href="/discover">Search the web</Link></div>
         </div>
       ) : (

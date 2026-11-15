@@ -39,7 +39,7 @@ export default async function CompareQuotesPage({ params, searchParams }) {
   return (
     <div className="page wrap">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Compare quotes" size="display-2"
-        lede="Every quote side by side, by category, against your AI estimate." >
+        lede="Every quote side by side, by category, against your AI ballpark." >
         <Link className="btn btn-sm btn-outline" href={showOld ? `/events/${event.id}/quotes` : `/events/${event.id}/quotes?all=1`}>{showOld ? 'Show current quotes only' : 'Include declined and expired'}</Link>
       </PageHead>
 
@@ -51,12 +51,12 @@ export default async function CompareQuotesPage({ params, searchParams }) {
           <section key={cat} className="stack compare-section" aria-labelledby={`c-${cat}`}>
             <div className="between">
               <h2 id={`c-${cat}`} className="display-3">{cat}</h2>
-              {est && <p className="small">AI estimate <b className="num">{moneyCents(est.low * 100)}–{moneyCents(est.high * 100)}</b></p>}
+              {est && <p className="small">AI ballpark <b className="num">{moneyCents(est.low * 100)}–{moneyCents(est.high * 100)}</b></p>}
             </div>
             <div className="table-wrap panel">
               <table className="table compare-table">
                 <thead>
-                  <tr><th scope="col">Vendor</th><th scope="col">Quote</th><th scope="col">Vs. estimate</th>{event.guest_count ? <th scope="col">Per guest</th> : null}<th scope="col">Valid until</th><th scope="col">Includes</th><th scope="col">Status</th></tr>
+                  <tr><th scope="col">Vendor</th><th scope="col">Quote</th><th scope="col">Vs. ballpark</th>{event.guest_count ? <th scope="col">Per guest</th> : null}<th scope="col">Valid until</th><th scope="col">Includes</th><th scope="col">Status</th></tr>
                 </thead>
                 <tbody>
                   {qs.map((q) => {
@@ -87,7 +87,7 @@ export default async function CompareQuotesPage({ params, searchParams }) {
         <div className="panel empty"><h3>No quotes yet</h3><p className="muted small">Quotes appear here as vendors reply to your requests.</p>
           <Link className="btn btn-sm" href={`/events/${event.id}/choose`}>Choose vendors</Link></div>
       )}
-      <p className="fine">Amounts are the vendors’ own quotes. Per-guest figures divide the quote by your event’s guest count.</p>
+      
     </div>
   );
 }

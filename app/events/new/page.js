@@ -14,10 +14,10 @@ export default async function NewEventPage({ searchParams }) {
       <PageHead
         back={{ href: '/dashboard', label: 'Your events' }}
         title="Tell us about the day."
-        lede="Only you can see this event. You can change every detail later, and the planner uses it to build an estimate."
+        lede="Only you can see this. You can change any of it later."
       />
       {!isSupabaseConfigured && <p className="notice notice-warn">The database is not connected, so events cannot be saved yet.</p>}
-      <div className="panel"><EventForm action={createEvent} initial={{ eventType: type }} /></div>
+      <div className="panel panel-pop panel-glow"><EventForm action={createEvent} initial={{ eventType: type }} /></div>
     </div>
   );
 }

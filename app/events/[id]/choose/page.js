@@ -107,9 +107,9 @@ export default async function ChooseVendorsPage({ params, searchParams }) {
           <p className="label">Step {index + 1} of {steps.length}</p>
           <h2 id="step-h" className="display-3">{step.category}</h2>
           {step.highCents != null
-            ? <p className="small">Your AI estimate for {step.category.toLowerCase()} is <b className="num">{moneyCents(step.lowCents)}–{moneyCents(step.highCents)}</b>{step.notes ? ` (${step.notes})` : ''}. Vendors are ranked against it.</p>
-            : <p className="small">Build an estimate first and vendors are ranked against your budget for each category. <Link href={`/planner?event=${event.id}`}>Build an estimate</Link></p>}
-          <p className="fine">Ranking uses Vendora verification, location, published prices and each vendor’s Vendora calendar. Always confirm price and availability with the vendor.</p>
+            ? <p className="small">Your AI ballpark for {step.category.toLowerCase()} is <b className="num">{moneyCents(step.lowCents)}–{moneyCents(step.highCents)}</b>{step.notes ? ` (${step.notes})` : ''}. Vendors are ranked against it.</p>
+            : <p className="small">Build a plan first and vendors are ranked against your budget for each category. <Link href={`/planner?event=${event.id}`}>Build a plan</Link></p>}
+          <p className="fine">Best matches first, by distance, price and availability.</p>
         </div>
 
         {byCategory[step.category] && <p className="notice notice-ok">You have already contacted a {step.category.toLowerCase()} vendor for this event. You can still compare others.</p>}

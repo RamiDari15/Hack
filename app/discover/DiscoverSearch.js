@@ -45,7 +45,7 @@ export default function DiscoverSearch({ signedIn, configured, verified, verifie
 
         <section aria-labelledby="ext-h" className="stack" aria-live="polite">
           <div className="between"><h2 id="ext-h" className="label">From the web, confirm the details</h2>{state.at && <span className="fine">Retrieved {new Date(state.at).toLocaleTimeString()}</span>}</div>
-          {state.status === 'idle' && <p className="muted small">Web results appear here, each with its source. Prices, capacity and availability are not checked by Vendora.</p>}
+          {state.status === 'idle' && <p className="muted small">Search for anything. We’ll link every source.</p>}
           {signedIn && events.length === 0 && <p className="fine"><Link href="/events/new">Create an event</Link> to save results to it.</p>}
           {state.status === 'loading' && <div className="skeleton" aria-busy="true"><i /><i /><i /></div>}
           {state.status === 'error' && <p className="notice notice-error" role="alert">{state.error}</p>}

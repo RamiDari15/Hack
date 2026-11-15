@@ -32,6 +32,8 @@ export default async function BookingPage({ params }) {
   ]);
   const b = rows?.[0];
   if (!b) notFound();
+  // Opening the conversation marks it read for this user (inbox unread counts).
+  await supabase.from('message_reads').upsert({ user_id: user.id, event_vendor_id: id, last_read_at: new Date().toISOString() }, { onConflict: 'user_id,event_vendor_id' });
 
   const isVendor = b.viewer_is_vendor;
   const isOwner = b.viewer_is_owner;
@@ -121,7 +123,7 @@ export default async function BookingPage({ params }) {
                   );
                 })}
               </ul>
-            ) : <p className="muted small">{isVendor ? 'Send a quote so the customer can compare it with their estimate.' : 'No quote yet. The vendor has the event details you shared.'}</p>}
+            ) : <p className="muted small">{isVendor ? 'Send a quote. It replaces their AI ballpark.' : 'No quote yet. The vendor has the event details you shared.'}</p>}
 
             {isVendor && open && b.status !== 'hold' && (
               <ActionForm action={sendQuote} resetOnOk>

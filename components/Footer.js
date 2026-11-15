@@ -13,7 +13,7 @@ export default function Footer() {
       <div className="wrap footer-inner">
         <div className="stack">
           <Wordmark size="lg" />
-          <p className="muted small" style={{ maxWidth: '36ch' }}>Plan an event and book the people who make it, with every price and listing marked by where it came from.</p>
+          <p className="footer-tag">Plan the party. <em className="accent">Book the people.</em></p>
         </div>
         <nav aria-label="Footer">
           <ul role="list" className="footer-links">
@@ -23,7 +23,7 @@ export default function Footer() {
       </div>
       <div className="wrap footer-base fine">
         <span>© {new Date().getFullYear()} Vendora</span>
-        <span>Public listings link to their sources. Nothing is booked, paid or sent without your confirmation.</span>
+        <span>Nothing is booked, paid or sent without your OK.</span>
       </div>
     </footer>
   );

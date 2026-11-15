@@ -59,7 +59,7 @@ export default function TradeOffs({ rows, budgetCents, guestCount }) {
           <li key={r.name} className={off[r.name] ? 'is-off' : undefined}>
             <div className="stack-sm">
               <p className="title">{r.name}</p>
-              <p className="fine">{r.kind === 'pick' ? `${r.vendor}: ${r.source}` : `AI estimate ${usd(r.lowCents)}–${usd(r.highCents)}`}{r.perGuest || r.perPersonPick ? ', scales with guests' : ''}</p>
+              <p className="fine">{r.kind === 'pick' ? `${r.vendor}: ${r.source}` : `AI ballpark ${usd(r.lowCents)}–${usd(r.highCents)}`}{r.perGuest || r.perPersonPick ? ', scales with guests' : ''}</p>
             </div>
             {r.kind === 'estimate' ? (
               <fieldset className="seg" disabled={Boolean(off[r.name])}>
@@ -81,7 +81,7 @@ export default function TradeOffs({ rows, budgetCents, guestCount }) {
           <ul className="small">{ideas.map((i) => <li key={i.text}>{i.text}: saves about <b className="num">{usd(i.saves)}</b></li>)}</ul>
         </div>
       )}
-      <p className="fine">Estimates are the planner’s ranges, not prices. Chosen vendors use their quote, your planned amount or their published price, as shown. Per-guest scaling is a rough guide.</p>
+      
     </section>
   );
 }

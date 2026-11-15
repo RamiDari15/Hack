@@ -1,13 +1,17 @@
-import Scene from '@/components/home/Scene';
+import Hero from '@/components/home/Hero';
+import Marquee from '@/components/home/Marquee';
+import Steps from '@/components/home/Steps';
+import Bento from '@/components/home/Bento';
 import Labels from '@/components/home/Labels';
 import Close from '@/components/home/Close';
 
-// Three parts only: the bulb scene (hero and how it works), the four labels, and the event types.
-// Everything else lives on its own page.
 export default function HomePage() {
   return (
     <>
-      <Scene />
+      <Hero />
+      <Marquee />
+      <Steps />
+      <Bento />
       <Labels />
       <Close />
     </>

@@ -13,7 +13,7 @@ const NEEDS = [
 const GET = [
   ['A verified profile', 'Your business, portfolio and service area, shown to people planning nearby.'],
   ['Inquiries with the details', 'Each request arrives with the date, place and guest count, so you can quote straight away.'],
-  ['Quotes that count', 'Your quote replaces the planner’s estimate in the customer’s budget, labeled as yours.'],
+  ['Quotes that count', 'Your quote replaces the AI ballpark in their budget.'],
 ];
 
 export default function JoinPage() {

@@ -16,13 +16,13 @@ export default function BudgetTable({ categories, quotes = [] }) {
   return (
     <div className="table-wrap">
       <table className="table">
-        <caption className="sr-only">Budget by category, AI estimates and vendor quotes</caption>
+        <caption className="sr-only">Budget by category, AI ballparks and vendor quotes</caption>
         <thead><tr><th scope="col">Category</th><th scope="col">Source</th><th scope="col" className="num">Amount</th></tr></thead>
         <tbody>
           {rows.map((r) => (
             <tr key={r.name}>
               <td>{r.name}{r.notes ? <div className="fine">{r.notes}</div> : null}</td>
-              <td>{r.quote ? <span className="badge badge-accent">Vendor quote</span> : <span className="badge badge-warn">AI estimate</span>}</td>
+              <td>{r.quote ? <span className="badge badge-accent">Vendor quote</span> : <span className="badge badge-warn">AI ballpark</span>}</td>
               <td className="num">{r.quote ? moneyCents(r.quote.amount_cents) : `${money(r.low)} – ${money(r.high)}`}</td>
             </tr>
           ))}

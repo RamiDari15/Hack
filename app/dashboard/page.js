@@ -40,7 +40,7 @@ export default async function DashboardPage({ searchParams }) {
       {!error && list.length === 0 && (
         <div className="empty">
           <h2>Nothing planned yet</h2>
-          <p className="muted measure">Add the type, date, place, guests and budget. Then build an estimate and request quotes from verified vendors.</p>
+          <p className="muted measure">Tell us the date, the place and roughly how many people. We’ll take it from there.</p>
           <Link className="btn" href="/events/new">Create your first event</Link>
         </div>
       )}

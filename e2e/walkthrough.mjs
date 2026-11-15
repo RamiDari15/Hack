@@ -62,7 +62,7 @@ try {
   await guide.getByRole('link', { name: 'Choose vendors' }).click();
   await p.waitForURL(/\/choose\?step=/);
   ok('walkthrough starts at Venues', (await p.locator('#step-h').textContent()) === 'Venues');
-  ok('walkthrough shows the category estimate', await p.getByText(/Your AI estimate for venues is/).isVisible());
+  ok('walkthrough shows the category estimate', await p.getByText(/Your AI ballpark for venues is/).isVisible());
   const best = p.locator('.match-card.is-best');
   ok('a best fit is highlighted', await best.isVisible());
   ok('best fit is a verified vendor', await best.locator('.badge', { hasText: 'Verified' }).count() > 0);

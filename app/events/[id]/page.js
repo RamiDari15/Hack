@@ -48,7 +48,7 @@ export default async function EventPage({ params, searchParams }) {
         {event.style && <span className="badge badge-plain">{event.style}</span>}
         <Link className="btn btn-sm btn-bulb" href={`/events/${event.id}/sponsors`}>Contact sponsors</Link>
       </PageHead>
-      {sp?.created && <p className="notice notice-ok">Event created. Next, build an estimate with the planner or find vendors.</p>}
+      {sp?.created && <p className="notice notice-ok">Your event is saved. Get an AI plan or start finding vendors.</p>}
 
       <dl className="stat-strip">
         <div><dt>Budget</dt><dd className="num">{moneyCents(event.budget_cents)}</dd></div>
@@ -64,16 +64,16 @@ export default async function EventPage({ params, searchParams }) {
           <section className="panel stack" aria-labelledby="budget-h">
             <div className="panel-head">
               <h2 id="budget-h">Budget</h2>
-              <Link className="btn btn-sm btn-outline" href={`/planner?event=${event.id}`}>{plan ? 'Rebuild estimate' : 'Build an estimate'}</Link>
+              <Link className="btn btn-sm btn-outline" href={`/planner?event=${event.id}`}>{plan ? 'Rebuild AI plan' : 'Get an AI plan'}</Link>
             </div>
             {plan ? (
               <>
                 <p className="muted small measure">{plan.summary}</p>
                 <BudgetTable categories={plan.categories ?? []} quotes={quotes} />
-                <p className="fine">Rows marked AI estimate are generated ranges, not prices. A vendor’s quote replaces its estimate once it arrives.</p>
+                
               </>
             ) : (
-              <div className="empty"><h3>No estimate yet</h3><p className="muted small">The planner turns this event’s details into a budget split with taxes, tips, delivery, setup, cleanup and a contingency.</p></div>
+              <div className="empty"><h3>No plan yet</h3><p className="muted small">Get a budget split for this event, with the sneaky costs like tips, delivery and setup included.</p></div>
             )}
           </section>
 
@@ -102,7 +102,7 @@ export default async function EventPage({ params, searchParams }) {
                 })}
               </ul>
             ) : (
-              <div className="empty"><h3>No vendors yet</h3><p className="muted small">Request a quote from a vendor’s profile. You confirm before anything is sent.</p></div>
+              <div className="empty"><h3>No vendors yet</h3><p className="muted small">Find someone you like and ask for a quote.</p></div>
             )}
           </section>
 
@@ -111,7 +111,7 @@ export default async function EventPage({ params, searchParams }) {
               <h2 id="saved-h">Saved from the web</h2>
               <Link className="btn btn-sm btn-outline" href="/discover">Search the web</Link>
             </div>
-            <p className="fine measure">External results are not verified by Vendora. Confirm prices, availability and contact details with each source before relying on them. To book, find the business as a verified vendor.</p>
+            <p className="fine measure">Ideas from the web. Check details with each business.</p>
             {saved?.length ? (
               <ul role="list" className="booking-list">
                 {saved.map((r) => (
@@ -129,7 +129,7 @@ export default async function EventPage({ params, searchParams }) {
                 ))}
               </ul>
             ) : (
-              <div className="empty"><h3>Nothing saved yet</h3><p className="muted small">Save venues or ideas from web search. They stay marked as external.</p></div>
+              <div className="empty"><h3>Nothing saved yet</h3><p className="muted small">Save venues and ideas from web search to keep them here.</p></div>
             )}
           </section>
 
@@ -166,7 +166,7 @@ export default async function EventPage({ params, searchParams }) {
             <summary>Delete event</summary>
             <form action={deleteEvent} className="stack" style={{ marginTop: 'var(--s-4)' }}>
               <input type="hidden" name="id" value={event.id} />
-              <label className="check-row"><input type="checkbox" name="confirm" value="yes" required /> <span>I understand this deletes the event, its vendor inquiries and its estimates.</span></label>
+              <label className="check-row"><input type="checkbox" name="confirm" value="yes" required /> <span>I understand this deletes the event, its vendor inquiries and its AI plan.</span></label>
               {sp?.error === 'confirm' && <p className="notice notice-error" role="alert">Tick the box to confirm.</p>}
               <button className="btn btn-outline btn-sm" type="submit">Delete permanently</button>
             </form>

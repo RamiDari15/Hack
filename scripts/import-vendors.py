@@ -94,7 +94,7 @@ def main():
         raise SystemExit('Expected at least 500 distinct sourced businesses.')
     if any(not r['photos'] or not r['name'] or not r['city'] for r in records):
         raise SystemExit('Every business needs a name, city, source and portfolio photo.')
-    categories = re.findall(r"'([^']+)'", (ROOT / 'lib/categories.js').read_text().split('export const EVENT_TYPES')[0])
+    categories = re.findall(r"'([^']+)'", (ROOT / 'lib/categories.js').read_text().split('export const EVENT_TYPE')[0])
     counts = Counter(r['category'] for r in records)
     missing = {category: counts[category] for category in categories if counts[category] < 20}
     if missing:

@@ -290,6 +290,27 @@ r = await as(B, `select id from public.user_todos`); check('others cannot read m
 r = await as(null, `select id from public.user_todos`); check('anon cannot read to-dos', !!r.error || r.rows?.length === 0, r);
 r = await as(B, `update public.user_todos set done=true where id='${td}' returning id`); check('others cannot tick my to-dos', !r.rows?.length, r);
 r = await as(B, `delete from public.user_todos where id='${td}' returning id`); check('others cannot delete my to-dos', !r.rows?.length, r);
+// Inbox, read markers and saved vendors. D has no part in any booking.
+const D='00000000-0000-0000-0000-00000000000d';
+await db.exec(`insert into auth.users(id,email) values ('${D}','d@x.test')`);
+r = await as(A, `insert into public.messages(event_vendor_id, body) values ('${bid}', 'Inbox test from the vendor') returning id`); check('vendor can message the organizer', !!r.rows?.[0], r);
+r = await as(B, `select event_vendor_id, unread, i_am_vendor, last_from_me from public.my_inbox() where event_vendor_id='${bid}'`); check('organizer inbox shows the thread with unread messages', r.rows?.length === 1 && r.rows[0].unread >= 1 && r.rows[0].i_am_vendor === false && r.rows[0].last_from_me === false, r);
+r = await as(A, `select i_am_vendor, last_from_me from public.my_inbox() where event_vendor_id='${bid}'`); check('vendor inbox marks the thread as their business', r.rows?.[0]?.i_am_vendor === true && r.rows[0].last_from_me === true, r);
+r = await as(A, `select event_title from public.my_inbox() where event_vendor_id='${bid}'`); check('vendor inbox hides the organizer\'s event title', r.rows?.[0]?.event_title !== 'B wedding', r);
+r = await as(C, `select event_title from public.my_inbox() where event_vendor_id='${bid}'`); check('co-host inbox shows the thread with the event title', r.rows?.[0]?.event_title === 'B wedding', r);
+r = await as(D, `select event_vendor_id from public.my_inbox()`); check('outsiders see no threads in their inbox', r.rows?.length === 0, r);
+r = await as(null, `select * from public.my_inbox()`); check('anon cannot call the inbox', !!r.error || r.rows?.length === 0, r);
+r = await as(B, `insert into public.message_reads(event_vendor_id) values ('${bid}') returning user_id`); check('organizer marks the thread read', r.rows?.[0]?.user_id === B, r);
+r = await as(B, `select unread from public.my_inbox() where event_vendor_id='${bid}'`); check('reading clears the unread count', r.rows?.[0]?.unread === 0, r);
+r = await as(D, `insert into public.message_reads(event_vendor_id) values ('${bid}')`); check('outsiders cannot add read markers to a booking', !!r.error, r);
+r = await as(C, `insert into public.message_reads(user_id, event_vendor_id) values ('${B}', '${bid}')`); check('cannot write a read marker for someone else', !!r.error, r);
+r = await as(A, `select user_id from public.message_reads`); check('read markers are private', r.rows?.length === 0, r);
+r = await as(B, `insert into public.saved_vendors(vendor_id) values ('${vid}') returning user_id`); check('user saves a vendor', r.rows?.[0]?.user_id === B, r);
+r = await as(D, `select vendor_id from public.saved_vendors`); check('saved vendors are private', r.rows?.length === 0, r);
+r = await as(C, `insert into public.saved_vendors(user_id, vendor_id) values ('${B}', '${vid}')`); check('cannot save a vendor into someone else\'s list', !!r.error, r);
+r = await as(C, `delete from public.saved_vendors where user_id='${B}' returning vendor_id`); check('cannot remove someone else\'s saved vendor', !r.rows?.length, r);
+r = await as(null, `select vendor_id from public.saved_vendors`); check('anon cannot read saved vendors', !!r.error || r.rows?.length === 0, r);
+r = await as(B, `delete from public.saved_vendors where vendor_id='${vid}' returning vendor_id`); check('user removes their saved vendor', r.rows?.length === 1, r);
 r = await as(B, `insert into public.user_todos(user_id, title) values ('${A}', 'Planted')`); check('cannot add a to-do to someone else', !!r.error, r);
 r = await as(A, `insert into public.user_todos(title, event_id) values ('Spy', '${eid}')`); check('cannot link a to-do to an event you cannot see', !!r.error, r);
 r = await as(C, `insert into public.user_todos(title, event_id) values ('For the wedding', '${eid}') returning id`); check('cohost links a to-do to a shared event', !!r.rows?.[0], r);

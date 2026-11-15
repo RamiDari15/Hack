@@ -1,13 +1,15 @@
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html, body { overflow-x: clip; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 16px); }
 body {
   margin: 0;
-  background: var(--haze);
+  background-color: var(--cream);
+  /* Paper grain: a faint, fixed noise so the cream reads as stock, not a flat fill. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .09 0 0 0 0 .06 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   color: var(--ink);
   font-family: var(--f-ui);
   font-size: var(--t-base);
   line-height: 1.55;
-  font-feature-settings: 'tnum' 0;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   display: flex;
@@ -19,10 +21,10 @@ h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
 ul, ol { padding: 0; }
 ul[role='list'], .plain-list { list-style: none; }
 button, input, select, textarea { font: inherit; color: inherit; }
-a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .2em; }
-a:hover { text-decoration-thickness: 2px; }
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
-::selection { background: var(--bulb-2); color: var(--ink); }
+a { color: inherit; text-decoration-thickness: 1.5px; text-underline-offset: .22em; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); transition: text-decoration-color var(--d-fast) var(--ease), color var(--d-fast) var(--ease); }
+a:hover { text-decoration-color: var(--pink); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+::selection { background: var(--pink-2); color: var(--ink); }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -30,7 +32,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 .skip-link {
   position: absolute; left: var(--s-4); top: -100px; z-index: 100;
-  background: var(--bulb); color: var(--dusk); padding: var(--s-2) var(--s-4); border-radius: var(--r-pill); font-weight: 600;
+  background: var(--sun); color: var(--ink); padding: var(--s-2) var(--s-4); border-radius: var(--r-pill); font-weight: 700; border: 2px solid var(--ink);
 }
 .skip-link:focus { top: var(--s-3); }
 
@@ -43,28 +45,39 @@ a:hover { text-decoration-thickness: 2px; }
 .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
 .between { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); }
 
-/* Type */
+/* Type: Bricolage Grotesque, set tight and heavy; Instrument Serif italic for the odd emphasised word. */
 .display-hero, .display-1, .display-2, .display-3 {
   font-family: var(--f-display);
   font-weight: 800;
-  font-variation-settings: 'opsz' 72;
-  letter-spacing: -.005em;
-  line-height: .9;
+  font-variation-settings: 'opsz' 96, 'wdth' 100;
+  letter-spacing: -.035em;
+  line-height: .92;
   text-wrap: balance;
 }
-.display-hero { font-size: var(--d-hero); line-height: .82; }
-.display-1 { font-size: var(--d-1); }
+.display-hero { font-size: var(--d-hero); line-height: .86; letter-spacing: -.05em; }
+.display-1 { font-size: var(--d-1); letter-spacing: -.045em; }
 .display-2 { font-size: var(--d-2); }
-.display-3 { font-size: var(--d-3); line-height: 1; }
+.display-3 { font-size: var(--d-3); line-height: 1.02; letter-spacing: -.025em; }
+.display-hero em, .display-1 em, .display-2 em, .display-3 em, .accent {
+  font-family: var(--f-accent); font-style: italic; font-weight: 400; letter-spacing: -.01em; color: var(--pink-deep);
+}
 .lede { font-size: var(--t-md); line-height: 1.5; max-width: 52ch; color: var(--ink-2); }
-.on-dusk .lede { color: var(--on-dusk-muted); }
 .muted { color: var(--muted); }
-.on-dusk .muted { color: var(--on-dusk-muted); }
 .small { font-size: var(--t-sm); }
 .fine { font-size: var(--t-xs); line-height: 1.45; color: var(--muted); }
-.on-dusk .fine { color: var(--on-dusk-muted); }
 .num { font-variant-numeric: tabular-nums; }
-.title { font-weight: 650; font-size: var(--t-md); line-height: 1.25; }
+.title { font-weight: 700; font-size: var(--t-md); line-height: 1.25; letter-spacing: -.01em; }
 .measure { max-width: var(--measure); }
-.back-link { font-size: var(--t-sm); color: var(--muted); text-decoration: none; }
-.back-link:hover { color: var(--ink); text-decoration: underline; }
+.label { font-weight: 700; font-size: var(--t-sm); }
+.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: var(--t-sm); font-weight: 600; color: var(--muted); text-decoration: none; }
+.back-link::before { content: '←'; transition: transform var(--d-fast) var(--ease); }
+.back-link:hover { color: var(--ink); }
+.back-link:hover::before { transform: translateX(-3px); }
+
+/* Motion: content rises in as it enters the viewport (components/ui/Reveal.js adds .is-in). */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity .7s var(--ease), transform .8s var(--ease); transition-delay: var(--reveal-delay, 0ms); }
+  html.js [data-reveal].is-in { opacity: 1; transform: none; }
+  main > .page { animation: page-in .55s var(--ease) both; }
+  @keyframes page-in { from { opacity: 0; transform: translateY(14px); } }
+}

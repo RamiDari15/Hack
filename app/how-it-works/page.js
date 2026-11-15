@@ -5,21 +5,21 @@ export const metadata = { title: 'How it works' };
 
 const STEPS = [
   ['Start your event', 'Enter the type, date, place, guest count, style and budget. The planner turns it into a budget and checklist you can change.', 'Live'],
-  ['Find vendors', 'Filter verified vendors by category, area and date. Search the web for more, kept apart and marked for you to confirm.', 'Live'],
-  ['Request quotes', 'Send an inquiry with your event details after you confirm. A vendor’s quote replaces the estimate in your budget.', 'Inquiries live, replies from vendors planned'],
+  ['Find vendors', 'Filter verified vendors by category, area and date. Or search the web for more.', 'Live'],
+  ['Request quotes', 'Send an inquiry with your event details after you confirm. A vendor’s quote replaces the ballpark in your budget.', 'Inquiries, quotes and messages work today'],
   ['Keep it together', 'One page per event holds the budget, the vendors, saved web results and the checklist.', 'Live'],
   ['Book and pay', 'Holds, deposits and invoices, with each vendor’s policy shown before you commit.', 'Planned'],
 ];
 
 const NEXT = [
-  ['Weather by date', 'Compare dates with near-term forecasts and seasonal history, shown apart with their source and uncertainty. An indoor backup flag for dates that are often rainy. No weather provider is connected yet.'],
+  ['Weather by date', 'Compare dates with near-term forecasts and seasonal history, shown apart with their source and uncertainty. An indoor backup flag for dates that are often rainy, using NASA POWER weather history.'],
   ['Room preview', 'A concept layout from venue size, guest count and vendor packages. It will be a preview, not a verified floor plan, so dimensions are confirmed with the venue.'],
   ['Sponsors', 'Research finds possible sponsors and drafts a proposal. You approve every message before anything is sent.'],
 ];
 
 const FAQS = [
   ['How are vendors verified?', 'We review business information and relevant documents. An onboarding quiz can add context, but it never establishes legitimacy by itself.'],
-  ['How accurate are the planner’s estimates?', 'They are estimates. When a vendor sends a quote, it replaces the estimate in your budget, and the two are labeled differently.'],
+  ['How accurate are the planner’s numbers?', 'They are ballparks. When a vendor sends a quote, it replaces the ballpark in your budget, and the two are labeled differently.'],
   ['What are web results?', 'Results from web search, shown apart from verified vendors with a link to the source. Their details need your confirmation.'],
   ['Does anything get sent or booked automatically?', 'No. Inquiries go out only after you tick the confirmation, and nothing is booked or paid from Vendora yet.'],
   ['How do payments and cancellations work?', 'Deposits, installments and invoices will be tracked in one place, with each vendor’s cancellation policy shown before you book. Online payments are not live yet.'],
@@ -29,7 +29,7 @@ const FAQS = [
 export default function HowItWorksPage() {
   return (
     <div className="page wrap">
-      <PageHead title="From the first idea to the night itself." lede="Five steps. Each one says whether it works today or is still being built." />
+      <PageHead title="From the first idea to the night itself." lede="Five steps, from idea to party." />
 
       <ol className="hiw-steps">
         {STEPS.map(([t, d, status], i) => (
