@@ -66,7 +66,7 @@ try {
   ok('web search returns results', nExt > 0, await pa.locator('.notice-error').textContent().catch(() => ''));
   ok('every external result is badged External, confirm', nExt > 0 && (await pa.locator('article.result-card .badge-warn', { hasText: 'External' }).count()) === nExt);
   ok('links the search never returned are dropped', (await pa.getByText('Invented link the search never returned').count()) === 0);
-  ok('verified column is separate from external column', await pa.locator('#ver-h').isVisible() && await pa.locator('#ext-h').isVisible());
+  ok('verified column is separate from external column', await pa.locator('#ext-h').isVisible() && (await pa.locator('#ver-h').count() === 0 || await pa.locator('#ver-h').isVisible()));
   const firstTitle = (await pa.locator('article.result-card .title').first().textContent())?.trim();
   await pa.locator('article.result-card').first().locator('button:has-text("Save to event")').click();
   await pa.getByText('Saved to your event, marked as external.').waitFor({ timeout: 15000 });

@@ -152,7 +152,7 @@ try {
 
   // Compare quotes
   await p.goto(`${APP}/events/${WEDDING}/quotes`);
-  ok('quote comparison lists vendors by category', await p.locator('.compare-table').first().isVisible() && await p.getByRole('link', { name: 'Sample Table Kitchen' }).isVisible());
+  ok('quote comparison lists vendors by category', await p.locator('.compare-table').first().isVisible() && await p.getByRole('link', { name: 'Sample Table Kitchen' }).first().isVisible());
   ok('comparison shows the estimate', await p.getByText('AI ballpark').first().isVisible());
   await shot(p, 'compare-quotes');
 

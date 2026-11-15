@@ -36,18 +36,18 @@ try {
 
   // Save a vendor, see it in Saved, then remove it.
   await p.goto(`${app}/vendors`);
-  const href = await p.locator('.vendor-card').first().getAttribute('href');
+  const href = await p.locator('.vendor-card a.vendor-card-link, a.vendor-card').first().getAttribute('href');
   await p.goto(`${app}${href}`);
-  const save = p.locator('button.save-btn');
+  const save = p.locator('.save-vendor-form button');
   if (await save.getAttribute('aria-pressed') === 'true') { await save.click(); await p.waitForTimeout(600); }
-  await p.locator('button.save-btn').click();
-  await p.locator('button.save-btn[aria-pressed="true"]').waitFor({ timeout: 8000 });
-  ok('save button shows Saved', (await p.locator('button.save-btn').innerText()).includes('Saved'));
+  await p.locator('.save-vendor-form button').click();
+  await p.locator('.save-vendor-form button[aria-pressed="true"]').waitFor({ timeout: 8000 });
+  ok('save button shows Saved', (await p.locator('.save-vendor-form button').innerText()).includes('Saved for later') && (await p.locator('.save-vendor-form button').getAttribute('aria-pressed')) === 'true');
   await p.goto(`${app}/saved`);
   ok('saved page lists the vendor', await p.locator(`a[href="${href}"]`).first().isVisible());
   await p.goto(`${app}${href}`);
-  await p.locator('button.save-btn').click();
-  await p.locator('button.save-btn[aria-pressed="false"]').waitFor({ timeout: 8000 });
+  await p.locator('.save-vendor-form button').click();
+  await p.locator('.save-vendor-form button[aria-pressed="false"]').waitFor({ timeout: 8000 });
   await p.goto(`${app}/saved`);
   ok('unsaving removes it from Saved', (await p.locator(`a[href="${href}"]`).count()) === 0);
 

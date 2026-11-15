@@ -73,9 +73,10 @@ try {
   await signIn(p, 'maya@demo.test', `/vendors/${H}`);
   for (const v of [H, BARN, KITCHEN]) {
     await p.goto(`${APP}/vendors/${v}`);
-    await p.selectOption(`#sl-ev-${v}`, eid);
-    await p.getByRole('button', { name: 'Add to shortlist' }).click();
-    await p.getByText('Added to the shortlist.').waitFor({ timeout: 10000 });
+    const box = p.locator('.vendor-event-actions').first();
+    await box.locator('select[name=event_id]').selectOption(eid);
+    await box.getByRole('button', { name: 'Add vendor to event' }).click();
+    await box.locator('.notice-ok').waitFor({ timeout: 10000 });
   }
   ok('organizer shortlists three vendors', true);
 
