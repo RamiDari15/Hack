@@ -42,7 +42,7 @@ export default function TradeOffs({ rows, budgetCents, guestCount }) {
   const pct = budgetCents ? Math.min(100, Math.round((total / budgetCents) * 100)) : 0;
   return (
     <section className="panel stack tradeoffs" aria-labelledby="to-h">
-      <div className="panel-head"><h2 id="to-h">Budget trade-offs</h2><span className="badge badge-plain">What-if, not saved</span></div>
+      <div className="panel-head"><h2 id="to-h">Budget trade-offs</h2><span className="fine">What-if, not saved</span></div>
       <div className="field">
         <label htmlFor="to-guests">Guests: <b className="num">{guests}</b>{guests !== baseGuests ? <span className="fine"> (event has {guestCount ?? 'no count'})</span> : null}</label>
         <input id="to-guests" type="range" min={10} max={Math.max(400, baseGuests * 2)} step={5} value={guests} onChange={(e) => setGuests(Number(e.target.value))} />
@@ -68,7 +68,7 @@ export default function TradeOffs({ rows, budgetCents, guestCount }) {
                   <label key={l.key}><input type="radio" name={`lv-${r.name}`} checked={level[r.name] === l.key} onChange={() => setLevel({ ...level, [r.name]: l.key })} /><span>{l.label}</span></label>
                 ))}
               </fieldset>
-            ) : <span className="badge badge-ok">Chosen</span>}
+            ) : <span className="badge badge-text">Chosen</span>}
             <p className="num tradeoff-amt">{off[r.name] ? '—' : usd(cost(r))}</p>
             <label className="check-row small"><input type="checkbox" checked={!off[r.name]} onChange={(e) => setOff({ ...off, [r.name]: !e.target.checked })} /><span>Include</span></label>
           </li>

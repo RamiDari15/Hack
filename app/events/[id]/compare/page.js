@@ -55,7 +55,7 @@ export default async function CompareVendorsPage({ params, searchParams }) {
   ];
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}/shortlist`, label: 'Shortlist' }} title="Compare side by side" size="display-2"
         lede={`${cols.length} vendors for ${event.title}. Prices are what each business publishes or quoted you; confirm details with them.`} />
       <div className="table-wrap panel">

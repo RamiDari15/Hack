@@ -33,14 +33,15 @@ export default async function WebsiteSettingsPage({ params }) {
   const hidden = <input type="hidden" name="event_id" value={event.id} />;
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Event website" size="display-2"
-        lede="One page for guests: the date, place, schedule and registry. Guests reply with the personal RSVP link from their invitation." />
-      <p style={{marginBottom:24}}><Link className="btn" href={`/events/${id}/website/preview`}>Preview your event website →</Link></p>
+        lede="One page for guests: the date, place, schedule and registry. Guests reply with the personal RSVP link from their invitation.">
+        <Link className="btn btn-sm" href={`/events/${id}/website/preview`}>Preview your event website →</Link>
+      </PageHead>
       <div className="event-layout">
         <div className="stack-lg">
           <section className="panel stack" aria-labelledby="ws-h">
-            <div className="panel-head"><h2 id="ws-h">Publishing</h2><span className={`badge ${event.website_enabled ? 'badge-ok' : 'badge-plain'}`}>{event.website_enabled ? 'Live' : 'Offline'}</span></div>
+            <div className="panel-head"><h2 id="ws-h" className="ev-panel-title">Publishing</h2><span className={`badge ${event.website_enabled ? 'badge-ok' : 'badge-plain'}`}>{event.website_enabled ? 'Live' : 'Offline'}</span></div>
             {event.website_enabled && url && (
               <div className="row"><a className="btn btn-sm" href={url} target="_blank" rel="noopener noreferrer">Open the website<span className="sr-only"> (opens in a new tab)</span></a><CopyButton text={url} label="Copy website link" /></div>
             )}

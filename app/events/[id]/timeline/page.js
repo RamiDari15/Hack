@@ -36,16 +36,17 @@ export default async function TimelinePage({ params }) {
   const hidden = <input type="hidden" name="event_id" value={event.id} />;
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Day-of timeline" size="display-2"
-        lede={[formatDate(event.event_date), event.location].filter(Boolean).join(', ') || 'When each vendor arrives, sets up and leaves.'} />
-      <p><a className="btn btn-sm btn-outline" href={`/api/events/${id}/export?type=timeline`} download>Export CSV</a></p>
+        lede={[formatDate(event.event_date), event.location].filter(Boolean).join(', ') || 'When each vendor arrives, sets up and leaves.'}>
+        <a className="btn btn-sm btn-outline" href={`/api/events/${id}/export?type=timeline`} download>Export CSV</a>
+      </PageHead>
 
       <div className="event-layout">
         <div className="stack-lg">
           <section className="panel stack" aria-labelledby="tl-h">
             <div className="panel-head">
-              <h2 id="tl-h">Run sheet</h2>
+              <h2 id="tl-h" className="ev-panel-title">Run sheet</h2>
               <TimelineTools eventId={event.id} hasAi={hasAi} canDraft={isOwner} />
             </div>
             {isOwner && !booked.length && <p className="fine no-print">The AI draft uses your confirmed and held bookings. <Link href={`/events/${event.id}/choose`}>Choose vendors</Link> first for a fuller draft.</p>}
@@ -62,7 +63,7 @@ export default async function TimelinePage({ params }) {
                         <div className="row">
                           {b && <Link href={`/bookings/${b.id}`} className="badge badge-plain">{b.vendors?.name}</Link>}
                           {b && <span className={`badge ${(BOOKING_STATUS[b.status] ?? BOOKING_STATUS.inquiry).tone}`}>{(BOOKING_STATUS[b.status] ?? BOOKING_STATUS.inquiry).label}</span>}
-                          {it.source === 'ai' && <span className="badge badge-warn">AI draft</span>}
+                          {it.source === 'ai' && <span className="badge badge-text">AI draft</span>}
                         </div>
                         {it.notes && <p className="small muted">{it.notes}</p>}
                       </div>
@@ -87,7 +88,7 @@ export default async function TimelinePage({ params }) {
               <h2 id="add-t" className="title">Add an item</h2>
               <ActionForm action={addTimelineItem} resetOnOk>
                 {hidden}
-                <div className="row">
+                <div className="field-pair">
                   <div className="field"><label htmlFor="t-start">Start</label><input id="t-start" name="start_time" type="time" required /></div>
                   <div className="field"><label htmlFor="t-end">End (optional)</label><input id="t-end" name="end_time" type="time" /></div>
                 </div>

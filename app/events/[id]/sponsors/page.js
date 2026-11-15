@@ -50,7 +50,7 @@ export default async function SponsorsPage({ params }) {
   const ideaQuery = `local businesses that sponsor ${event.event_type.toLowerCase()} events${city ? ` in ${city}` : ''}`;
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Contact sponsors" size="display-2"
         lede="Make a short list of businesses that fit your crowd, draft a proposal, then email them from your own inbox.">
         <Link className="btn btn-sm btn-outline" href={`/ideas?q=${encodeURIComponent(ideaQuery)}`}>Find sponsor ideas on the web</Link>

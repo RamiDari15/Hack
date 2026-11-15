@@ -49,7 +49,7 @@ export default async function PackagePage({ params }) {
   const hidden = <input type="hidden" name="event_id" value={event.id} />;
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Your event package" size="display-2"
         lede="One vendor per category, the combined cost, and how it sits against your budget.">
         <Link className="btn btn-sm btn-outline" href={`/events/${event.id}/shortlist`}>Shortlist</Link>
@@ -66,7 +66,7 @@ export default async function PackagePage({ params }) {
       <div>
         <div className="stack-lg">
           <section className="panel stack" aria-labelledby="pk-h">
-            <h2 id="pk-h">Package</h2>
+            <h2 id="pk-h" className="ev-panel-title">Package</h2>
             <div className="table-wrap">
               <table className="table">
                 <caption className="sr-only">Package by category with the source of each amount</caption>
@@ -76,7 +76,7 @@ export default async function PackagePage({ params }) {
                     <tr key={r.name}>
                       <td>{r.name}</td>
                       <td>{r.kind === 'pick' || r.kind === 'unpriced' ? <Link href={`/vendors/${r.item.vendorId}`}>{r.item.name}</Link> : r.pending ? r.pending.name : CATEGORIES.includes(r.name) ? <Link href={`/events/${event.id}/choose?step=${encodeURIComponent(r.name)}`} className="fine">Choose one</Link> : <span className="fine">—</span>}</td>
-                      <td>{r.kind === 'pick' ? <span className="badge badge-ok">{r.source}</span> : r.kind === 'estimate' ? <span className="badge badge-warn">{r.pending ? 'No price yet, using the AI estimate' : (plans?.length?'AI estimate':'Planning range')}</span> : <span className="badge badge-plain">No price yet</span>}</td>
+                      <td>{r.kind === 'pick' ? <span className="source is-quote">{r.source}</span> : r.kind === 'estimate' ? <span className="source">{r.pending ? 'No price yet, using the AI estimate' : (plans?.length?'AI estimate':'Planning range')}</span> : <span className="source">No price yet</span>}</td>
                       <td className="num">
                         {r.kind === 'pick' ? moneyCents(r.fixedCents) : r.kind === 'estimate' ? `${moneyCents(r.lowCents)}–${moneyCents(r.highCents)}` : '—'}
                         {isOwner && (r.kind === 'unpriced' || r.pending || (r.kind === 'pick' && r.source === 'Your planned amount')) && (
@@ -100,7 +100,7 @@ export default async function PackagePage({ params }) {
         </div>
       </div>
       {priced.length > 0 && (
-        <div style={{ marginTop: 'var(--s-6)' }}>
+        <div>
           <TradeOffs rows={priced.map((r) => ({ name: r.name, kind: r.kind, vendor: r.vendor, source: r.source, fixedCents: r.fixedCents, perPersonPick: r.perPersonPick, lowCents: r.lowCents, highCents: r.highCents, perGuest: r.perGuest, optional: r.optional }))} budgetCents={event.budget_cents} guestCount={event.guest_count} />
         </div>
       )}

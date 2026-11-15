@@ -56,7 +56,7 @@ export default function PlanGuide({ event, plan, bookings, quotes, sponsors, tim
     <section className="panel stack plan-guide" aria-labelledby="guide-h">
       <div className="panel-head">
         <h2 id="guide-h">Plan step by step</h2>
-        <span className="badge badge-plain num">{doneCount} of {steps.length} done</span>
+        <span className="badge badge-text num">{doneCount} of {steps.length} done</span>
       </div>
       <div className="guide-bar" aria-hidden="true"><span style={{ width: `${(doneCount / steps.length) * 100}%` }} /></div>
       <ol role="list" className="guide-steps">
@@ -83,7 +83,7 @@ export default function PlanGuide({ event, plan, bookings, quotes, sponsors, tim
       </div>
       {plan?.checklist?.length > 0 && (
         <div className="stack-sm guide-ai">
-          <div className="between"><h3 className="label">Tasks the planner generated for this event</h3><span className="badge badge-warn">AI suggestion</span></div>
+          <div className="between"><h3 className="label">Tasks the planner generated for this event</h3><span className="badge badge-text">AI suggestion</span></div>
           <ol className="num-list">{plan.checklist.map((c, i) => <li key={i}><div><b>{c.task}</b><p className="fine">{c.when}</p></div></li>)}</ol>
           <p className="fine">Changed the details? Rebuild the AI plan to refresh these.</p>
         </div>

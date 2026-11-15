@@ -26,7 +26,7 @@ export default async function ShortlistPage({ params, searchParams }) {
   const hidden = <input type="hidden" name="event_id" value={event.id} />;
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Shortlist" size="display-2"
         lede="Save 3 or 4 businesses per category, vote and comment together, then compare them side by side.">
         <Link className="btn btn-sm btn-outline" href={`/events/${event.id}/choose`}>Add from the vendor walkthrough</Link>
@@ -45,8 +45,8 @@ export default async function ShortlistPage({ params, searchParams }) {
       )}
 
       {Object.entries(groups).map(([cat, list]) => (
-        <section key={cat} className="stack" aria-labelledby={`sl-${cat}`} style={{ marginTop: 'var(--s-7, 3rem)' }}>
-          <h2 id={`sl-${cat}`} className="display-3">{cat} <span className="fine">{list.length} saved</span></h2>
+        <section key={cat} className="stack ev-group" aria-labelledby={`sl-${cat}`}>
+          <div className="ev-group-head"><h2 id={`sl-${cat}`} className="display-3">{cat}</h2><span className="fine">{list.length} saved</span></div>
           <div className="match-grid">
             {list.map((it) => {
               const mine = it.voters.find((x) => x.userId === user.id)?.vote ?? 0;

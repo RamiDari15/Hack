@@ -36,7 +36,7 @@ export default async function BoardPage({ params, searchParams }) {
   const hidden = <input type="hidden" name="event_id" value={event.id} />;
 
   return (
-    <div className="page wrap">
+    <div className="page wrap ev">
       <PageHead back={{ href: `/events/${event.id}`, label: event.title }} title="Style board" size="display-2"
         lede="Collect the look: venue, flowers, decor and outfits. Share it with your team and show vendors what you mean." />
       <nav className="chips filter-chips" aria-label="Board sections" style={{ marginTop: 0 }}>
