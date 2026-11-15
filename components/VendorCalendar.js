@@ -5,7 +5,7 @@ import { useState } from 'react';
 const LABELS = { booked: 'Booked', tentative: 'Tentative', blocked: 'Blocked' };
 const dayKey = (iso) => iso.slice(0, 10);
 
-export default function VendorCalendar({ entries }) {
+export default function VendorCalendar({ entries, headingId = 'schedule-title' }) {
   const first = entries[0]?.starts_at ?? new Date().toISOString();
   const [month, setMonth] = useState(() => first.slice(0, 7));
   const [selected, setSelected] = useState(null);
@@ -24,8 +24,8 @@ export default function VendorCalendar({ entries }) {
     setSelected(null);
   }
 
-  return <section className="stack vendor-calendar" aria-labelledby="schedule-title">
-    <h2 id="schedule-title" className="display-3">Schedule</h2>
+  return <section className="stack vendor-calendar" aria-labelledby={headingId}>
+    <h2 id={headingId} className="display-3">Schedule</h2>
     {entries.length ? <>
       <div className="between">
         <button className="btn btn-outline" type="button" onClick={() => move(-1)} disabled={month <= minMonth} aria-label="Previous month">←</button>

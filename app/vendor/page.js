@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSessionUser } from '@/lib/supabase/server';
-import { BOOKING_STATUS, VENDOR_STATUS, formatDate } from '@/lib/format';
+import { BOOKING_STATUS, VENDOR_STATUS, formatDate, moneyCents } from '@/lib/format';
 import PageHead from '@/components/PageHead';
+import VendorCalendar from '@/components/VendorCalendar';
 
 export const metadata = { title: 'Vendor dashboard' };
 
@@ -28,11 +29,25 @@ export default async function VendorHome() {
   }
 
   const open = inbox.filter((b) => b.status !== 'cancelled' && b.status !== 'confirmed');
+  const vendorIds = mine.map(v => v.id);
+  const bookingIds = inbox.map(b => b.booking_id);
+  const [{data: calendar}, {data: quotes}] = await Promise.all([
+    supabase.from('vendor_calendar_entries').select('id,vendor_id,starts_at,ends_at,status,title').in('vendor_id', vendorIds).order('starts_at'),
+    bookingIds.length ? supabase.from('quotes').select('amount_cents,status').in('event_vendor_id', bookingIds) : Promise.resolve({data: []}),
+  ]);
+  const accepted = (quotes ?? []).filter(q => q.status === 'accepted').reduce((sum,q) => sum + Number(q.amount_cents), 0);
   return (
     <div className="page wrap">
       <PageHead title="Your business." lede={open.length ? `${open.length} open ${open.length === 1 ? 'request' : 'requests'} waiting on you or the customer.` : 'No open requests right now.'}>
         <Link className="btn btn-outline" href="/vendor/apply">Add another business</Link>
       </PageHead>
+
+      <section className="panel row" aria-label="Business overview">
+        <p><strong>{open.length}</strong> open requests</p>
+        <p><strong>{inbox.filter(b => b.status === 'confirmed').length}</strong> confirmed events</p>
+        <p><strong>{moneyCents(accepted)}</strong> in accepted quotes</p>
+        <Link className="btn btn-sm btn-outline" href="/inbox?view=vendor">Open business inbox</Link>
+      </section>
 
       <section className="stack" aria-labelledby="biz-h">
         <h2 id="biz-h" className="display-3">Profiles</h2>
@@ -56,6 +71,11 @@ export default async function VendorHome() {
           })}
         </ul>
       </section>
+
+      {mine.map(v => <div className="panel stack" key={`calendar-${v.id}`}>
+        {mine.length > 1 && <h2>{v.name}</h2>}
+        <VendorCalendar entries={(calendar ?? []).filter(entry => entry.vendor_id === v.id)} headingId={`schedule-${v.id}`} />
+      </div>)}
 
       <section className="stack" aria-labelledby="inbox-h">
         <h2 id="inbox-h" className="display-3">Requests</h2>
