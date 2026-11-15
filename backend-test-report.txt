@@ -45,3 +45,5 @@ Firebase migration follow-up (2026-11-15)
 - Firebase-enabled production build and focused lint pass.
 - The two previously identified AI quota defects remain: concurrent requests can exceed the daily limit; cohost-visible usage can count against the wrong user.
 - Current security advisor output has 63 warnings (31 anon/31 authenticated SECURITY DEFINER execute advisories plus legacy Supabase leaked-password protection). This is not a claim that all warnings are exploitable; verification is restricted to the tested flows.
+- Production release initially hit ERR_REQUIRE_ESM in Firebase Admin 14 / jwks-rsa 4. Public URL was restored to the previous deployment while fixing it. Firebase Admin is now pinned to supported 13.10.0; restricted CommonJS module loading and all 35 integration checks pass again.
+- Current production-dependency audit lists 9 moderate advisories in Firebase's optional Google Cloud dependency tree and 1 pre-existing high PostCSS advisory under Next.js 15. No unrelated major framework upgrade was made during this auth migration.

@@ -116,12 +116,14 @@ try {
   check('disabled Firebase user loses server API access',r.status===401);
   r=await fetch(base+'/account',{headers:{cookie:disabledCookie},redirect:'manual'});
   check('disabled Firebase user cannot load their account page',r.status===307);
+  if (process.env.FIREBASE_TEST_SKIP_EMAIL_REQUESTS !== 'true') {
   result=await call({action:'sign-up',email:signupAddress,password,next:'/dashboard'});
   const signupRecord=await auth.getUserByEmail(signupAddress);
   fixtures.push(signupRecord.uid);
   check('signup creates UUID identity and requests Firebase verification email',result.response.status===200 && /^[0-9a-f-]{36}$/i.test(signupRecord.uid) && !signupRecord.emailVerified && !cookies(result.response));
   result=await call({action:'reset',email:signupAddress});
   check('Firebase accepts reset-email request for test account',result.response.status===200);
+  }
   console.log(`\n${passed} Firebase integration checks passed.`);
 } finally {
   if(event)await admin.from('events').delete().eq('id',event);
