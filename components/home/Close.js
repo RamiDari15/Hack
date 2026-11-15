@@ -16,7 +16,7 @@ export default function Close() {
     <section className="close" aria-labelledby="close-title">
       <div className="wrap close-inner">
         <div className="close-head" data-reveal>
-          <p className="kicker">Your turn</p>
+          <p className="kicker" data-index="05">Your turn</p>
           <h2 id="close-title" className="display-1 close-title">
             Let’s plan your <RotatingWord words={ROTATE} />
           </h2>
@@ -24,7 +24,7 @@ export default function Close() {
         </div>
         <ul className="tickets" role="list">
           {TICKETS.map(([t, tone], i) => (
-            <li key={t} data-reveal style={{ '--reveal-delay': `${(i % 6) * 50}ms`, '--tilt': `${((i * 37) % 7) - 3}deg` }}>
+            <li key={t} data-reveal style={{ '--reveal-delay': `${(i % 6) * 50}ms` }}>
               <Link className={`ticket ticket-${tone}`} href={`/events/new?type=${encodeURIComponent(t)}`} data-cursor="Plan it">
                 <span className="ticket-no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
                 <span className="ticket-name">{t}</span>
@@ -35,7 +35,7 @@ export default function Close() {
         </ul>
         <div className="close-foot" data-reveal>
           <Link href="/events/new" className="btn btn-lg btn-bulb">Something else? Start here <span className="arrow" aria-hidden="true">→</span></Link>
-          <span className="small muted">40 event types to choose from.</span>
+          <span className="small muted">{EVENT_TYPES.length} event types to choose from.</span>
         </div>
       </div>
     </section>

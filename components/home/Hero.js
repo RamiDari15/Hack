@@ -3,15 +3,17 @@
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import HeroGL from './HeroGL';
+import { EVENT_TYPES } from '@/lib/categories';
 
 // Kinetic headline plus a loose pile of shapes and category cards that lean toward the pointer.
 // Motion is CSS; the pointer parallax only runs with a fine pointer and no reduced-motion preference.
 const WORDS = [['Throw', 'the', 'party.'], ['Skip', 'the', 'spreadsheet.']];
+// Each card shows a status the app really uses, not a made-up figure.
 const CARDS = [
-  { cat: 'Venues', tone: 'sun', tilt: -7 },
-  { cat: 'Catering', tone: 'pink', tilt: 5 },
-  { cat: 'Florists', tone: 'paper', tilt: -3 },
-  { cat: 'Music & DJ', tone: 'ink', tilt: 8 },
+  { cat: 'Venues', tone: 'sun', tilt: -7, rows: [['Shortlist', 'voting'], ['Visit', 'to book']] },
+  { cat: 'Catering', tone: 'pink', tilt: 5, rows: [['AI ballpark', 'set'], ['Quote', 'pending']] },
+  { cat: 'Florists', tone: 'paper', tilt: -3, rows: [['Message', 'unread'], ['Deposit', 'to-do']] },
+  { cat: 'Music & DJ', tone: 'ink', tilt: 8, rows: [['Badge', 'verified'], ['Timeline', 'added']] },
 ];
 
 export default function Hero() {
@@ -38,12 +40,11 @@ export default function Hero() {
       <div className="hero-shapes" aria-hidden="true">
         <span className="shape shape-sun" />
         <span className="shape shape-pink" />
-        <span className="shape shape-star">✦</span>
         <span className="shape shape-ring" />
       </div>
       <div className="wrap hero-grid">
         <div className="hero-copy">
-          <p className="sticker hero-sticker">Weddings, birthdays and 38 more</p>
+          <p className="label hero-sticker"><span>For</span> Weddings · Birthdays · Galas · {EVENT_TYPES.length - 3} more</p>
           <h1 id="hero-title" className="display-hero hero-title">
             {WORDS.map((line, li) => (
               <span className="hero-line" key={li}>
@@ -66,7 +67,7 @@ export default function Hero() {
             <div key={c.cat} data-tilt className={`deck-card deck-${c.tone}`} style={{ '--tilt': `${c.tilt}deg`, '--n': n }}>
               <span className="deck-kicker">{String(n + 1).padStart(2, '0')}</span>
               <span className="deck-cat">{c.cat}</span>
-              <span className="deck-line" /><span className="deck-line short" />
+              <span className="deck-rows">{c.rows.map(([k, v]) => <span key={k} className="deck-row"><span>{k}</span><b>{v}</b></span>)}</span>
             </div>
           ))}
         </div>

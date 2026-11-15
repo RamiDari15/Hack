@@ -248,7 +248,6 @@
 @media (prefers-reduced-motion: no-preference) {
   .hero-copy { translate: 0 calc(var(--scroll, 0) * -0.12px); }
   .hero-deck { translate: 0 calc(var(--scroll, 0) * 0.08px); rotate: calc(var(--scroll, 0) * 0.006deg); }
-  .marquee-row { transform: skewX(calc(var(--vel, 0) * -0.4deg)); transition: transform .2s linear; }
 }
 
 /* Tilt: Fx.js writes --rx / --ry / --gx / --gy while the pointer is over a [data-tilt] element. */
@@ -316,3 +315,80 @@
 }
 @media (prefers-reduced-motion: reduce) { .term { transform: none; } .term-caret.is-idle { animation: none; } }
 .rotor-word { white-space: nowrap; }
+
+/* ---------- Restraint pass (2026-11-15): a mono label layer, numbered sections, calmer surfaces ---------- */
+.label { font-family: var(--f-mono); font-weight: 500; font-size: .72rem; line-height: 1.2; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.kicker { font-family: var(--f-mono); font-weight: 500; font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); gap: 12px; }
+.kicker::before { content: none; }
+.kicker[data-index]::before { content: attr(data-index) ' / 05'; width: auto; height: auto; background: none; color: var(--pink-deep); }
+
+/* Hero: a mono line instead of the sticker, real statuses on the cards instead of skeleton bars. */
+.hero-sticker { display: flex; flex-wrap: wrap; gap: .6em; align-items: center; padding: 0; background: none; border: 0; box-shadow: none; transform: none; }
+.hero-sticker > span { padding: 3px 8px; border-radius: 6px; background: var(--ink); color: var(--cream); }
+.deck-card { padding-top: 4.2rem; gap: var(--s-4); justify-content: space-between; }
+.deck-rows { display: grid; gap: 0; border-top: 1.5px solid currentColor; }
+.deck-row { display: flex; justify-content: space-between; gap: 8px; padding: 7px 0; border-bottom: 1px solid color-mix(in srgb, currentColor 22%, transparent); font-family: var(--f-mono); font-size: .64rem; letter-spacing: .06em; text-transform: uppercase; }
+.deck-row b { font-weight: 500; opacity: .65; }
+@media (max-width: 900px) { .deck-row { font-size: .56rem; padding: 5px 0; } .deck-rows { display: none; } }
+
+/* Steps: a mono step label replaces the floating numeral. */
+.step-num.label { position: absolute; top: var(--s-5); left: clamp(var(--s-6), 4vw, var(--s-7)); right: auto; font-family: var(--f-mono); font-style: normal; font-size: .74rem; line-height: 1; opacity: 1; color: var(--ink); padding: 6px 10px; border: 1.5px solid currentColor; border-radius: 999px; }
+@media (max-width: 560px) { .step-card { padding-top: 4.5rem; } .step-num.label { top: var(--s-4); left: var(--s-5); font-size: .68rem; } }
+
+/* What's inside: a lettered index instead of icon tiles. */
+.index-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--s-8); align-items: start; }
+.index-head { position: sticky; top: calc(var(--header-h) + var(--s-7)); }
+.index-list { list-style: none; display: grid; border-bottom: 2px solid var(--ink); }
+.index-row {
+  position: relative; display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; column-gap: var(--s-4); row-gap: 4px; align-items: baseline;
+  padding: var(--s-5) var(--s-3) var(--s-5) 0; border-top: 2px solid var(--ink); text-decoration: none; isolation: isolate;
+}
+.index-row::before { content: ''; position: absolute; inset: 0 -12px; z-index: -1; background: var(--sun); border-radius: 14px; transform: scaleY(0); transform-origin: 50% 100%; transition: transform .35s var(--ease); }
+.index-row:hover::before, .index-row:focus-visible::before { transform: scaleY(1); }
+.index-row:hover, .index-row:focus-visible { border-top-color: transparent; }
+.index-row:focus-visible { outline: none; }
+.index-letter { grid-row: span 2; font-family: var(--f-mono); font-size: .8rem; color: var(--pink-deep); }
+.index-title { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.5rem); letter-spacing: -.04em; line-height: 1; }
+.index-body { grid-column: 2; color: var(--ink-2); font-size: var(--t-sm); }
+.index-go { grid-row: 1 / span 2; grid-column: 3; align-self: center; font-weight: 800; font-size: 1.4rem; opacity: 0; translate: -8px 0; transition: opacity .25s var(--ease), translate .35s var(--ease); }
+.index-row:hover .index-go, .index-row:focus-visible .index-go { opacity: 1; translate: 0 0; }
+@media (hover: none) { .index-go { opacity: .5; translate: 0 0; } }
+@media (max-width: 860px) { .index-grid { grid-template-columns: 1fr; gap: var(--s-6); } .index-head { position: static; } }
+
+/* Marquee: straight, cream, hairlines, mono categories. */
+.marquee { transform: none; margin: 0; background: var(--cream); color: var(--ink); border-block: 1.5px solid var(--ink); }
+.marquee-row li { padding: 14px 0 14px var(--s-5); gap: var(--s-5); }
+.marquee-row a, .marquee-row li > span:first-child { font-family: var(--f-mono); font-weight: 500; font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; }
+.marquee-row a:hover { color: var(--pink-deep); }
+.marquee-dot { font-size: .7rem; color: var(--pink); }
+.marquee-pause { right: 0; top: 0; bottom: 0; translate: none; min-height: 0; border: 0; border-left: 1.5px solid var(--ink); border-radius: 0; background: var(--cream); color: var(--ink); font-family: var(--f-mono); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; padding: 0 var(--s-5); box-shadow: -24px 0 24px var(--cream); }
+.marquee-pause:hover { background: var(--sun); }
+
+/* Terminal: no window-chrome cliché, no loud offset shadow, never an empty box. */
+.term { box-shadow: var(--shadow-float); border-radius: 18px; }
+.term-bar { justify-content: space-between; font-family: var(--f-mono); letter-spacing: .08em; text-transform: uppercase; font-size: .66rem; background: #2a231d; }
+.term-bar span { margin: 0; }
+.term-bar span:last-child { color: var(--sun); }
+.term-body { min-height: 300px; }
+@media (max-width: 900px) { .term { box-shadow: var(--shadow-float); } .term-body { min-height: 260px; } }
+
+/* Close: tickets sit straight; a lighter shadow. */
+.ticket { transform: none; box-shadow: 3px 3px 0 var(--ink); }
+.ticket:hover, .ticket:focus-visible { transform: translateY(-4px); box-shadow: 5px 7px 0 var(--ink); }
+.ticket-no { font-family: var(--f-mono); font-style: normal; font-size: .72rem; letter-spacing: .08em; opacity: .7; }
+
+/* Motion pass 2: cheaper headline entrance on phones, cards that recede as the next one lands,
+   and a close section that opens out as it arrives. Scroll timelines only where supported. */
+@media (pointer: coarse) { .hero-word { animation-name: word-in-lite; } @keyframes word-in-lite { from { opacity: 0; transform: translateY(.4em); } } }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .steps-stack { timeline-scope: --c1, --c2; }
+    .step-card:nth-child(2) { view-timeline: --c1; }
+    .step-card:nth-child(3) { view-timeline: --c2; }
+    .step-card:nth-child(1) { animation: recede linear both; animation-timeline: --c1; animation-range: entry 0% contain 0%; }
+    .step-card:nth-child(2) { animation: recede linear both; animation-timeline: --c2; animation-range: entry 0% contain 0%; }
+    @keyframes recede { to { scale: .93; filter: brightness(.94); } }
+    .close { animation: open-out linear both; animation-timeline: view(); animation-range: entry 0% cover 30%; }
+    @keyframes open-out { from { clip-path: inset(5% 4% round 36px); } to { clip-path: inset(0 round 36px); } }
+  }
+}

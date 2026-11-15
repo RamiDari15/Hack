@@ -5,27 +5,11 @@ import { usePathname } from 'next/navigation';
 
 // Site-wide interaction layer. Everything here is decoration: with reduced motion or a touch screen
 // most of it switches off, and nothing it does changes what the page says or where links go.
-//  - scroll progress bar and --scroll / --vel CSS variables (parallax, marquee skew)
+//  - scroll progress bar, and a --scroll variable on the hero only (parallax)
 //  - a custom cursor that grows over links and shows a label from [data-cursor]
 //  - magnetic pull on .btn-bulb, .btn-pink, .btn-lg and [data-magnetic]
 //  - 3D tilt on [data-tilt]
-//  - scrambled-text reveal on .kicker labels
-const GLYPHS = '!<>-_\\/[]{}=+*^?#ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
-
-function scramble(el) {
-  const final = el.dataset.text || el.textContent;
-  el.dataset.text = final;
-  el.setAttribute('aria-label', final);
-  let frame = 0;
-  const total = 22;
-  const tick = () => {
-    const progress = frame / total;
-    el.textContent = [...final].map((ch, i) => (ch === ' ' || i / final.length < progress ? ch : GLYPHS[(Math.random() * GLYPHS.length) | 0])).join('');
-    if (frame++ < total) requestAnimationFrame(tick); else el.textContent = final;
-  };
-  tick();
-}
-
+// Scroll work writes to one element per frame, never to <html>, so the page is not restyled while scrolling.
 export default function Fx() {
   const path = usePathname();
 
@@ -35,31 +19,23 @@ export default function Fx() {
     const fine = window.matchMedia('(pointer: fine)').matches;
     const cleanups = [];
 
-    // Scroll progress and velocity.
-    let last = window.scrollY, vel = 0, raf = 0;
+    // Scroll progress (transform on the bar) and hero parallax (variable on the hero only).
+    const bar = document.querySelector('.scroll-progress');
+    const hero = document.querySelector('.hero');
+    let raf = 0;
     const onScroll = () => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
         const y = window.scrollY;
         const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-        root.style.setProperty('--progress', (y / max).toFixed(4));
-        root.style.setProperty('--scroll', String(Math.round(y)));
-        if (!reduce) { vel = Math.max(-40, Math.min(40, y - last)); root.style.setProperty('--vel', vel.toFixed(1)); }
-        last = y;
+        if (bar) bar.style.transform = `scaleX(${(y / max).toFixed(4)})`;
+        if (hero && !reduce && y < hero.offsetHeight + 200) hero.style.setProperty('--scroll', String(Math.round(y)));
       });
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    const settle = setInterval(() => { if (Math.abs(vel) > 0.1) { vel *= 0.8; root.style.setProperty('--vel', vel.toFixed(1)); } }, 50);
-    cleanups.push(() => { window.removeEventListener('scroll', onScroll); clearInterval(settle); });
-
-    // Scramble kickers as they come into view.
-    if (!reduce && 'IntersectionObserver' in window) {
-      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { scramble(e.target); io.unobserve(e.target); } }), { threshold: 0.6 });
-      document.querySelectorAll('.kicker').forEach((el) => io.observe(el));
-      cleanups.push(() => io.disconnect());
-    }
+    cleanups.push(() => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(raf); });
 
     if (reduce || !fine) return () => cleanups.forEach((f) => f());
 
@@ -74,13 +50,14 @@ export default function Fx() {
     let craf = 0, shown = false;
     const loop = () => {
       pos.rx += (pos.x - pos.rx) * 0.35; pos.ry += (pos.y - pos.ry) * 0.35;
-      dot.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
-      ring.style.transform = `translate3d(${pos.rx}px, ${pos.ry}px, 0)`;
-      craf = requestAnimationFrame(loop);
+      dot.style.translate = `${pos.x}px ${pos.y}px`;
+      ring.style.translate = `${pos.rx}px ${pos.ry}px`; // translate, not transform, so the scale states grow in place
+      // Stop once the ring has caught up; the next pointer move starts it again.
+      craf = Math.abs(pos.x - pos.rx) + Math.abs(pos.y - pos.ry) > 0.2 ? requestAnimationFrame(loop) : 0;
     };
-    craf = requestAnimationFrame(loop);
     const onMove = (e) => {
       pos.x = e.clientX; pos.y = e.clientY;
+      if (!craf) craf = requestAnimationFrame(loop);
       if (!shown) { shown = true; root.classList.add('cursor-on'); }
       const t = e.target.closest?.('a, button, summary, label, select, [data-cursor]');
       const text = e.target.closest?.('input, textarea');
@@ -104,27 +81,32 @@ export default function Fx() {
 
     // Magnetic buttons and 3D tilt, by delegation so new content picks it up.
     const MAG = '.btn-bulb, .btn-pink, .btn-lg, [data-magnetic]';
-    let magEl = null, tiltEl = null;
+    let magEl = null, tiltEl = null, magRect = null, tiltRect = null;
     const onPM = (e) => {
       const m = e.target.closest?.(MAG);
       if (magEl && magEl !== m) { magEl.style.translate = ''; magEl = null; }
       if (m) {
-        const r = m.getBoundingClientRect();
+        // Measure once on entry, before our own offset moves the button, so it does not drift.
+        if (magEl !== m || !magRect) { m.style.translate = ''; magRect = m.getBoundingClientRect(); }
+        const r = magRect;
         const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
         m.style.translate = `${dx * 0.22}px ${dy * 0.3}px`; magEl = m;
       }
       const t = e.target.closest?.('[data-tilt]');
       if (tiltEl && tiltEl !== t) { tiltEl.style.removeProperty('--rx'); tiltEl.style.removeProperty('--ry'); tiltEl = null; }
       if (t) {
-        const r = t.getBoundingClientRect();
+        if (tiltEl !== t || !tiltRect) tiltRect = t.getBoundingClientRect();
+        const r = tiltRect;
         const px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
         t.style.setProperty('--rx', `${(-py * 8).toFixed(2)}deg`); t.style.setProperty('--ry', `${(px * 10).toFixed(2)}deg`);
         t.style.setProperty('--gx', `${((px + 0.5) * 100).toFixed(1)}%`); t.style.setProperty('--gy', `${((py + 0.5) * 100).toFixed(1)}%`);
         tiltEl = t;
       }
     };
+    const forget = () => { magRect = null; tiltRect = null; if (magEl) { magEl.style.translate = ''; magEl = null; } };
     document.addEventListener('pointermove', onPM, { passive: true });
-    cleanups.push(() => document.removeEventListener('pointermove', onPM));
+    window.addEventListener('scroll', forget, { passive: true });
+    cleanups.push(() => { document.removeEventListener('pointermove', onPM); window.removeEventListener('scroll', forget); });
 
     return () => cleanups.forEach((f) => f());
   }, [path]);

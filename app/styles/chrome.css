@@ -160,10 +160,14 @@ html.cursor-on .cursor-ring.is-text ~ .cursor-dot { width: 2px; height: 22px; ma
 .btn { transition: transform var(--d-fast) var(--ease), box-shadow var(--d-fast) var(--ease), background var(--d-fast) var(--ease), color var(--d-fast) var(--ease), border-color var(--d-fast) var(--ease), translate .35s var(--ease-spring); }
 html.cursor-on .cursor-ring.has-label ~ .cursor-dot { opacity: 0; }
 
-/* Cursor v2: always visible (inverts whatever is under it), snappier, no lag trail. */
-.cursor-dot { background: #fff; mix-blend-mode: difference; width: 10px; height: 10px; margin: -5px 0 0 -5px; }
-.cursor-ring { border-color: #fff; mix-blend-mode: difference; }
-.cursor-ring.is-link { background: #fff; border-color: #fff; width: 48px; height: 48px; margin: -24px 0 0 -24px; }
-.cursor-ring.has-label { mix-blend-mode: normal; background: var(--ink); color: var(--sun); border-color: var(--sun); }
+/* Cursor v2: ink with a cream halo so it reads on cream, sun, pink and the dark sections alike (no blend modes,
+   which turned it blue over yellow). States change scale, not size, so nothing re-lays out. */
+.cursor-dot { background: var(--ink); width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; box-shadow: 0 0 0 2px var(--cream); }
+.cursor-ring { width: 40px; height: 40px; margin: -20px 0 0 -20px; border: 1.5px solid var(--ink); box-shadow: 0 0 0 1.5px rgba(251, 244, 230, .85), inset 0 0 0 1.5px rgba(251, 244, 230, .85); }
+.cursor-ring, .cursor-ring.is-link, .cursor-ring.has-label, .cursor-ring.is-down { width: 40px; height: 40px; margin: -20px 0 0 -20px; }
+.cursor-ring { transition: scale .25s var(--ease), background .2s var(--ease), border-color .2s var(--ease), opacity .2s; }
+.cursor-ring.is-link { scale: 1.3; background: color-mix(in srgb, var(--sun) 70%, transparent); }
+.cursor-ring.has-label { scale: 2; background: var(--ink); color: var(--sun); border-color: var(--sun); font-size: .4rem; }
+.cursor-ring.is-down { scale: .8; }
 html.cursor-on .cursor-ring.is-link ~ .cursor-dot { opacity: 0; }
 html:has(.mobile-panel:not([hidden])) .site-header { background: var(--cream); border-bottom-color: var(--line); }
