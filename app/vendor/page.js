@@ -44,7 +44,7 @@ export default async function VendorHome() {
 
       <section className="panel row" aria-label="Business overview">
         <p><strong>{open.length}</strong> open requests</p>
-        <p><strong>{inbox.filter(b => b.status === 'confirmed').length}</strong> confirmed events</p>
+        <p><strong>{inbox.filter(b => b.status === 'confirmed').length}</strong> confirmed {inbox.filter(b => b.status === 'confirmed').length === 1 ? 'event' : 'events'}</p>
         <p><strong>{moneyCents(accepted)}</strong> in accepted quotes</p>
         <Link className="btn btn-sm btn-outline" href="/inbox?view=vendor">Open business inbox</Link>
       </section>
@@ -72,11 +72,6 @@ export default async function VendorHome() {
         </ul>
       </section>
 
-      {mine.map(v => <div className="panel stack" key={`calendar-${v.id}`}>
-        {mine.length > 1 && <h2>{v.name}</h2>}
-        <VendorCalendar entries={(calendar ?? []).filter(entry => entry.vendor_id === v.id)} headingId={`schedule-${v.id}`} />
-      </div>)}
-
       <section className="stack" aria-labelledby="inbox-h">
         <h2 id="inbox-h" className="display-3">Requests</h2>
         {inbox.length ? (
@@ -103,6 +98,10 @@ export default async function VendorHome() {
           <div className="empty"><h3>No requests yet</h3><p className="muted small">Customers can send inquiries once your profile is verified.</p></div>
         )}
       </section>
+      {mine.map(v => <details className="panel stack" key={`calendar-${v.id}`} open={mine.length === 1}>
+        <summary>{v.name} · calendar</summary>
+        <VendorCalendar entries={(calendar ?? []).filter(entry => entry.vendor_id === v.id)} headingId={`schedule-${v.id}`} />
+      </details>)}
     </div>
   );
 }

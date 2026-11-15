@@ -33,13 +33,14 @@ export default async function EventPage({ params, searchParams }) {
     supabase.from('event_guests').select('id', { count: 'exact', head: true }).eq('event_id', id),
     supabase.from('event_registry_items').select('id', { count: 'exact', head: true }).eq('event_id', id),
     supabase.from('event_weather').select('*').eq('event_id', id).maybeSingle(),
-    supabase.from('event_shortlist').select('id,vendor_id,in_package,planned_cents,pricing_selection,vendors(name,category,city)').eq('event_id',id).order('in_package',{ascending:false}),
+    supabase.from('event_shortlist').select('id,vendor_id,in_package,planned_cents,pricing_selection,vendors(name,category,city,calendar_is_demo,directory_listed)').eq('event_id',id).order('in_package',{ascending:false}),
     supabase.from('event_ideas').select('idea_key,title,note').eq('event_id',id),
   ]);
   if (!event) notFound();
 
   const plan = plans?.[0]?.output ?? event.starter_plan ?? null;
   const rows = bookings ?? [];
+  const walkthrough = (shortlist ?? []).filter(s => s.vendors?.calendar_is_demo && !s.vendors?.directory_listed);
   const quotes = rows.flatMap((b) => (b.quotes ?? []).filter((q) => q.status !== 'declined' && q.status !== 'expired').map((q) => ({ ...q, vendor: b.vendors })));
   const committedCents = quotes.filter((q) => q.status === 'accepted').reduce((s, q) => s + q.amount_cents, 0);
   const plannedCents=(shortlist||[]).filter(v=>v.in_package).reduce((n,v)=>n+(v.planned_cents||0),0);
@@ -66,6 +67,15 @@ export default async function EventPage({ params, searchParams }) {
         <span><b>Walk through your event</b><span>Step around a 3D room with one stop per vendor you need. Add or remove vendors as you go.</span></span>
         <i>Open the walk</i>
       </Link>
+      {walkthrough.length > 0 && <section className="panel stack" aria-labelledby="walkthrough-vendors">
+        <h2 id="walkthrough-vendors">Connected sample vendors</h2>
+        <p className="fine">These private businesses are managed by your vendor walkthrough account. Send a request here, then switch to the vendor window to reply with a quote.</p>
+        <ul role="list" className="booking-list">{walkthrough.map(s => {
+          const booking = rows.find(b => b.vendors?.id === s.vendor_id);
+          return <li key={s.id}><div><Link className="title" href={`/vendors/${s.vendor_id}?event=${id}`}>{s.vendors.name}</Link><p className="fine">{s.vendors.category}</p></div>
+            <Link className="btn btn-sm btn-outline" href={booking ? `/bookings/${booking.id}` : `/vendors/${s.vendor_id}?event=${id}#request-quote`}>{booking ? 'Open conversation' : 'Request a quote'}</Link></li>;
+        })}</ul>
+      </section>}
       <PlanGuide event={event} plan={plan} bookings={rows} quotes={quotes} sponsors={sponsors ?? []} timelineCount={timelineCount ?? 0} guestCount={guestCount ?? 0} giftCount={giftCount ?? 0} shortlistCount={shortlist?.length||0} />
 
       <div className="event-layout">
@@ -77,7 +87,7 @@ export default async function EventPage({ params, searchParams }) {
             </div>
             {plan ? (
               <>
-                <p className="muted small measure">{plan.summary} <Link href={`/plans/${plans[0].id}`}>Open the full plan</Link></p>
+                <p className="muted small measure">{plan.summary} {plans?.[0]?.id && <Link href={`/plans/${plans[0].id}`}>Open the full plan</Link>}</p>
                 <BudgetTable categories={plan.categories ?? []} quotes={quotes} />
                 
               </>

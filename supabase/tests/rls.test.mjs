@@ -353,5 +353,27 @@ r=await as(A,`select website_enabled,website_slug,workspace_key from public.even
 r=await as(B,`select public.copy_event('${weid}')`);check('cannot duplicate another person’s event',!!r.error,r);
 r=await as(A,`select public.plan_vendor('e1000000-0000-4000-8000-000000000001',null,'{"title":"Must roll back","event_type":"Birthday"}','{"max_cents":1000}')`);check('malformed pricing fails instead of creating a partial event',!!r.error,r);
 r=await as(A,`select id from public.events where title='Must roll back'`);check('failed vendor addition leaves no empty event behind',r.rows?.length===0,r);
+// Private two-sided vendor walkthrough: explicit shares, never public verification.
+r=await as(A,`insert into public.vendors(owner_id,name,category,calendar_is_demo) values('${A}','Sample private florist','Florists',true) returning id`);
+const privateVendor=r.rows?.[0]?.id;
+r=await as(A,`insert into public.vendor_packages(vendor_id,title,price_cents) values('${privateVendor}','Seasonal flowers',120000)`);
+r=await as(B,`select id from public.vendors where id='${privateVendor}'`);check('unshared pending vendor remains hidden',r.rows?.length===0,r);
+r=await as(B,`select public.request_vendor_quote('${eid}','${privateVendor}','Please quote flowers')`);check('customer cannot inquire with an unshared pending vendor',!!r.error,r);
+r=await as(B,`insert into public.vendor_walkthrough_access(vendor_id,customer_id) values('${privateVendor}','${B}')`);check('customer cannot self-grant access to a private vendor',!!r.error,r);
+await db.exec(`insert into public.vendor_walkthrough_access(vendor_id,customer_id) values('${privateVendor}','${B}')`);
+r=await as(B,`select id,verification_status from public.vendors where id='${privateVendor}'`);check('named customer sees private vendor without public verification',r.rows?.[0]?.verification_status==='pending',r);
+r=await as(B,`select title from public.vendor_packages where vendor_id='${privateVendor}'`);check('named customer sees private pricing packages',r.rows?.length===1,r);
+r=await as(C,`select id from public.vendors where id='${privateVendor}'`);check('unrelated signed-in user cannot see shared vendor',r.rows?.length===0,r);
+r=await as(null,`select id from public.vendors where id='${privateVendor}'`);check('anonymous visitors cannot see walkthrough vendor',r.rows?.length===0,r);
+r=await as(B,`select public.request_vendor_quote('${eid}','${privateVendor}','Please quote seasonal flowers') id`);const privateBooking=r.rows?.[0]?.id;check('customer creates inquiry and opening message atomically',!!privateBooking,r);
+r=await as(B,`select public.request_vendor_quote('${eid}','${privateVendor}','Duplicate request') id`);check('duplicate inquiry reopens same conversation',r.rows?.[0]?.id===privateBooking,r);
+r=await as(A,`select body from public.messages where event_vendor_id='${privateBooking}'`);check('vendor reads customer opening message once',r.rows?.length===1&&r.rows[0].body==='Please quote seasonal flowers',r);
+r=await as(A,`insert into public.quotes(event_vendor_id,amount_cents,description) values('${privateBooking}',125000,'Bouquets and centerpieces') returning id`);const privateQuote=r.rows?.[0]?.id;check('vendor sends quote on customer-created private inquiry',!!privateQuote,r);
+r=await as(B,`select amount_cents from public.quotes where id='${privateQuote}'`);check('customer sees vendor quote',Number(r.rows?.[0]?.amount_cents)===125000,r);
+r=await as(B,`select public.respond_to_quote('${privateQuote}',true) status`);check('customer accepts private vendor quote',r.rows?.[0]?.status==='accepted',r);
+r=await as(B,`update public.event_vendors set status='confirmed' where id='${privateBooking}' returning status`);check('customer confirms after accepting private quote',r.rows?.[0]?.status==='confirmed',r);
+r=await db.query(`select count(*)::int n from public.email_outbox where link='/bookings/${privateBooking}'`);check('private walkthrough notifications never queue outbound email',r.rows?.[0]?.n===0,r);
+r=await as(C,`select public.request_vendor_quote('${eid}','${privateVendor}','Intrusion')`);check('shared vendor never allows requests for another account event',!!r.error,r);
+r=await as(null,`select public.request_vendor_quote('${eid}','${privateVendor}','Anonymous')`);check('anonymous caller cannot invoke inquiry RPC',!!r.error,r);
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail) process.exit(1);
