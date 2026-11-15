@@ -6,3 +6,7 @@ node_modules/
 .DS_Store
 supabase/.temp/
 supabase/.branches/
+
+# Local only
+_backup*/
+Claude outputs/
