@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import HeroGL from './HeroGL';
 
 // Kinetic headline plus a loose pile of shapes and category cards that lean toward the pointer.
 // Motion is CSS; the pointer parallax only runs with a fine pointer and no reduced-motion preference.
@@ -33,6 +34,7 @@ export default function Hero() {
   let i = 0;
   return (
     <section className="hero" ref={ref} aria-labelledby="hero-title">
+      <HeroGL />
       <div className="hero-shapes" aria-hidden="true">
         <span className="shape shape-sun" />
         <span className="shape shape-pink" />
@@ -61,7 +63,7 @@ export default function Hero() {
         </div>
         <div className="hero-deck" aria-hidden="true">
           {CARDS.map((c, n) => (
-            <div key={c.cat} className={`deck-card deck-${c.tone}`} style={{ '--tilt': `${c.tilt}deg`, '--n': n }}>
+            <div key={c.cat} data-tilt className={`deck-card deck-${c.tone}`} style={{ '--tilt': `${c.tilt}deg`, '--n': n }}>
               <span className="deck-kicker">{String(n + 1).padStart(2, '0')}</span>
               <span className="deck-cat">{c.cat}</span>
               <span className="deck-line" /><span className="deck-line short" />

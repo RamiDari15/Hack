@@ -30,7 +30,7 @@ export default function Bento() {
         </div>
         <ul className="bento" role="list">
           {TILES.map((t, i) => (
-            <li key={t.title} className={`tile tile-${t.size} tile-${t.tone}`} data-reveal style={{ '--reveal-delay': `${(i % 4) * 70}ms` }}>
+            <li key={t.title} className={`tile tile-${t.size} tile-${t.tone}`} data-reveal data-tilt data-cursor="Open" style={{ '--reveal-delay': `${(i % 4) * 70}ms` }}>
               <Link href={t.href} className="tile-link">
                 <svg className="tile-art" viewBox="0 0 64 64" aria-hidden="true">{ART[t.art]}</svg>
                 <span className="tile-title">{t.title}</span>

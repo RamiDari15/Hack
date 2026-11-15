@@ -12,7 +12,7 @@ export default function VendorCard({ vendor, index = 0, showDistance = false }) 
   const priced = (vendor.packages ?? []).map((p) => p.priceCents).filter((n) => n != null);
   const from = priced.length ? Math.min(...priced) : null;
   return (
-    <Link href={`/vendors/${vendor.id}`} className="vendor-card">
+    <Link href={`/vendors/${vendor.id}`} className="vendor-card" data-cursor="View">
       <VendorPhoto src={vendor.photos?.[0]} alt={`${vendor.name} portfolio`} label={vendor.category} seed={index} />
       <div className="vendor-card-body">
         <div className="between"><VerificationBadge vendor={vendor} /><span className="fine">{vendor.city}{showDistance && vendor.distanceMi != null ? `, ${vendor.distanceMi} mi` : ''}</span></div>

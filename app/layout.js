@@ -8,6 +8,7 @@ import './styles/pages.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Reveal from '@/components/ui/Reveal';
+import Fx from '@/components/ui/Fx';
 
 const display = Bricolage_Grotesque({ subsets: ['latin'], axes: ['opsz', 'wdth'], variable: '--font-display', display: 'swap' });
 const ui = Instrument_Sans({ subsets: ['latin'], variable: '--font-ui', display: 'swap' });
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
         <main id="main">{children}</main>
         <Footer />
         <Reveal />
+        <Fx />
       </body>
     </html>
   );
