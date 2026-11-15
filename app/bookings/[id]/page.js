@@ -44,7 +44,7 @@ export default async function BookingPage({ params }) {
   const meta = [formatDate(b.event_date), b.location, b.guest_count ? `${b.guest_count} guests` : null].filter(Boolean).join(', ');
 
   return (
-    <div className="page wrap">
+    <div className="page wrap pg pg-booking">
       <PageHead
         back={isVendor ? { href: '/vendor', label: 'Vendor dashboard' } : { href: `/events/${b.event_id}`, label: 'Back to the event' }}
         title={isVendor ? `${b.event_type} request.` : b.vendor_name}
@@ -57,8 +57,8 @@ export default async function BookingPage({ params }) {
       {isVendor && b.style && <p className="muted">Style: {b.style}</p>}
 
       <div className="event-layout">
-        <section className="panel stack" aria-labelledby="msg-h">
-          <h2 id="msg-h">Messages</h2>
+        <section className="panel stack chat" aria-labelledby="msg-h">
+          <div className="chat-head"><h2 id="msg-h">Messages</h2><span className="fine">with {isVendor ? 'the organizer' : b.vendor_name}</span></div>
           {messages?.length ? (
             <ol role="list" className="thread">
               {messages.map((m) => {
@@ -71,11 +71,11 @@ export default async function BookingPage({ params }) {
                 );
               })}
             </ol>
-          ) : <p className="muted small">No messages yet. Ask about the date, setup or what is included.</p>}
+          ) : <p className="chat-empty muted small">No messages yet. Ask about the date, setup or what is included.</p>}
           {b.status !== 'cancelled' && (
-            <ActionForm action={sendMessage} resetOnOk>
+            <ActionForm action={sendMessage} resetOnOk className="chat-compose">
               <input type="hidden" name="booking_id" value={id} />
-              <div className="field"><label htmlFor="msg-body">Message to {other}</label><textarea id="msg-body" name="body" maxLength={4000} required /></div>
+              <div className="field"><label htmlFor="msg-body" className="sr-only">Message to {other}</label><textarea id="msg-body" name="body" maxLength={4000} required placeholder={`Write to ${other}…`} /></div>
               <button className="btn" type="submit">Send message</button>
             </ActionForm>
           )}
@@ -123,7 +123,7 @@ export default async function BookingPage({ params }) {
                   );
                 })}
               </ul>
-            ) : <p className="muted small">{isVendor ? 'Send a quote. It replaces their AI ballpark.' : 'No quote yet. The vendor has the event details you shared.'}</p>}
+            ) : <p className="muted small">{isVendor ? 'Send a quote. It replaces the ballpark in their budget.' : 'No quote yet. The vendor has the event details you shared.'}</p>}
 
             {isVendor && open && b.status !== 'hold' && (
               <ActionForm action={sendQuote} resetOnOk>

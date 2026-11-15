@@ -13,7 +13,7 @@ const NEEDS = [
 const GET = [
   ['A verified profile', 'Your business, portfolio and service area, shown to people planning nearby.'],
   ['Inquiries with the details', 'Each request arrives with the date, place and guest count, so you can quote straight away.'],
-  ['Quotes that count', 'Your quote replaces the AI ballpark in their budget.'],
+  ['Quotes that count', 'Your quote replaces the ballpark in their budget.'],
 ];
 
 export default function JoinPage() {
@@ -28,7 +28,7 @@ export default function JoinPage() {
           </PageHead>
         </div>
       </section>
-      <div className="page wrap stack-lg">
+      <div className="page wrap stack-lg pg pg-join">
         <section className="split-section" aria-labelledby="get-h">
           <h2 id="get-h" className="display-2">What you get</h2>
           <dl className="def-list">{GET.map(([t, d]) => <div key={t}><dt className="title">{t}</dt><dd className="muted">{d}</dd></div>)}</dl>

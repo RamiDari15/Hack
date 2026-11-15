@@ -39,7 +39,7 @@ export default async function AccountPage() {
   const name = profile?.display_name || user.email.split('@')[0];
 
   return (
-    <div className="page wrap">
+    <div className="page wrap pg pg-account">
       <PageHead back={{ href: '/dashboard', label: 'Your events' }} title={`Hi, ${name}`} size="display-2"
         lede={<>{user.email} · member since {short(profile?.created_at ?? user.created_at)}</>}>
         <div className="row">{roles.map((r) => <span key={r} className={`badge ${r === 'admin' ? 'badge-accent' : 'badge-plain'}`}>{ROLE[r] ?? r}</span>)}</div>

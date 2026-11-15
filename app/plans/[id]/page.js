@@ -18,7 +18,7 @@ export default async function PlanPage({ params }) {
   ]);
   if (!row?.output?.categories) notFound();
   return (
-    <div className="page wrap-narrow">
+    <div className="page wrap-narrow pg pg-plan">
       <a className="back-link" href="/account#plans-h">Your account</a>
       <PlanView plan={row.output} planId={row.id} eventId={row.event_id} events={events ?? []} />
     </div>

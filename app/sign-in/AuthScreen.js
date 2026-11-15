@@ -39,7 +39,6 @@ export default async function AuthScreen({ searchParams, audience }) {
     <div className={`auth auth-${audience}`}>
       <div className="auth-art on-dusk" aria-hidden="true">
         <Placeholder ratio="auto" caption="" seed={audience === 'vendor' ? 5 : 2} />
-        {audience === 'vendor' && <p className="label auth-art-label">For vendors</p>}
         <p className="display-1">{c.art}</p>
       </div>
       <div className="auth-panel">

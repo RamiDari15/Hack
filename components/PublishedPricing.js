@@ -14,5 +14,5 @@ function PublishedCard({pack,vendorId,events,signedIn,category}){
 }
 export default function PublishedPricing({packages=[],vendorId,events=[],signedIn=false,category,sourceUrl}){
  if(!packages.length)return null;
- return <section className="stack"><div><span className="label">From the business</span><h2 className="display-3">Published pricing</h2><p className="fine">Publicly listed services. Confirm availability, inclusions and the final total directly.</p></div><div className="published-pricing-grid">{packages.map((p,i)=><PublishedCard key={p.id||i} pack={p} vendorId={vendorId} events={events} signedIn={signedIn} category={category}/>)}</div>{sourceUrl&&<p className="fine"><a href={sourceUrl} target="_blank" rel="noopener noreferrer">View original pricing details ↗</a></p>}</section>;
+ return <section className="stack"><div className="stack-sm"><h2 className="display-3">Published pricing</h2><p className="fine">Listed publicly by the business. Confirm availability, inclusions and the final total with them directly.</p></div><div className="published-pricing-grid">{packages.map((p,i)=><PublishedCard key={p.id||i} pack={p} vendorId={vendorId} events={events} signedIn={signedIn} category={category}/>)}</div>{sourceUrl&&<p className="fine"><a href={sourceUrl} target="_blank" rel="noopener noreferrer">View original pricing details ↗</a></p>}</section>;
 }

@@ -30,7 +30,7 @@ export default async function InboxPage({ searchParams }) {
   const hasVendorSide = all.some((t) => t.i_am_vendor);
 
   return (
-    <div className="page wrap">
+    <div className="page wrap pg pg-inbox">
       <PageHead title="Inbox" size="display-2" lede={unread ? `${unread} unread ${unread === 1 ? 'message' : 'messages'}.` : `${notes?.length||0} private planning notes. Conversations appear as you contact connected vendors.`}>
         <Link className="btn btn-sm btn-outline" href="/tools/notes">＋ Add a planning note</Link>
         {unread > 0 && <form action={markAllThreadsRead}><button className="btn btn-sm btn-outline" type="submit">Mark all read</button></form>}

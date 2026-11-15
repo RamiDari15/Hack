@@ -38,10 +38,11 @@ export default async function VendorsPage({ searchParams }) {
   const activeFilters = [verifiedOnly && 'verified only', hasPhotos && 'with photos', maxPrice && `published price from $${maxPrice.toLocaleString('en-US')} or less`].filter(Boolean);
 
   return (
-    <div className="page wrap">
-      <PageHead title={category || 'Find the people who make it.'} lede={`${count}${activeFilters.length ? `, ${activeFilters.join(', ')}` : ''}${nearAnnArbor ? ` within ${radius} miles of Ann Arbor` : location ? ` near ${location}` : ''}.`} />
+    <div className="page wrap pg pg-vendors">
+      <PageHead title={category || 'Find the people who make it.'} lede={`${count}${activeFilters.length ? `, ${activeFilters.join(', ')}` : ''}${nearAnnArbor ? ` within ${radius} miles of Ann Arbor` : location ? ` near ${location}` : ''}.`}>
+        <Link className="small" href="/vendors?location=Ann%20Arbor">Browse the Ann Arbor area · 25-mile radius</Link>
+      </PageHead>
       {selectedEvent&&<p className="notice notice-sun">Planning for <Link href={`/events/${selectedEvent.id}`}>{selectedEvent.title}</Link>. Add any vendor to its shortlist.</p>}
-      <p className="small"><Link href="/vendors?location=Ann%20Arbor">Browse the Ann Arbor area · 25-mile radius</Link></p>
 
       <form method="get" className="filterbar" aria-label="Filter vendors">
         {selectedEvent&&<input type="hidden" name="event" value={selectedEvent.id}/>}
@@ -73,7 +74,7 @@ export default async function VendorsPage({ searchParams }) {
       </nav>
 
       <div className="stack notices">
-        <p className="notice notice-sun">Verified vendors take inquiries right here. Listed businesses are ones we found online, so reach out to them directly.</p>
+        <p className="fine directory-note">Verified vendors take inquiries right here. Public listings are businesses we found online, so reach out to them directly.</p>
         {date && <p className="notice">Your event date is {date}. Availability is confirmed by each vendor, so this date does not filter the list.</p>}
         {error && <p className="notice notice-error" role="alert">{error}</p>}
         {capped && <p className="notice">Price filters looked at the first 600 matches. Narrow by category or location for a complete list.</p>}

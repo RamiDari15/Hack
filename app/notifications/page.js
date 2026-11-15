@@ -14,7 +14,7 @@ export default async function NotificationsPage() {
   const list = data ?? [];
   const unread = list.filter((n) => !n.read_at).length;
   return (
-    <div className="page wrap">
+    <div className="page wrap pg pg-notifications">
       <PageHead title="Notifications" size="display-2" lede={unread ? `${unread} new.` : 'Nothing new.'}>
         {unread > 0 && <form action={markNotificationsRead}><button className="btn btn-sm btn-outline" type="submit">Mark all read</button></form>}
         <Link className="btn btn-sm btn-outline" href="/account">Email alert settings</Link>

@@ -21,7 +21,7 @@ export default async function VendorHome() {
 
   if (!mine.length) {
     return (
-      <div className="page wrap-narrow">
+      <div className="page wrap-narrow pg pg-vendor-home">
         <PageHead title="Sell your services on Vendora." lede="Apply with your business details. We review every vendor before customers can find you or send inquiries." />
         <div className="row"><Link className="btn" href="/vendor/apply">Apply as a vendor</Link><Link className="btn btn-outline" href="/vendors/join">How it works</Link></div>
       </div>
@@ -37,7 +37,7 @@ export default async function VendorHome() {
   ]);
   const accepted = (quotes ?? []).filter(q => q.status === 'accepted').reduce((sum,q) => sum + Number(q.amount_cents), 0);
   return (
-    <div className="page wrap">
+    <div className="page wrap pg pg-vendor-home">
       <PageHead title="Your business." lede={open.length ? `${open.length} open ${open.length === 1 ? 'request' : 'requests'} waiting on you or the customer.` : 'No open requests right now.'}>
         <Link className="btn btn-outline" href="/vendor/apply">Add another business</Link>
       </PageHead>
