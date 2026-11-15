@@ -119,6 +119,10 @@ const server = http.createServer((req, res) => {
           { name: 'Setup and cleanup', low: 400, high: 700, notes: '' },
           { name: 'Contingency', low: 1500, high: 2000, notes: '' },
         ],
+        recommendations: [
+          { category: 'Venues', vendor_name: 'Sample Lantern Hall', why: 'Seats 180 for dinner with a courtyard (test data).' },
+          { category: 'Venues', vendor_name: 'Made Up Hall That Does Not Exist', why: 'Should be dropped by the server.' },
+        ],
         missing_items: ['Rain plan'],
         cost_saving_ideas: ['Friday date'],
         checklist: [{ task: 'Book venue', when: '10 months before' }],

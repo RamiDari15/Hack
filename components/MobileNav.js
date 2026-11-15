@@ -34,6 +34,7 @@ export default function MobileNav({ items, signedIn }) {
           {signedIn ? (
             <>
               <Link href="/dashboard" className="btn btn-bulb btn-block">Your events</Link>
+              <Link href="/account#todo-h" className="btn btn-ghost btn-block">To-dos</Link>
               <Link href="/account" className="btn btn-ghost btn-block">Account</Link>
               <form action="/auth/sign-out" method="post"><button className="btn btn-ghost btn-block" type="submit">Sign out</button></form>
             </>

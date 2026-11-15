@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState } from 'react';
-import { EVENT_TYPES } from '@/lib/categories';
+import { EVENT_TYPE_GROUPS } from '@/lib/categories';
 
 function Field({ name, label, errors, children, hint, wide }) {
   const err = errors?.[name];
@@ -25,7 +25,7 @@ export default function EventForm({ action, initial = {}, submitLabel = 'Create 
       <Field name="title" label="Event name" errors={e} wide>{(a) => <input id="title" name="title" defaultValue={v.title ?? ''} required maxLength={140} placeholder="Maya and Sam’s garden wedding" {...a} />}</Field>
       <Field name="event_type" label="Event type" errors={e}>{(a) => (
         <select id="event_type" name="event_type" defaultValue={v.eventType ?? 'Wedding'} {...a}>
-          {EVENT_TYPES.map((t) => <option key={t}>{t}</option>)}
+          {EVENT_TYPE_GROUPS.map((g) => <optgroup key={g.label} label={g.label}>{g.types.map((t) => <option key={t}>{t}</option>)}</optgroup>)}
         </select>)}</Field>
       <Field name="event_date" label="Date" errors={e} hint="Leave empty if you are still deciding.">{(a) => <input id="event_date" name="event_date" type="date" defaultValue={v.eventDate ?? ''} {...a} />}</Field>
       <Field name="location" label="Location" errors={e}>{(a) => <input id="location" name="location" defaultValue={v.location ?? ''} placeholder="City or venue" maxLength={160} {...a} />}</Field>

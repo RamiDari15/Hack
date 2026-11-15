@@ -320,3 +320,33 @@
 .auth-vendor .auth-tabs button[aria-pressed="true"] { box-shadow: inset 0 -2px 0 var(--bulb-deep), 0 1px 2px rgb(34 25 58 / .12); }
 .auth-kind { align-self: flex-start; }
 .auth-switch { padding-top: var(--s-3); border-top: 1px solid var(--line); }
+
+/* Planner form: toggles, setting pills, $ prefix, summary of what the estimate uses */
+.field-label { font-weight: 600; font-size: var(--t-sm); color: var(--ink); padding: 0; }
+.toggle-chips .chip[aria-pressed='true'] { background: var(--dusk); color: var(--on-dusk); border-color: var(--dusk); }
+.toggle-chips .chip:disabled { opacity: .45; cursor: not-allowed; }
+.seg-pills { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--haze-2); width: max-content; max-width: 100%; }
+.seg-pills label { position: relative; cursor: pointer; }
+.seg-pills input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.seg-pills span { display: block; padding: .45rem .95rem; border-radius: 999px; font-size: var(--t-sm); font-weight: 600; color: var(--muted); }
+.seg-pills input:checked + span { background: var(--paper); color: var(--ink); box-shadow: 0 1px 2px rgb(34 25 58 / .12); }
+.seg-pills input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
+.input-affix { display: flex; align-items: center; border: 1px solid var(--line-strong); border-radius: var(--r-md, 10px); background: var(--paper); padding-left: .9rem; }
+.input-affix:focus-within { outline: 2px solid var(--focus); outline-offset: 1px; }
+.input-affix span { color: var(--muted); font-weight: 600; }
+.input-affix input { border: 0; background: transparent; flex: 1; min-width: 0; outline: none; box-shadow: none; }
+.planner-using { padding: var(--s-3) var(--s-4); background: var(--haze); border-radius: 10px; color: var(--ink-2); }
+.budget-fit p + p { margin-top: var(--s-2); }
+
+/* Account: to-do list */
+.todo-add { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: var(--s-3); align-items: end; }
+.todo-add .row { padding-bottom: 2px; }
+@media (max-width: 760px) { .todo-add { grid-template-columns: 1fr 1fr; } .todo-add .todo-title { grid-column: 1 / -1; } }
+.todo-done summary { cursor: pointer; color: var(--muted); }
+.text-warn { color: var(--warn); font-weight: 600; }
+
+/* Planner recommendations */
+.rec-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--s-3); }
+.rec-list li { display: grid; gap: var(--s-2); padding: var(--s-4); border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
+.rec-list a.title { text-decoration: none; }
+.rec-list a.title:hover { text-decoration: underline; }

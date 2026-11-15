@@ -284,5 +284,17 @@ r=await db.query(`select id from public.profiles where id='${A}'`); check('verif
 await db.exec(`reset role; select set_config('request.jwt.claims','${JSON.stringify({sub:A, email:EMAIL[A], iss:'https://securetoken.google.com/unrelated-project', email_verified:true,role:'authenticated'})}',false); set role authenticated;`);
 r=await db.query(`select id from public.profiles where id='${A}'`); check('other Firebase project cannot use same UUID', r.rows.length===0, r);
 await db.exec('reset role');
+// Personal to-do list
+r = await as(A, `insert into public.user_todos(title, due_date) values ('Call florist', '2027-01-10') returning id, user_id`); const td = r.rows?.[0]?.id; check('user adds a private to-do', !!td && r.rows[0].user_id === A, r);
+r = await as(B, `select id from public.user_todos`); check('others cannot read my to-dos', r.rows?.length === 0, r);
+r = await as(null, `select id from public.user_todos`); check('anon cannot read to-dos', !!r.error || r.rows?.length === 0, r);
+r = await as(B, `update public.user_todos set done=true where id='${td}' returning id`); check('others cannot tick my to-dos', !r.rows?.length, r);
+r = await as(B, `delete from public.user_todos where id='${td}' returning id`); check('others cannot delete my to-dos', !r.rows?.length, r);
+r = await as(B, `insert into public.user_todos(user_id, title) values ('${A}', 'Planted')`); check('cannot add a to-do to someone else', !!r.error, r);
+r = await as(A, `insert into public.user_todos(title, event_id) values ('Spy', '${eid}')`); check('cannot link a to-do to an event you cannot see', !!r.error, r);
+r = await as(C, `insert into public.user_todos(title, event_id) values ('For the wedding', '${eid}') returning id`); check('cohost links a to-do to a shared event', !!r.rows?.[0], r);
+r = await as(A, `update public.user_todos set done=true where id='${td}' returning done_at is not null stamped`); check('finishing stamps the time', r.rows?.[0]?.stamped === true, r);
+r = await as(A, `update public.user_todos set user_id='${B}' where id='${td}'`); check('to-do owner cannot be changed', !!r.error, r);
+r = await as(A, `update public.user_todos set done_at=now() - interval '9 years' where id='${td}'`); check('done time cannot be forged', !!r.error, r);
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail) process.exit(1);

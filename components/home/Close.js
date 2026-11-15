@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { EVENT_TYPES } from '@/lib/categories';
+import { POPULAR_EVENT_TYPES } from '@/lib/categories';
 
 export default function Close() {
-  const types = EVENT_TYPES.filter((t) => t !== 'Other');
+  const types = POPULAR_EVENT_TYPES;
   return (
     <section className="close on-dusk" aria-labelledby="close-title">
       <div className="wrap stack-lg">

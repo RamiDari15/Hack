@@ -117,3 +117,4 @@ input:disabled, select:disabled, textarea:disabled { background: var(--haze-2); 
   .skeleton i { animation: pulse 1.4s ease-in-out infinite; }
   @keyframes pulse { 50% { opacity: .45; } }
 }
+.notice-info { border-color: var(--info); background: var(--info-soft); }
