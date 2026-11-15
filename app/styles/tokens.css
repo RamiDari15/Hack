@@ -1,0 +1,67 @@
+/* Vendora "Dusk" tokens. See DESIGN.md. */
+:root {
+  --dusk: #2b2140;
+  --dusk-2: #3a2d55;
+  --dusk-3: #4a3b69;
+  --dusk-line: #54467a;
+  --on-dusk: #f4effa;
+  --on-dusk-muted: #c3b8d6;
+
+  --haze: #f3f0f7;
+  --haze-2: #e9e4f1;
+  --paper: #ffffff;
+  --ink: #22193a;
+  --ink-2: #3b3253;
+  --muted: #5f5673;
+  --line: #d9d2e6;
+  --line-strong: #a99dc0;
+
+  --bulb: #ffc861;
+  --bulb-2: #ffdc96;
+  --bulb-deep: #c98a1c;
+
+  --ok: #2f5d3a;     --ok-soft: #e1efe4;
+  --warn: #714600;   --warn-soft: #fbedd0;
+  --info: #2f4a6b;   --info-soft: #e2e9f3;
+  --danger: #8e2a2a; --danger-soft: #f7e1e1;
+
+  --focus: var(--dusk);
+
+  --f-display: var(--font-display), 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --f-ui: var(--font-ui), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* UI scale (1.2) */
+  --t-xs: .8125rem;
+  --t-sm: .9375rem;
+  --t-base: 1.0625rem;
+  --t-md: 1.25rem;
+  --t-lg: 1.5rem;
+  /* Display scale */
+  --d-3: clamp(1.75rem, 1.4rem + 1.2vw, 2.375rem);
+  --d-2: clamp(2.5rem, 1.6rem + 3vw, 4.25rem);
+  --d-1: clamp(3.25rem, 1.8rem + 5.6vw, 7rem);
+  --d-hero: clamp(5.5rem, 1.5rem + 13vw, 14.5rem);
+
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  --s-6: 32px; --s-7: 48px; --s-8: 72px; --s-9: 112px; --s-10: 160px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --max: 1240px;
+  --measure: 64ch;
+
+  --r-ticket: 4px;
+  --r-panel: 8px;
+  --r-pill: 999px;
+  --shadow-float: 0 24px 60px -24px rgba(34, 25, 58, .45);
+
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --d-fast: 150ms;
+  --d-base: 280ms;
+
+  color-scheme: light;
+}
+
+.on-dusk {
+  --focus: var(--bulb);
+  color: var(--on-dusk);
+  background: var(--dusk);
+}
