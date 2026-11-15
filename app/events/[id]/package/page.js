@@ -76,7 +76,7 @@ export default async function PackagePage({ params }) {
                     <tr key={r.name}>
                       <td>{r.name}</td>
                       <td>{r.kind === 'pick' || r.kind === 'unpriced' ? <Link href={`/vendors/${r.item.vendorId}`}>{r.item.name}</Link> : r.pending ? r.pending.name : CATEGORIES.includes(r.name) ? <Link href={`/events/${event.id}/choose?step=${encodeURIComponent(r.name)}`} className="fine">Choose one</Link> : <span className="fine">—</span>}</td>
-                      <td>{r.kind === 'pick' ? <span className="source is-quote">{r.source}</span> : r.kind === 'estimate' ? <span className="source">{r.pending ? 'No price yet, using the AI estimate' : (plans?.length?'AI estimate':'Planning range')}</span> : <span className="source">No price yet</span>}</td>
+                      <td>{r.kind === 'pick' ? <span className="source is-quote">{r.source}</span> : r.kind === 'estimate' ? <span className="source">{r.pending ? 'No price yet, using the ballpark' : (plans?.length?'Ballpark':'Planning range')}</span> : <span className="source">No price yet</span>}</td>
                       <td className="num">
                         {r.kind === 'pick' ? moneyCents(r.fixedCents) : r.kind === 'estimate' ? `${moneyCents(r.lowCents)}–${moneyCents(r.highCents)}` : '—'}
                         {isOwner && (r.kind === 'unpriced' || r.pending || (r.kind === 'pick' && r.source === 'Your planned amount')) && (

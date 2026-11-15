@@ -87,7 +87,7 @@ const server = http.createServer((req, res) => {
       if (!String(body.input ?? '').includes('Event details') || !ids.length) problems.push('input not grounded in event and vendors');
       if (problems.length) return reply(res, 400, { error: { message: problems.join('; ') } });
       const advice = {
-        summary: 'Mock advice (test data). The first vendor is verified and has no calendar conflict.',
+        summary: 'Sample advice (test data). The first vendor is verified and has no calendar conflict.',
         pick: ids[0],
         vendors: [{ id: ids[0], fit: 'Verified, with a published price.' }, { id: '00000000-0000-4000-8000-000000000000', fit: 'Invented vendor that must be dropped.' }],
         questions: ['Is our date open?', 'What does the package include?', 'Are tax and gratuity included?'],
@@ -108,7 +108,7 @@ const server = http.createServer((req, res) => {
       if (!body.max_output_tokens) problems.push('no max_output_tokens');
       if (problems.length) return reply(res, 400, { error: { message: problems.join('; ') } });
       const plan = {
-        summary: 'Mock estimate for an outdoor wedding for 150 guests.',
+        summary: 'Sample plan (test data) for an outdoor wedding for 150 guests.',
         assumptions: ['June date in southeast Michigan', 'Buffet service'],
         categories: [
           { name: 'Venues', low: 5000, high: 6500, notes: '' },
